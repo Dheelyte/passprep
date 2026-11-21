@@ -16,8 +16,16 @@ import { SubjectIcon } from "@/components/subject-icon";
 
 async function plans() {
   "use cache";
-  cacheLife("hours");
-  return activePlans();
+  try {
+    const list = await activePlans();
+    cacheLife("hours");
+    return list;
+  } catch (e) {
+    // Never fail the whole page (or the build) over prices: show it without the price list and retry soon.
+    console.error("landing: could not load plan prices", e);
+    cacheLife("minutes");
+    return [];
+  }
 }
 
 const demo = {
@@ -203,6 +211,7 @@ export default async function Home() {
 
             <div id="pricing" className="scroll-mt-6" data-reveal>
               <h3 className="mb-4 font-display text-xl font-extrabold">Premium plans</h3>
+              {planList.length === 0 ? <p className="font-semibold">Monthly, per term or yearly. See prices after you sign up.</p> : null}
               <ul className="space-y-3">
                 {planList.map((p) => (
                   <li key={p.code} className={`flex items-center justify-between gap-3 border-2 border-line px-4 py-3 shadow-sticker [border-radius:var(--r-sticker)] ${p.code === "TERMLY" ? "bg-sun text-on-fill" : "bg-card text-ink"}`}>
