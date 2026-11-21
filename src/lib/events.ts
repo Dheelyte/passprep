@@ -6,6 +6,7 @@ export type EventType =
   | "signup"
   | "login"
   | "onboarded"
+  | "plan_edited"
   | "practice_started"
   | "question_answered"
   | "video_opened"

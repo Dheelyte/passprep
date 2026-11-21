@@ -72,6 +72,7 @@ export async function login(_: FormState, form: FormData): Promise<FormState> {
   const user = await db.user.findFirst({ where: id });
   // Always run bcrypt so response time doesn't reveal whether the account exists.
   const ok = await bcrypt.compare(password, user?.passwordHash ?? DUMMY_HASH);
+  if (user && !user.passwordHash) return { error: "This account signs in with Google. Tap “Continue with Google” above.", fields };
   if (!user || !ok) return { error: "Incorrect phone/email or password.", fields };
 
   await createSession(user.id);
@@ -113,6 +114,7 @@ export async function completeOnboarding(_: FormState, form: FormData): Promise<
       data: { classLevel: parsed.data.classLevel, exams: parsed.data.exams, onboarded: true },
     }),
   ]);
-  track("onboarded", session.uid, { classLevel: parsed.data.classLevel, exams: parsed.data.exams, subjects: valid.length });
-  redirect("/dashboard?welcome=1");
+  const editing = form.get("mode") === "edit";
+  track(editing ? "plan_edited" : "onboarded", session.uid, { classLevel: parsed.data.classLevel, exams: parsed.data.exams, subjects: valid.length });
+  redirect(editing ? "/dashboard" : "/dashboard?welcome=1");
 }

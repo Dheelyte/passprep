@@ -79,7 +79,8 @@ model User {
   id             String      @id @default(cuid())
   email          String?     @unique
   phone          String?     @unique // normalised E.164, e.g. +2348012345678
-  passwordHash   String      @map("password_hash")
+  passwordHash   String?     @map("password_hash") // null for Google-only accounts
+  googleId       String?     @unique @map("google_id") // Google "sub" claim
   name           String
   role           Role        @default(STUDENT)
   classLevel     ClassLevel? @map("class_level")

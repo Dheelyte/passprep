@@ -95,7 +95,7 @@ async function Account() {
       <Card as="section" aria-labelledby="subj-h">
         <div className="mb-3 flex items-baseline justify-between">
           <h2 id="subj-h" className="text-lg font-extrabold">Subjects</h2>
-          <ButtonLink href="/onboarding" variant="ghost" size="sm">Change</ButtonLink>
+          <ButtonLink href="/onboarding?step=subjects" variant="ghost" size="sm">Change</ButtonLink>
         </div>
         <ul className="flex flex-wrap gap-2">
           {subjects.map(({ subject: s }) => (

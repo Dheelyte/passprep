@@ -6,12 +6,14 @@ import { ArrowRight } from "lucide-react";
 import { login, signup } from "@/app/actions/auth";
 import { Button } from "./ds/button";
 import { Field, FormError, Input } from "./ds/field";
+import { GoogleButton } from "./google-button";
 
-export function SignupForm({ source }: { source?: string }) {
+export function SignupForm({ source, google }: { source?: string; google?: boolean }) {
   const [state, action, pending] = useActionState(signup, undefined);
   return (
     <form action={action} className="sticker space-y-4 p-5 text-ink">
       <input type="hidden" name="source" value={source ?? ""} />
+      {google ? <GoogleButton source={source} label="Sign up with Google" /> : null}
       <FormError message={state?.error} />
       <Field id="name" label="What should we call you?">
         <Input id="name" name="name" autoComplete="name" required defaultValue={state?.fields?.name} placeholder="e.g. Tobi Adebayo" />
@@ -32,12 +34,13 @@ export function SignupForm({ source }: { source?: string }) {
   );
 }
 
-export function LoginForm({ next }: { next?: string }) {
+export function LoginForm({ next, google, notice }: { next?: string; google?: boolean; notice?: string }) {
   const [state, action, pending] = useActionState(login, undefined);
   return (
     <form action={action} className="sticker space-y-4 p-5 text-ink">
       <input type="hidden" name="next" value={next ?? ""} />
-      <FormError message={state?.error} />
+      {google ? <GoogleButton next={next} /> : null}
+      <FormError message={state?.error ?? notice} />
       <Field id="identifier" label="Phone number or email">
         <Input id="identifier" name="identifier" autoComplete="username" inputMode="email" required defaultValue={state?.fields?.identifier} />
       </Field>

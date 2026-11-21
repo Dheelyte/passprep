@@ -47,6 +47,27 @@ test.describe.serial("student journey", () => {
     await expect(page.getByText("3 free left today")).toBeVisible();
   });
 
+  test("edits subjects from the dashboard without redoing onboarding", async ({ page }) => {
+    await login(page);
+    await page.getByRole("link", { name: "Edit", exact: true }).click();
+    await page.waitForURL(/\/onboarding\?step=subjects/);
+    await expect(page.getByRole("heading", { name: "Pick your subjects" })).toBeVisible();
+    await page.getByText("Physics", { exact: true }).click();
+    // Going back through the exams step must not submit early (regression: Next turned into submit mid-click).
+    await page.getByRole("button", { name: "Back" }).click();
+    await page.getByRole("button", { name: "Next" }).click();
+    await expect(page.getByRole("heading", { name: "Pick your subjects" })).toBeVisible();
+    await page.getByRole("button", { name: "Save changes" }).click();
+    await page.waitForURL(/\/dashboard$/);
+    await expect(page.getByRole("link", { name: /Physics/ }).first()).toBeVisible();
+
+    // Put it back so the rest of the journey sees only Mathematics.
+    await page.goto("/onboarding?step=subjects");
+    await page.getByText("Physics", { exact: true }).click();
+    await page.getByRole("button", { name: "Save changes" }).click();
+    await page.waitForURL(/\/dashboard$/);
+  });
+
   test("practises a topic, sees explanations, locked video, then hits the free limit", async ({ page }) => {
     await login(page);
     await startTopic(page, "Logarithms"); // 3 questions, one with a Premium-only video

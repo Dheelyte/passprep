@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useActionState, useState } from "react";
 import { ArrowLeft, ArrowRight, Check } from "lucide-react";
 import { completeOnboarding } from "@/app/actions/auth";
@@ -8,6 +9,7 @@ import { FormError } from "./ds/field";
 import { ProgressBar } from "./ds/progress";
 import { SubjectIcon } from "./subject-icon";
 import { cn } from "./ds/cn";
+import { subjectScope } from "@/lib/subjects";
 
 const CLASSES = [
   { v: "JSS3", l: "JSS 3", d: "Getting a head start" },
@@ -31,23 +33,29 @@ export function OnboardingForm({
   firstName,
   subjects,
   defaults,
+  editing = false,
+  startStep = 0,
 }: {
   firstName: string;
   subjects: { id: string; name: string; slug: string }[];
   defaults: { classLevel?: string; exams: string[]; subjects: string[] };
+  /** Already-onboarded student changing their plan: save without the welcome screen. */
+  editing?: boolean;
+  startStep?: number;
 }) {
   const [state, action, pending] = useActionState(completeOnboarding, undefined);
-  const [step, setStep] = useState(0);
+  const [step, setStep] = useState(startStep);
   const [classLevel, setClassLevel] = useState(defaults.classLevel ?? "");
   const [exams, setExams] = useState<string[]>(defaults.exams);
   const [chosen, setChosen] = useState<string[]>(defaults.subjects);
   const toggle = (list: string[], v: string) => (list.includes(v) ? list.filter((x) => x !== v) : [...list, v]);
   const canNext = [classLevel !== "", exams.length > 0, chosen.length > 0][step];
-  const titles = [`Hi ${firstName}! What class are you in?`, "Which exams are you writing?", "Pick your subjects"];
+  const titles = [editing ? "What class are you in?" : `Hi ${firstName}! What class are you in?`, "Which exams are you writing?", "Pick your subjects"];
   const hints = ["We'll show the topics for your class first.", "Pick all that apply.", "You can change these any time."];
 
   return (
     <form action={action} className="space-y-6">
+      {editing ? <input type="hidden" name="mode" value="edit" /> : null}
       <div>
         <p className="mb-2 flex justify-between text-sm font-bold">
           <span>Step {step + 1} of 3</span>
@@ -94,7 +102,7 @@ export function OnboardingForm({
       <fieldset hidden={step !== 2} className="grid grid-cols-2 gap-3">
         <legend className="sr-only">Subjects</legend>
         {subjects.map((s) => (
-          <label key={s.id} data-subject={s.slug} className={cn(choice, "min-h-24 flex-col items-start has-[:checked]:bg-subj has-[:checked]:text-on-subj")}>
+          <label key={s.id} data-subject={subjectScope(s.slug)} className={cn(choice, "min-h-24 flex-col items-start has-[:checked]:bg-subj has-[:checked]:text-on-subj")}>
             <input className="peer sr-only" type="checkbox" name="subjects" value={s.id} checked={chosen.includes(s.id)} onChange={() => setChosen(toggle(chosen, s.id))} />
             <span className="flex w-full items-center justify-between">
               <SubjectIcon slug={s.slug} className="size-6" />
@@ -105,15 +113,22 @@ export function OnboardingForm({
         ))}
       </fieldset>
 
+      {/* Distinct keys matter: without them React reuses the same <button> and flips its type to
+          "submit" during the click, so pressing Next on step 2 submitted the form straight away. */}
       {step < 2 ? (
-        <Button type="button" variant="sun" block size="lg" disabled={!canNext} onClick={() => setStep(step + 1)} iconRight={<ArrowRight className="size-5" />}>
+        <Button key="next" type="button" variant="sun" block size="lg" disabled={!canNext} onClick={() => setStep(step + 1)} iconRight={<ArrowRight className="size-5" />}>
           Next
         </Button>
       ) : (
-        <Button type="submit" variant="sun" block size="lg" disabled={!canNext} loading={pending}>
-          {pending ? "Setting up…" : "I'm ready"}
+        <Button key="submit" type="submit" variant="sun" block size="lg" disabled={!canNext} loading={pending}>
+          {editing ? (pending ? "Saving…" : "Save changes") : pending ? "Setting up…" : "I'm ready"}
         </Button>
       )}
+      {editing ? (
+        <p className="text-center text-sm font-bold">
+          <Link href="/account" className="underline underline-offset-2">Cancel</Link>
+        </p>
+      ) : null}
     </form>
   );
 }

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
 import { SignupForm } from "@/components/auth-forms";
+import { googleEnabled } from "@/lib/google";
 
 export const metadata: Metadata = { title: "Create your free account" };
 
@@ -19,5 +20,5 @@ export default function SignupPage({ searchParams }: PageProps<"/signup">) {
 async function SignupWithSource({ searchParams }: { searchParams: PageProps<"/signup">["searchParams"] }) {
   const sp = await searchParams;
   const source = [sp.utm_source, sp.ref].flat().find((v): v is string => typeof v === "string");
-  return <SignupForm source={source} />;
+  return <SignupForm source={source} google={googleEnabled()} />;
 }

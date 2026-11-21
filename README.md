@@ -75,6 +75,14 @@ src/app/api/paystack          verify callback + webhook
 
 The seed's YouTube links (`PLACEHOLD0x`) are placeholders. Replace them with real solution videos.
 
+## Google sign-in
+
+1. In Google Cloud Console → APIs & Services → Credentials, create an **OAuth client ID** (type: Web application).
+2. Add the authorised redirect URI `<APP_URL>/api/auth/google/callback` (e.g. `http://localhost:3100/api/auth/google/callback`).
+3. Put `GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET` in `.env` and restart. "Continue with Google" appears on the login and signup pages; it stays hidden while either is unset.
+
+How accounts match: a returning Google user is found by their Google id. Otherwise an account with the same verified email is linked. Because email sign-ups here are never verified, linking removes that account's password, so from then on it signs in with Google only. A brand-new Google user gets a password-less student account and goes through onboarding. The flow uses PKCE, `state` and `nonce`, and checks the ID token against Google's keys (`src/lib/google.ts`).
+
 ## Payments (Paystack)
 
 - Set `PAYSTACK_SECRET_KEY`, and set the webhook URL in the Paystack dashboard to `https://<your-domain>/api/paystack/webhook`.

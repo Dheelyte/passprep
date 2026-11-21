@@ -30,7 +30,7 @@ async function Progress() {
   const subjects = await mySubjects(user.id);
   const all = await Promise.all(subjects.map(async (s) => ({ s, topics: await subjectProgress(user.id, s.id) })));
   if (all.length === 0) {
-    return <EmptyState title="No subjects picked" body="Choose your subjects and your progress shows up here." action={<ButtonLink href="/onboarding">Choose subjects</ButtonLink>} />;
+    return <EmptyState title="No subjects picked" body="Choose your subjects and your progress shows up here." action={<ButtonLink href="/onboarding?step=subjects">Choose subjects</ButtonLink>} />;
   }
   return (
     <div className="grid items-start gap-5 lg:grid-cols-2">

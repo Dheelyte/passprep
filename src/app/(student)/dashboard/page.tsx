@@ -143,7 +143,7 @@ async function Dashboard({ searchParams }: { searchParams: PageProps<"/dashboard
       <section aria-labelledby="subjects-h">
         <div className="mb-2 flex items-end justify-between">
           <h2 id="subjects-h" className="text-xl font-extrabold">Your subjects</h2>
-          <Link href="/onboarding" className="text-sm font-bold underline decoration-primary decoration-[3px] underline-offset-2">Edit</Link>
+          <Link href="/onboarding?step=subjects" className="text-sm font-bold underline decoration-primary decoration-[3px] underline-offset-2">Edit</Link>
         </div>
         {subjects.length === 0 ? (
           <EmptyState title="No subjects yet" body="Pick the subjects you're writing and we'll line up the topics." action={<ButtonLink href="/onboarding">Choose subjects</ButtonLink>} />
