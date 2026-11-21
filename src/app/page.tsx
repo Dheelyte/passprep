@@ -74,7 +74,7 @@ export default async function Home() {
               <Chip tone="sun">WAEC · NECO · JAMB</Chip>
             </p>
             <h1 className="text-[2.25rem] font-extrabold leading-[1.05] sm:text-5xl lg:text-6xl">
-              Stop the WAEC fear: 10 questions, every answer <Underline>explained</Underline> step by step.
+              WAEC, NECO &amp; JAMB practice with every answer <Underline>explained</Underline>
             </h1>
             <p className="mt-5 max-w-md text-lg font-semibold">
               Pick a topic from your syllabus and answer 10 questions. Every answer shows the working, so you learn the method, not just the letter. Stuck? Watch a teacher solve that exact question.
