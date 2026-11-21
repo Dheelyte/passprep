@@ -1,0 +1,5 @@
+subject,topic,subtopic,difficulty,question,option_a,option_b,option_c,option_d,option_e,correct,explanation,video_url,video_free
+Mathematics,Algebra,Linear equations,easy,Solve $2x + 3 = 11$.,3,4,7,8,,B,"1. Subtract 3 from both sides: $2x = 8$
+2. Divide both sides by 2: $x = 4$
+
+**Check:** $2(4) + 3 = 11$",,no

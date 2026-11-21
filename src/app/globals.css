@@ -1,26 +1,101 @@
 @import "tailwindcss";
 
+/* Design tokens. System fonts only: no font download on slow networks. */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --bg: #f6f7f4;
+  --surface: #ffffff;
+  --surface-2: #eef1ec;
+  --text: #15201a;
+  --muted: #5b6760;
+  --border: #dde3dc;
+  --brand: #0f7b4f;
+  --brand-strong: #0a5e3c;
+  --brand-soft: #e2f3ea;
+  --accent: #f2a516;
+  --accent-soft: #fff3da;
+  --ok: #138a4c;
+  --ok-soft: #e3f5ea;
+  --bad: #c2362b;
+  --bad-soft: #fbe7e5;
+  --focus: #1d6fe0;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --bg: #0e1411;
+    --surface: #161e19;
+    --surface-2: #1d2721;
+    --text: #e8eee9;
+    --muted: #9aa8a0;
+    --border: #2a362f;
+    --brand: #3cc184;
+    --brand-strong: #6fd7a5;
+    --brand-soft: #173326;
+    --accent: #f5b83d;
+    --accent-soft: #3a2e14;
+    --ok: #45c47e;
+    --ok-soft: #173322;
+    --bad: #f0796f;
+    --bad-soft: #3a1c1a;
+    --focus: #6aa6ff;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@theme inline {
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-text: var(--text);
+  --color-muted: var(--muted);
+  --color-border: var(--border);
+  --color-brand: var(--brand);
+  --color-brand-strong: var(--brand-strong);
+  --color-brand-soft: var(--brand-soft);
+  --color-accent: var(--accent);
+  --color-accent-soft: var(--accent-soft);
+  --color-ok: var(--ok);
+  --color-ok-soft: var(--ok-soft);
+  --color-bad: var(--bad);
+  --color-bad-soft: var(--bad-soft);
+  --font-sans: system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans", Arial, sans-serif;
 }
+
+html { -webkit-text-size-adjust: 100%; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-sans);
+}
+
+:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; border-radius: 6px; }
+
+/* Component utilities (Tailwind v4: @utility so they can be composed with @apply) */
+@utility card { @apply rounded-2xl border border-border bg-surface p-4; }
+@utility btn {
+  @apply inline-flex min-h-12 items-center justify-center gap-2 rounded-xl px-5 font-semibold transition-colors
+    disabled:cursor-not-allowed disabled:opacity-60;
+}
+@utility btn-primary { @apply btn bg-brand text-white hover:bg-brand-strong; }
+@utility btn-secondary { @apply btn border border-border bg-surface text-text hover:bg-surface-2; }
+@utility btn-accent { @apply btn bg-accent text-[#2b1d00] hover:brightness-95; }
+@utility btn-ghost { @apply btn text-brand hover:bg-brand-soft; }
+@utility input {
+  @apply block min-h-12 w-full rounded-xl border border-border bg-surface px-4 text-base text-text
+    placeholder:text-muted focus:border-brand;
+}
+@utility label { @apply mb-1 block text-sm font-medium; }
+@utility chip { @apply inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-semibold; }
+@utility muted { @apply text-muted; }
+@utility skeleton { @apply animate-pulse rounded-xl bg-surface-2; }
+
+/* Rendered markdown (questions & explanations) */
+.prose-q { line-height: 1.6; overflow-wrap: anywhere; }
+.prose-q p { margin: 0.5rem 0; }
+.prose-q p:first-child { margin-top: 0; }
+.prose-q ul, .prose-q ol { margin: 0.5rem 0; padding-left: 1.25rem; }
+.prose-q ul { list-style: disc; }
+.prose-q ol { list-style: decimal; }
+.prose-q strong { font-weight: 700; }
+.prose-q code { font-size: 0.9em; background: var(--surface-2); padding: 0 0.25rem; border-radius: 4px; }
+.prose-q .math-block { overflow-x: auto; overflow-y: hidden; padding: 0.25rem 0; }
+.prose-q .katex { font-size: 1.08em; }

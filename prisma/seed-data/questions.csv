@@ -1,0 +1,242 @@
+subject,topic,subtopic,difficulty,question,option_a,option_b,option_c,option_d,option_e,correct,explanation,video_url,video_free
+Mathematics,Number and Numeration,Number bases,easy,Convert $101101_2$ to base ten.,43,45,47,44,,B,"Write each digit with its place value (powers of 2), starting from the right:
+
+$1\times2^5 + 0\times2^4 + 1\times2^3 + 1\times2^2 + 0\times2^1 + 1\times2^0$
+
+$= 32 + 0 + 8 + 4 + 0 + 1 = 45$
+
+**Answer: 45**",https://youtu.be/PLACEHOLD01,yes
+Mathematics,Number and Numeration,Number bases,easy,Express $25_{10}$ in base two.,$10011_2$,$11001_2$,$11010_2$,$10101_2$,,B,"Divide by 2 repeatedly and record the remainders:
+
+- $25 \div 2 = 12$ r $1$
+- $12 \div 2 = 6$ r $0$
+- $6 \div 2 = 3$ r $0$
+- $3 \div 2 = 1$ r $1$
+- $1 \div 2 = 0$ r $1$
+
+Read the remainders from bottom to top: $11001_2$.
+
+**Check:** $16 + 8 + 1 = 25$ ✓",,
+Mathematics,Number and Numeration,Number bases,medium,Evaluate $213_4 + 132_4$ and give your answer in base four.,$1011_4$,$345_4$,$1101_4$,$1001_4$,,A,"**Method: convert to base ten, add, convert back.**
+
+$213_4 = 2\times16 + 1\times4 + 3 = 39$
+
+$132_4 = 1\times16 + 3\times4 + 2 = 30$
+
+$39 + 30 = 69$
+
+Now convert 69 to base four: $69 = 1\times64 + 0\times16 + 1\times4 + 1$, so $69 = 1011_4$.
+
+**Answer: $1011_4$**
+
+Tip: option B ($345_4$) is a trap — the digit 5 cannot appear in base four.",https://youtu.be/PLACEHOLD02,
+Mathematics,Number and Numeration,Indices,easy,Simplify $\dfrac{2^5 \times 2^3}{2^4}$.,8,16,32,4,,B,"Use the laws of indices:
+
+1. Multiplying: add the powers. $2^5 \times 2^3 = 2^{5+3} = 2^8$
+2. Dividing: subtract the powers. $2^8 \div 2^4 = 2^{8-4} = 2^4$
+3. $2^4 = 16$
+
+**Answer: 16**",,
+Mathematics,Number and Numeration,Indices,easy,Solve for $x$: $3^{x+1} = 81$.,2,3,4,27,,B,"Write 81 as a power of 3: $81 = 3^4$.
+
+So $3^{x+1} = 3^4$. When the bases are equal, the powers are equal:
+
+$x + 1 = 4 \Rightarrow x = 3$
+
+**Answer: $x = 3$**",,
+Mathematics,Number and Numeration,Indices,medium,Evaluate $27^{-\frac{2}{3}}$.,$\frac{1}{9}$,9,$-9$,$\frac{1}{3}$,,A,"Deal with each part of the power in turn:
+
+1. **Negative power** means reciprocal: $27^{-\frac{2}{3}} = \dfrac{1}{27^{\frac{2}{3}}}$
+2. **Denominator 3** means cube root: $\sqrt[3]{27} = 3$
+3. **Numerator 2** means square: $3^2 = 9$
+
+So $27^{-\frac{2}{3}} = \dfrac{1}{9}$.
+
+A negative power never makes the answer negative — it flips it.",,
+Mathematics,Number and Numeration,Logarithms,easy,Evaluate $\log_2 32$.,4,5,6,16,,B,"$\log_2 32$ asks: *2 to what power gives 32?*
+
+$2^5 = 32$, so $\log_2 32 = 5$.
+
+**Answer: 5**",,
+Mathematics,Number and Numeration,Logarithms,medium,Simplify $\log_{10} 8 + \log_{10} 125$.,2,3,133,$\log_{10} 133$,,B,"Use the product law: $\log a + \log b = \log(ab)$.
+
+$\log_{10} 8 + \log_{10} 125 = \log_{10}(8 \times 125) = \log_{10} 1000$
+
+$1000 = 10^3$, so $\log_{10} 1000 = 3$.
+
+**Answer: 3**",https://youtu.be/PLACEHOLD03,
+Mathematics,Number and Numeration,Logarithms,medium,Solve $\log_3 (x - 1) = 2$.,7,9,10,8,,C,"Change from log form to index form: if $\log_b N = k$ then $N = b^k$.
+
+$x - 1 = 3^2 = 9$
+
+$x = 10$
+
+**Check:** $\log_3 (10 - 1) = \log_3 9 = 2$ ✓",,
+Mathematics,Number and Numeration,Surds,medium,Simplify $\sqrt{50} + \sqrt{18}$.,$8\sqrt{2}$,$\sqrt{68}$,$2\sqrt{17}$,$15\sqrt{2}$,,A,"Split each number into a perfect square times 2:
+
+$\sqrt{50} = \sqrt{25 \times 2} = 5\sqrt{2}$
+
+$\sqrt{18} = \sqrt{9 \times 2} = 3\sqrt{2}$
+
+Now add like surds: $5\sqrt{2} + 3\sqrt{2} = 8\sqrt{2}$.
+
+Common mistake: $\sqrt{50} + \sqrt{18} \neq \sqrt{68}$. You cannot add numbers under different root signs.",,
+Mathematics,Number and Numeration,Surds,easy,Rationalise $\dfrac{1}{\sqrt{3}}$.,$\sqrt{3}$,$\dfrac{\sqrt{3}}{3}$,$\dfrac{3}{\sqrt{3}}$,$3\sqrt{3}$,,B,"Multiply the top and bottom by $\sqrt{3}$:
+
+$\dfrac{1}{\sqrt{3}} \times \dfrac{\sqrt{3}}{\sqrt{3}} = \dfrac{\sqrt{3}}{3}$
+
+The denominator is now a whole number, so the fraction is rationalised.",,
+Mathematics,Algebra,Linear equations,easy,Solve $2x + 3 = 11$.,3,4,7,8,,B,"1. Subtract 3 from both sides: $2x = 8$
+2. Divide both sides by 2: $x = 4$
+
+**Check:** $2(4) + 3 = 11$ ✓",https://youtu.be/PLACEHOLD04,yes
+Mathematics,Algebra,Linear equations,easy,Solve $\dfrac{x}{3} - 2 = 5$.,9,21,7,15,,B,"1. Add 2 to both sides: $\dfrac{x}{3} = 7$
+2. Multiply both sides by 3: $x = 21$
+
+**Check:** $21 \div 3 - 2 = 7 - 2 = 5$ ✓",,
+Mathematics,Algebra,Linear equations,medium,Solve $5(x - 2) = 3x + 4$.,3,7,$-3$,$\dfrac{7}{4}$,,B,"1. Expand the bracket: $5x - 10 = 3x + 4$
+2. Collect $x$ terms on the left: $5x - 3x = 4 + 10$
+3. Simplify: $2x = 14$
+4. Divide by 2: $x = 7$
+
+**Check:** $5(7 - 2) = 25$ and $3(7) + 4 = 25$ ✓",,
+Mathematics,Algebra,Simultaneous equations,easy,"Solve: $x + y = 10$ and $x - y = 4$.","$x = 7, y = 3$","$x = 3, y = 7$","$x = 6, y = 4$","$x = 5, y = 5$",,A,"**Elimination:** add the two equations to remove $y$.
+
+$(x + y) + (x - y) = 10 + 4 \Rightarrow 2x = 14 \Rightarrow x = 7$
+
+Substitute into $x + y = 10$: $7 + y = 10 \Rightarrow y = 3$
+
+**Check:** $7 - 3 = 4$ ✓",,
+Mathematics,Algebra,Simultaneous equations,medium,"Solve: $2x + 3y = 12$ and $x - y = 1$.","$x = 3, y = 2$","$x = 2, y = 3$","$x = 4, y = 3$","$x = 1, y = 0$",,A,"**Substitution:** from the second equation, $x = y + 1$.
+
+Put this into the first equation:
+
+$2(y + 1) + 3y = 12$
+
+$2y + 2 + 3y = 12$
+
+$5y = 10 \Rightarrow y = 2$
+
+Then $x = 2 + 1 = 3$.
+
+**Check:** $2(3) + 3(2) = 12$ ✓",,
+Mathematics,Algebra,Quadratic equations,easy,Find the roots of $x^2 - 5x + 6 = 0$.,"$2$ and $3$","$-2$ and $-3$","$1$ and $6$","$-1$ and $-6$",,A,"**Factorise:** find two numbers that multiply to $+6$ and add to $-5$. They are $-2$ and $-3$.
+
+$x^2 - 5x + 6 = (x - 2)(x - 3) = 0$
+
+So $x - 2 = 0$ or $x - 3 = 0$, giving $x = 2$ or $x = 3$.",,
+Mathematics,Algebra,Quadratic equations,medium,Find the sum of the roots of $2x^2 - 7x + 3 = 0$.,$\dfrac{7}{2}$,$-\dfrac{7}{2}$,$\dfrac{3}{2}$,7,,A,"For $ax^2 + bx + c = 0$, the sum of the roots is $-\dfrac{b}{a}$.
+
+Here $a = 2$, $b = -7$, $c = 3$.
+
+Sum of roots $= -\dfrac{-7}{2} = \dfrac{7}{2}$
+
+**Check by factorising:** $(2x - 1)(x - 3) = 0$ gives roots $\tfrac{1}{2}$ and $3$, and $\tfrac{1}{2} + 3 = \tfrac{7}{2}$ ✓",https://youtu.be/PLACEHOLD05,
+Mathematics,Algebra,Quadratic equations,medium,Solve $x^2 + 4x - 5 = 0$.,"$x = 1$ or $x = -5$","$x = -1$ or $x = 5$","$x = 1$ or $x = 5$","$x = -1$ or $x = -5$",,A,"Find two numbers that multiply to $-5$ and add to $+4$: they are $+5$ and $-1$.
+
+$(x + 5)(x - 1) = 0$
+
+$x = -5$ or $x = 1$",,
+Mathematics,Algebra,Quadratic equations,hard,Which statement describes the roots of $3x^2 + 2x + 5 = 0$?,Two distinct real roots,Two equal real roots,No real roots,One positive and one negative root,,C,"Use the **discriminant** $b^2 - 4ac$:
+
+$a = 3$, $b = 2$, $c = 5$
+
+$b^2 - 4ac = 2^2 - 4(3)(5) = 4 - 60 = -56$
+
+- If $b^2 - 4ac > 0$: two distinct real roots
+- If $b^2 - 4ac = 0$: two equal roots
+- If $b^2 - 4ac < 0$: **no real roots**
+
+Since $-56 < 0$, the equation has no real roots.",,
+Mathematics,Algebra,Variation,easy,"$y$ varies directly as $x$. If $y = 12$ when $x = 3$, find $y$ when $x = 5$.",15,20,18,36,,B,"Direct variation: $y = kx$.
+
+1. Find $k$: $12 = k \times 3 \Rightarrow k = 4$
+2. The law is $y = 4x$
+3. When $x = 5$: $y = 4 \times 5 = 20$",,
+Mathematics,Algebra,Variation,medium,"$y$ varies inversely as the square of $x$. If $y = 4$ when $x = 3$, find $y$ when $x = 6$.",2,1,8,$\dfrac{1}{2}$,,B,"Inverse variation with the square: $y = \dfrac{k}{x^2}$.
+
+1. Find $k$: $4 = \dfrac{k}{3^2} \Rightarrow k = 36$
+2. The law is $y = \dfrac{36}{x^2}$
+3. When $x = 6$: $y = \dfrac{36}{36} = 1$
+
+Notice: doubling $x$ divided $y$ by $2^2 = 4$.",,
+Mathematics,Sets and Venn Diagrams,,easy,"If $n(A) = 12$, $n(B) = 9$ and $n(A \cap B) = 4$, find $n(A \cup B)$.",21,17,25,13,,B,"Use $n(A \cup B) = n(A) + n(B) - n(A \cap B)$.
+
+$n(A \cup B) = 12 + 9 - 4 = 17$
+
+We subtract $n(A \cap B)$ because those 4 elements were counted twice — once in $A$ and once in $B$.",,
+Mathematics,Sets and Venn Diagrams,,medium,"In a class of 40 students, 25 offer Physics, 20 offer Chemistry and 8 offer neither. How many offer both subjects?",5,13,12,17,,B,"1. Students who offer at least one subject: $40 - 8 = 32$
+2. Use $n(P \cup C) = n(P) + n(C) - n(P \cap C)$:
+
+$32 = 25 + 20 - x$
+
+$32 = 45 - x \Rightarrow x = 13$
+
+**13 students offer both.**",https://youtu.be/PLACEHOLD06,
+Mathematics,Mensuration,,easy,Find the area of a circle of radius 7 cm. (Take $\pi = \frac{22}{7}$),$44\text{ cm}^2$,$154\text{ cm}^2$,$308\text{ cm}^2$,$22\text{ cm}^2$,,B,"Area of a circle $= \pi r^2$
+
+$= \dfrac{22}{7} \times 7 \times 7 = 22 \times 7 = 154\text{ cm}^2$
+
+Option A ($44$ cm) is the circumference $2\pi r$, not the area.",,
+Mathematics,Trigonometry,,medium,"If $\sin\theta = \dfrac{3}{5}$ and $\theta$ is acute, find $\tan\theta$.",$\dfrac{4}{5}$,$\dfrac{3}{4}$,$\dfrac{4}{3}$,$\dfrac{5}{3}$,,B,"Draw a right-angled triangle. $\sin\theta = \dfrac{\text{opposite}}{\text{hypotenuse}} = \dfrac{3}{5}$.
+
+Find the adjacent side with Pythagoras:
+
+$\text{adjacent} = \sqrt{5^2 - 3^2} = \sqrt{16} = 4$
+
+$\tan\theta = \dfrac{\text{opposite}}{\text{adjacent}} = \dfrac{3}{4}$",,
+Mathematics,Statistics,,easy,"Find the mean of 4, 6, 8, 10 and 12.",6,8,10,40,,B,"Mean $= \dfrac{\text{sum of values}}{\text{number of values}}$
+
+Sum $= 4 + 6 + 8 + 10 + 12 = 40$
+
+Mean $= \dfrac{40}{5} = 8$",,
+Mathematics,Statistics,,medium,"Find the median of 3, 7, 2, 9, 5, 8.",5,6,7,5.5,,B,"1. Arrange in order: 2, 3, 5, 7, 8, 9
+2. There are 6 values (even), so the median is the average of the two middle values (3rd and 4th):
+
+Median $= \dfrac{5 + 7}{2} = 6$",,
+Mathematics,Probability,,easy,A fair die is thrown once. What is the probability of getting a number greater than 4?,$\dfrac{1}{6}$,$\dfrac{1}{3}$,$\dfrac{1}{2}$,$\dfrac{2}{3}$,,B,"Numbers greater than 4 on a die: 5 and 6 — that is **2** outcomes.
+
+Total outcomes: 6
+
+$P = \dfrac{2}{6} = \dfrac{1}{3}$",,
+Mathematics,Probability,,hard,"A bag contains 5 red and 3 blue balls. Two balls are picked one after the other **without replacement**. Find the probability that both are red.",$\dfrac{25}{64}$,$\dfrac{5}{14}$,$\dfrac{5}{8}$,$\dfrac{10}{28}$,,B,"Without replacement, the second pick has one ball fewer.
+
+- $P(\text{1st red}) = \dfrac{5}{8}$
+- $P(\text{2nd red} \mid \text{1st red}) = \dfrac{4}{7}$ (4 red left out of 7)
+
+$P(\text{both red}) = \dfrac{5}{8} \times \dfrac{4}{7} = \dfrac{20}{56} = \dfrac{5}{14}$
+
+Option A ($\frac{25}{64}$) is the answer **with** replacement. Option D is correct but not in its lowest terms — always simplify.",,
+Physics,Motion,Speed and velocity,easy,Which of these quantities is a vector?,Speed,Distance,Velocity,Time,,C,"A **vector** has both magnitude (size) and direction. A **scalar** has magnitude only.
+
+- Speed, distance and time are scalars.
+- **Velocity** is speed in a stated direction, so it is a vector.",,
+Physics,Motion,Speed and velocity,medium,A car travels 180 km in 3 hours. What is its average speed in m/s?,16.7 m/s,60 m/s,30 m/s,50 m/s,,A,"1. Average speed $= \dfrac{\text{distance}}{\text{time}} = \dfrac{180\text{ km}}{3\text{ h}} = 60\text{ km/h}$
+2. Convert to m/s: $60\text{ km/h} = \dfrac{60 \times 1000\text{ m}}{3600\text{ s}} = 16.7\text{ m/s}$
+
+Quick rule: to change km/h to m/s, divide by 3.6.",https://youtu.be/PLACEHOLD07,yes
+Physics,Motion,Equations of motion,easy,A car starts from rest and accelerates uniformly at $2\text{ m/s}^2$ for 5 s. Find its final velocity.,2.5 m/s,7 m/s,10 m/s,25 m/s,,C,"Use $v = u + at$.
+
+- $u = 0$ (starts from rest)
+- $a = 2\text{ m/s}^2$, $t = 5\text{ s}$
+
+$v = 0 + 2 \times 5 = 10\text{ m/s}$",,
+Physics,Motion,Equations of motion,medium,A body starts from rest and accelerates at $4\text{ m/s}^2$ for 3 s. How far does it travel?,12 m,18 m,36 m,6 m,,B,"Use $s = ut + \tfrac{1}{2}at^2$.
+
+- $u = 0$, $a = 4\text{ m/s}^2$, $t = 3\text{ s}$
+
+$s = 0 + \tfrac{1}{2} \times 4 \times 3^2 = 2 \times 9 = 18\text{ m}$",,
+Physics,Motion,Equations of motion,medium,A ball is thrown vertically upwards at 20 m/s. Find the maximum height reached. (Take $g = 10\text{ m/s}^2$),40 m,20 m,10 m,2 m,,B,"At the maximum height, the ball stops for an instant, so $v = 0$.
+
+Use $v^2 = u^2 - 2gh$:
+
+$0 = 20^2 - 2 \times 10 \times h$
+
+$20h = 400 \Rightarrow h = 20\text{ m}$",https://youtu.be/PLACEHOLD08,
+Physics,Motion,Equations of motion,hard,A car moving at 30 m/s brakes uniformly and stops in a distance of 75 m. Find the deceleration.,$12\text{ m/s}^2$,$6\text{ m/s}^2$,$0.4\text{ m/s}^2$,$2.5\text{ m/s}^2$,,B,"Use $v^2 = u^2 + 2as$ with $v = 0$, $u = 30$, $s = 75$:
+
+$0 = 30^2 + 2a(75)$
+
+$0 = 900 + 150a \Rightarrow a = -6\text{ m/s}^2$
+
+The negative sign shows slowing down, so the **deceleration is $6\text{ m/s}^2$**.",,

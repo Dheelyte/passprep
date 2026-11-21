@@ -1,0 +1,362 @@
+// Exam practice app — PostgreSQL schema.
+// Conventions: cuid ids, camelCase in Prisma mapped to snake_case tables/columns,
+// all calendar dates are Africa/Lagos dates stored as DATE.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  STUDENT
+  TEACHER
+  ADMIN
+}
+
+enum ClassLevel {
+  JSS3
+  SS1
+  SS2
+  SS3
+}
+
+enum Exam {
+  WAEC
+  NECO
+  JAMB
+}
+
+enum Difficulty {
+  EASY
+  MEDIUM
+  HARD
+}
+
+enum QuestionStatus {
+  DRAFT
+  IN_REVIEW
+  PUBLISHED
+  REJECTED
+}
+
+enum PlanCode {
+  MONTHLY
+  TERMLY
+  YEARLY
+  EXAM_PASS
+}
+
+enum BillingMode {
+  AUTO_RENEW // card, Paystack subscription
+  FIXED_PERIOD // bank transfer / USSD / one-off card
+}
+
+enum SubscriptionStatus {
+  ACTIVE
+  NON_RENEWING // cancelled, still valid until period end
+  PAST_DUE
+  EXPIRED
+}
+
+enum PaymentStatus {
+  PENDING
+  SUCCESS
+  FAILED
+  ABANDONED
+}
+
+enum FlagStatus {
+  OPEN
+  RESOLVED
+  DISMISSED
+}
+
+model User {
+  id             String      @id @default(cuid())
+  email          String?     @unique
+  phone          String?     @unique // normalised E.164, e.g. +2348012345678
+  passwordHash   String      @map("password_hash")
+  name           String
+  role           Role        @default(STUDENT)
+  classLevel     ClassLevel? @map("class_level")
+  exams          Exam[]
+  onboarded      Boolean     @default(false)
+  currentStreak  Int         @default(0) @map("current_streak")
+  longestStreak  Int         @default(0) @map("longest_streak")
+  lastActiveDate DateTime?   @map("last_active_date") @db.Date
+  totalPoints    Int         @default(0) @map("total_points")
+  signupSource   String?     @map("signup_source")
+  createdAt      DateTime    @default(now()) @map("created_at")
+  updatedAt      DateTime    @updatedAt @map("updated_at")
+
+  subjects          UserSubject[]
+  attempts          Attempt[]
+  sessions          PracticeSession[]
+  weeklyScores      WeeklyScore[]
+  subscription      Subscription?
+  payments          Payment[]
+  payLinks          PayLink[]
+  flags             Flag[]
+  authoredQuestions Question[]        @relation("QuestionAuthor")
+  reviewedQuestions Question[]        @relation("QuestionReviewer")
+  importBatches     ImportBatch[]
+  events            Event[]
+
+  @@map("users")
+}
+
+model Subject {
+  id        String   @id @default(cuid())
+  slug      String   @unique
+  name      String
+  order     Int      @default(0)
+  isActive  Boolean  @default(true) @map("is_active")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  topics Topic[]
+  users  UserSubject[]
+
+  @@map("subjects")
+}
+
+model UserSubject {
+  userId    String @map("user_id")
+  subjectId String @map("subject_id")
+
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  subject Subject @relation(fields: [subjectId], references: [id], onDelete: Cascade)
+
+  @@id([userId, subjectId])
+  @@index([subjectId])
+  @@map("user_subjects")
+}
+
+/// Topics follow the syllabus. parentId = null → topic; otherwise a subtopic.
+model Topic {
+  id           String       @id @default(cuid())
+  subjectId    String       @map("subject_id")
+  parentId     String?      @map("parent_id")
+  slug         String
+  name         String
+  order        Int          @default(0)
+  classLevels  ClassLevel[] @map("class_levels")
+  exams        Exam[]
+  syllabusRef  String?      @map("syllabus_ref")
+  createdAt    DateTime     @default(now()) @map("created_at")
+
+  subject   Subject           @relation(fields: [subjectId], references: [id], onDelete: Cascade)
+  parent    Topic?            @relation("TopicTree", fields: [parentId], references: [id], onDelete: Cascade)
+  children  Topic[]           @relation("TopicTree")
+  questions Question[]
+  sessions  PracticeSession[]
+
+  @@unique([subjectId, slug])
+  @@index([subjectId, parentId, order])
+  @@map("topics")
+}
+
+model Question {
+  id            String         @id @default(cuid())
+  topicId       String         @map("topic_id")
+  stem          String // markdown + KaTeX ($...$)
+  options       String[] // 2–5 options, markdown
+  correctIndex  Int            @map("correct_index") // 0-based into options
+  explanation   String // markdown, required before publishing
+  difficulty    Difficulty     @default(MEDIUM)
+  videoUrl      String?        @map("video_url") // YouTube
+  videoFree     Boolean        @default(false) @map("video_free") // sample video for free users
+  status        QuestionStatus @default(DRAFT)
+  reviewNote    String?        @map("review_note")
+  stemHash      String         @map("stem_hash") // for duplicate detection
+  authorId      String?        @map("author_id")
+  reviewerId    String?        @map("reviewer_id")
+  importBatchId String?        @map("import_batch_id")
+  publishedAt   DateTime?      @map("published_at")
+  createdAt     DateTime       @default(now()) @map("created_at")
+  updatedAt     DateTime       @updatedAt @map("updated_at")
+
+  topic       Topic        @relation(fields: [topicId], references: [id], onDelete: Restrict)
+  author      User?        @relation("QuestionAuthor", fields: [authorId], references: [id], onDelete: SetNull)
+  reviewer    User?        @relation("QuestionReviewer", fields: [reviewerId], references: [id], onDelete: SetNull)
+  importBatch ImportBatch? @relation(fields: [importBatchId], references: [id], onDelete: SetNull)
+  attempts    Attempt[]
+  flags       Flag[]
+
+  @@unique([topicId, stemHash])
+  @@index([topicId, status])
+  @@index([status, createdAt])
+  @@map("questions")
+}
+
+model PracticeSession {
+  id         String    @id @default(cuid())
+  userId     String    @map("user_id")
+  topicId    String    @map("topic_id")
+  questionIds String[] @map("question_ids") // fixed order for the set
+  startedAt  DateTime  @default(now()) @map("started_at")
+  finishedAt DateTime? @map("finished_at")
+  correct    Int       @default(0)
+  answered   Int       @default(0)
+
+  user     User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  topic    Topic     @relation(fields: [topicId], references: [id], onDelete: Cascade)
+  attempts Attempt[]
+
+  @@index([userId, startedAt])
+  @@map("practice_sessions")
+}
+
+model Attempt {
+  id            String   @id @default(cuid())
+  userId        String   @map("user_id")
+  questionId    String   @map("question_id")
+  sessionId     String?  @map("session_id")
+  selectedIndex Int      @map("selected_index")
+  isCorrect     Boolean  @map("is_correct")
+  timeMs        Int?     @map("time_ms")
+  pointsAwarded Int      @default(0) @map("points_awarded")
+  lagosDate     DateTime @map("lagos_date") @db.Date
+  createdAt     DateTime @default(now()) @map("created_at")
+
+  user     User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  question Question         @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  session  PracticeSession? @relation(fields: [sessionId], references: [id], onDelete: SetNull)
+
+  @@unique([sessionId, questionId]) // one answer per question per set
+  @@index([userId, lagosDate]) // free daily limit, streaks
+  @@index([userId, questionId, createdAt]) // progress, "already solved"
+  @@index([questionId, isCorrect]) // most-missed report
+  @@map("attempts")
+}
+
+/// One row per student per Lagos week (weekStart = Monday). Reset is implicit.
+model WeeklyScore {
+  userId    String   @map("user_id")
+  weekStart DateTime @map("week_start") @db.Date
+  points    Int      @default(0)
+  answered  Int      @default(0)
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([userId, weekStart])
+  @@index([weekStart, points(sort: Desc)])
+  @@map("weekly_scores")
+}
+
+model PlanPrice {
+  code         PlanCode @id
+  name         String
+  amountKobo   Int      @map("amount_kobo")
+  periodDays   Int      @map("period_days")
+  paystackPlan String?  @map("paystack_plan") // PLN_xxx for card auto-renew; null = one-off only
+  isActive     Boolean  @default(true) @map("is_active")
+
+  @@map("plan_prices")
+}
+
+model Subscription {
+  id                       String             @id @default(cuid())
+  userId                   String             @unique @map("user_id")
+  plan                     PlanCode
+  mode                     BillingMode
+  status                   SubscriptionStatus
+  currentPeriodEnd         DateTime           @map("current_period_end")
+  paystackCustomerCode     String?            @map("paystack_customer_code")
+  paystackSubscriptionCode String?            @unique @map("paystack_subscription_code")
+  paystackEmailToken       String?            @map("paystack_email_token")
+  createdAt                DateTime           @default(now()) @map("created_at")
+  updatedAt                DateTime           @updatedAt @map("updated_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([currentPeriodEnd])
+  @@map("subscriptions")
+}
+
+model Payment {
+  id          String        @id @default(cuid())
+  reference   String        @unique
+  userId      String        @map("user_id")
+  plan        PlanCode
+  mode        BillingMode
+  amountKobo  Int           @map("amount_kobo")
+  payerEmail  String        @map("payer_email")
+  channel     String?
+  status      PaymentStatus @default(PENDING)
+  payLinkId   String?       @map("pay_link_id")
+  paidAt      DateTime?     @map("paid_at")
+  raw         Json?
+  createdAt   DateTime      @default(now()) @map("created_at")
+
+  user    User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  payLink PayLink? @relation(fields: [payLinkId], references: [id], onDelete: SetNull)
+
+  @@index([userId, createdAt])
+  @@map("payments")
+}
+
+/// Shareable link a student sends to a parent so they can pay without an account.
+model PayLink {
+  id        String   @id @default(cuid())
+  token     String   @unique
+  studentId String   @map("student_id")
+  expiresAt DateTime @map("expires_at")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  student  User      @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  payments Payment[]
+
+  @@index([studentId])
+  @@map("pay_links")
+}
+
+model Flag {
+  id         String     @id @default(cuid())
+  userId     String     @map("user_id")
+  questionId String     @map("question_id")
+  reason     String
+  status     FlagStatus @default(OPEN)
+  createdAt  DateTime   @default(now()) @map("created_at")
+
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  question Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
+
+  @@index([status, createdAt])
+  @@index([questionId])
+  @@map("flags")
+}
+
+model ImportBatch {
+  id         String   @id @default(cuid())
+  uploaderId String   @map("uploader_id")
+  filename   String
+  kind       String // "questions" | "syllabus"
+  rowCount   Int      @map("row_count")
+  created    Int      @default(0)
+  createdAt  DateTime @default(now()) @map("created_at")
+
+  uploader  User       @relation(fields: [uploaderId], references: [id], onDelete: Cascade)
+  questions Question[]
+
+  @@map("import_batches")
+}
+
+/// Product analytics events (signups, answers, video opens, paywall, upgrades).
+model Event {
+  id        String   @id @default(cuid())
+  userId    String?  @map("user_id")
+  type      String
+  props     Json?
+  createdAt DateTime @default(now()) @map("created_at")
+
+  user User? @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([type, createdAt])
+  @@index([userId, createdAt])
+  @@map("events")
+}
