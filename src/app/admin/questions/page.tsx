@@ -3,14 +3,14 @@ import { Suspense } from "react";
 import type { Prisma, QuestionStatus } from "@prisma/client";
 import { db } from "@/lib/db";
 import { requireRole } from "@/lib/auth";
-import { PageHeader, SkeletonList } from "@/components/ui";
+import { PageHeader, SkeletonList } from "@/components/admin-ui";
 
 const STATUSES: QuestionStatus[] = ["PUBLISHED", "IN_REVIEW", "REJECTED", "DRAFT"];
 const tone: Record<QuestionStatus, string> = {
   PUBLISHED: "bg-ok-soft text-ok",
-  IN_REVIEW: "bg-accent-soft",
-  REJECTED: "bg-bad-soft text-bad",
-  DRAFT: "bg-surface-2 text-muted",
+  IN_REVIEW: "bg-lime-soft",
+  REJECTED: "bg-danger-soft text-danger",
+  DRAFT: "bg-paper-2 text-ink-2",
 };
 
 export default function QuestionsPage({ searchParams }: PageProps<"/admin/questions">) {
@@ -86,15 +86,15 @@ async function List({ searchParams }: { searchParams: PageProps<"/admin/question
       </form>
       <div className="card overflow-x-auto p-0">
         <table className="w-full min-w-[640px] text-sm">
-          <thead className="bg-surface-2 text-left">
+          <thead className="bg-paper-2 text-left">
             <tr><th className="px-3 py-2">Question</th><th>Topic</th><th>Status</th><th>Answered</th><th>% wrong</th><th>Flags</th></tr>
           </thead>
           <tbody>
             {list.map((x) => {
               const s = stats.get(x.id);
               return (
-                <tr key={x.id} className="border-t border-border">
-                  <td className="max-w-md px-3 py-2"><Link className="line-clamp-2 text-brand hover:underline" href={`/admin/questions/${x.id}`}>{x.stem}</Link></td>
+                <tr key={x.id} className="border-t border-rule">
+                  <td className="max-w-md px-3 py-2"><Link className="line-clamp-2 text-info hover:underline" href={`/admin/questions/${x.id}`}>{x.stem}</Link></td>
                   <td>{x.topic.name}</td>
                   <td><span className={`chip ${tone[x.status]}`}>{x.status.replace("_", " ").toLowerCase()}</span></td>
                   <td>{x._count.attempts}</td>

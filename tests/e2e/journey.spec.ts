@@ -8,18 +8,18 @@ const password = "secret123";
 
 async function startTopic(page: Page, topic: string) {
   await page.goto("/subjects/mathematics");
-  const row = page.locator("li", { has: page.getByText(topic, { exact: true }) }).last();
-  await row.getByRole("button", { name: /^Practise/ }).click();
+  // subtopics are pill buttons labelled "Practise <name>"
+  await page.getByRole("button", { name: `Practise ${topic}` }).click();
   await page.waitForURL(/\/practice\//);
 }
 
 /** Answer the current question (first option); returns whether a video was locked/open/none. */
 async function answerCurrent(page: Page) {
-  await page.locator("article ul button").first().click();
-  await expect(page.getByText("Step-by-step")).toBeVisible();
-  if (await page.getByText("Video solution available").isVisible()) return "locked";
-  if (await page.getByRole("button", { name: /Watch solution/ }).isVisible()) return "open";
-  return "none";
+  await page.getByRole("button", { name: /^Option A/ }).click();
+  await expect(page.getByRole("heading", { name: "Workings" })).toBeVisible();
+  const video = page.getByRole("button", { name: /Watch the solution/ });
+  if (!(await video.isVisible())) return "none";
+  return (await video.innerText()).includes("Premium") ? "locked" : "open";
 }
 
 test.describe.serial("student journey", () => {
@@ -35,13 +35,16 @@ test.describe.serial("student journey", () => {
 
     await page.waitForURL(/\/onboarding/);
     await page.getByText("SS 2", { exact: true }).click();
+    await page.getByRole("button", { name: "Next" }).click();
     await page.getByText("WAEC", { exact: true }).click();
+    await page.getByRole("button", { name: "Next" }).click();
     await page.getByText("Mathematics", { exact: true }).click();
-    await page.getByRole("button", { name: "Start practising" }).click();
+    await page.getByRole("button", { name: "I'm ready" }).click();
 
-    await page.waitForURL(/\/dashboard/);
+    await page.waitForURL(/\/dashboard\?welcome=1/);
+    await expect(page.getByText("You're in")).toBeVisible();
     await expect(page.getByRole("heading", { name: "Hi Tobi" })).toBeVisible();
-    await expect(page.getByText("3 of 3 free questions left today")).toBeVisible();
+    await expect(page.getByText("3 free left today")).toBeVisible();
   });
 
   test("practises a topic, sees explanations, locked video, then hits the free limit", async ({ page }) => {
@@ -56,10 +59,10 @@ test.describe.serial("student journey", () => {
     await expect(page.getByText(/\+\d+ points/)).toBeVisible(); // summary
 
     await startTopic(page, "Indices");
-    await page.locator("article ul button").first().click();
-    await expect(page.getByRole("heading", { name: "You've used today's free questions" })).toBeVisible();
+    await page.getByRole("button", { name: /^Option A/ }).click();
+    await expect(page.getByRole("dialog", { name: "That's today's free questions" })).toBeVisible();
 
-    await page.getByRole("link", { name: "Ask a parent to pay" }).click();
+    await page.getByRole("dialog").getByRole("link", { name: "Ask a parent to pay" }).click();
     await page.getByRole("button", { name: "Create a payment link for my parent" }).click();
     payUrl = (await page.locator("p.break-all").innerText()).trim();
     expect(payUrl).toMatch(/\/pay\/[\w-]+$/);
@@ -78,7 +81,7 @@ test.describe.serial("student journey", () => {
   test("premium student practises without limit and can open videos", async ({ page }) => {
     await login(page);
     await page.goto("/dashboard");
-    await expect(page.getByText("Premium", { exact: true }).first()).toBeVisible();
+    await expect(page.getByText("Premium", { exact: true }).first()).toBeVisible(); // chip on today card
 
     await startTopic(page, "Logarithms");
     const seen: string[] = [];

@@ -7,7 +7,8 @@ export const metadata: Metadata = { title: "Log in" };
 export default function LoginPage({ searchParams }: PageProps<"/login">) {
   return (
     <>
-      <h1 className="mb-6 text-2xl font-bold">Welcome back</h1>
+      <h1 className="text-4xl font-extrabold">Welcome back</h1>
+      <p className="muted mb-6 mt-2">Your streak is waiting.</p>
       <Suspense fallback={<LoginForm />}>
         <LoginWithNext searchParams={searchParams} />
       </Suspense>

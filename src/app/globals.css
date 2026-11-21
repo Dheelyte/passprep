@@ -1,101 +1,382 @@
 @import "tailwindcss";
 
-/* Design tokens. System fonts only: no font download on slow networks. */
+/* ==========================================================================
+   Design tokens — "the study desk, turned into a game"
+   Light = warm exercise-book paper + ink. Dark = deep ink navy + chalk.
+   Contrast is checked by scripts/check-contrast.mts (WCAG AA).
+   ========================================================================== */
+
 :root {
-  --bg: #f6f7f4;
-  --surface: #ffffff;
-  --surface-2: #eef1ec;
-  --text: #15201a;
-  --muted: #5b6760;
-  --border: #dde3dc;
-  --brand: #0f7b4f;
-  --brand-strong: #0a5e3c;
-  --brand-soft: #e2f3ea;
-  --accent: #f2a516;
-  --accent-soft: #fff3da;
-  --ok: #138a4c;
-  --ok-soft: #e3f5ea;
-  --bad: #c2362b;
-  --bad-soft: #fbe7e5;
-  --focus: #1d6fe0;
+  color-scheme: light;
+  /* surfaces */
+  --paper: #fbf6ec;
+  --paper-2: #f2e9d6;
+  --card: #fffdf7;
+  --rule: #e5dac2; /* faint ruled / graph lines */
+  /* ink */
+  --ink: #1c1a16;
+  --ink-2: #555046; /* secondary text */
+  --line: #1c1a16; /* sticker borders */
+  --shadow-ink: #1c1a16;
+  /* signature accent: electric lime (always with ink text) */
+  --lime: #c8f53a;
+  --lime-2: #b2e01f;
+  --lime-soft: #eefbc6;
+  /* feedback */
+  --ok: #17713f;
+  --ok-soft: #d9f2e2;
+  --oops: #9a4416; /* calm clay, not alarm red */
+  --oops-soft: #fbe4d4;
+  --danger: #b3261e;
+  --danger-soft: #fbe0dd;
+  --info: #1f4fd1;
+  --info-soft: #dfe7fd;
+  --gold: #e8a317;
+  --focus: #1f4fd1;
+  /* subjects: fill (with ink text), soft background, text-safe shade */
+  --maths: #5b8cff; --maths-soft: #e1e9ff; --maths-ink: #1d47b8;
+  --physics: #ff8a3d; --physics-soft: #ffe7d6; --physics-ink: #a64400;
+  --chemistry: #22b8a6; --chemistry-soft: #d5f4ef; --chemistry-ink: #0b6f63;
+  --biology: #59b84a; --biology-soft: #e0f3dc; --biology-ink: #2f6b25;
+  --english: #d9659c; --english-soft: #fbe1ee; --english-ink: #9b2c60;
+  --general: #a99a7c; --general-soft: #efe8da; --general-ink: #5a4f3a;
+  /* contrast band (always dark) */
+  --band: #1c1a16; --band-ink: #f4efe3; --band-muted: #d9d3c4; --band-card: #2c2a25; --band-line: #8f8a7e;
 }
 
+/* Dark: deep ink navy with chalk-like outlines */
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --paper: #0e1524;
+  --paper-2: #151f33;
+  --card: #1a253b;
+  --rule: #223050;
+  --ink: #f4efe3;
+  --ink-2: #b8b2a4;
+  --line: #8f9ab3;
+  --shadow-ink: #04070e;
+  --lime: #c8f53a;
+  --lime-2: #d6ff57;
+  --lime-soft: #2a3512;
+  --ok: #5fd892;
+  --ok-soft: #12321f;
+  --oops: #ffb38a;
+  --oops-soft: #3a2316;
+  --danger: #ff8a80;
+  --danger-soft: #3d1b19;
+  --info: #8fb0ff;
+  --info-soft: #1b2950;
+  --gold: #ffc54d;
+  --focus: #8fb0ff;
+  --maths: #7aa2ff; --maths-soft: #1b2850; --maths-ink: #aac3ff;
+  --physics: #ff9a57; --physics-soft: #3b2414; --physics-ink: #ffbb8f;
+  --chemistry: #3fd1bf; --chemistry-soft: #113430; --chemistry-ink: #8de8dd;
+  --biology: #74cf64; --biology-soft: #18311a; --biology-ink: #a9e69d;
+  --english: #ef86b8; --english-soft: #3a1a2b; --english-ink: #f7b3d4;
+  --general: #c2b597; --general-soft: #2a2a2a; --general-ink: #ddd3bd;
+  --band: #060a13; --band-ink: #f4efe3; --band-muted: #d9d3c4; --band-card: #1a253b; --band-line: #8f9ab3;
+}
 @media (prefers-color-scheme: dark) {
-  :root {
-    --bg: #0e1411;
-    --surface: #161e19;
-    --surface-2: #1d2721;
-    --text: #e8eee9;
-    --muted: #9aa8a0;
-    --border: #2a362f;
-    --brand: #3cc184;
-    --brand-strong: #6fd7a5;
-    --brand-soft: #173326;
-    --accent: #f5b83d;
-    --accent-soft: #3a2e14;
-    --ok: #45c47e;
-    --ok-soft: #173322;
-    --bad: #f0796f;
-    --bad-soft: #3a1c1a;
-    --focus: #6aa6ff;
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --paper: #0e1524;
+    --paper-2: #151f33;
+    --card: #1a253b;
+    --rule: #223050;
+    --ink: #f4efe3;
+    --ink-2: #b8b2a4;
+    --line: #8f9ab3;
+    --shadow-ink: #04070e;
+    --lime: #c8f53a;
+    --lime-2: #d6ff57;
+    --lime-soft: #2a3512;
+    --ok: #5fd892;
+    --ok-soft: #12321f;
+    --oops: #ffb38a;
+    --oops-soft: #3a2316;
+    --danger: #ff8a80;
+    --danger-soft: #3d1b19;
+    --info: #8fb0ff;
+    --info-soft: #1b2950;
+    --gold: #ffc54d;
+    --focus: #8fb0ff;
+    --maths: #7aa2ff; --maths-soft: #1b2850; --maths-ink: #aac3ff;
+    --physics: #ff9a57; --physics-soft: #3b2414; --physics-ink: #ffbb8f;
+    --chemistry: #3fd1bf; --chemistry-soft: #113430; --chemistry-ink: #8de8dd;
+    --biology: #74cf64; --biology-soft: #18311a; --biology-ink: #a9e69d;
+    --english: #ef86b8; --english-soft: #3a1a2b; --english-ink: #f7b3d4;
+    --general: #c2b597; --general-soft: #2a2a2a; --general-ink: #ddd3bd;
+    --band: #060a13; --band-ink: #f4efe3; --band-muted: #d9d3c4; --band-card: #1a253b; --band-line: #8f9ab3;
   }
 }
 
+:root {
+  /* shape */
+  --r-sm: 6px;
+  --r-md: 10px;
+  --r-lg: 14px;
+  --r-xl: 20px;
+  --r-sticker: 14px 10px 16px 12px; /* slightly hand-cut */
+  --border: 2px;
+  --shadow-sticker: 3px 3px 0 var(--shadow-ink);
+  --shadow-sticker-sm: 2px 2px 0 var(--shadow-ink);
+  --shadow-sticker-lg: 5px 5px 0 var(--shadow-ink);
+  /* motion */
+  --dur-fast: 120ms;
+  --dur: 200ms;
+  --dur-slow: 320ms;
+  --dur-celebrate: 600ms;
+  --ease-out: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
 @theme inline {
-  --color-bg: var(--bg);
-  --color-surface: var(--surface);
-  --color-surface-2: var(--surface-2);
-  --color-text: var(--text);
-  --color-muted: var(--muted);
-  --color-border: var(--border);
-  --color-brand: var(--brand);
-  --color-brand-strong: var(--brand-strong);
-  --color-brand-soft: var(--brand-soft);
-  --color-accent: var(--accent);
-  --color-accent-soft: var(--accent-soft);
+  --color-paper: var(--paper);
+  --color-paper-2: var(--paper-2);
+  --color-card: var(--card);
+  --color-rule: var(--rule);
+  --color-ink: var(--ink);
+  --color-ink-2: var(--ink-2);
+  --color-line: var(--line);
+  --color-lime: var(--lime);
+  --color-lime-2: var(--lime-2);
+  --color-lime-soft: var(--lime-soft);
   --color-ok: var(--ok);
   --color-ok-soft: var(--ok-soft);
-  --color-bad: var(--bad);
-  --color-bad-soft: var(--bad-soft);
-  --font-sans: system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans", Arial, sans-serif;
+  --color-oops: var(--oops);
+  --color-oops-soft: var(--oops-soft);
+  --color-danger: var(--danger);
+  --color-danger-soft: var(--danger-soft);
+  --color-info: var(--info);
+  --color-info-soft: var(--info-soft);
+  --color-gold: var(--gold);
+  --color-on-fill: #1c1a16; /* ink text on bright fills (lime, gold, subject) in both themes */
+  --color-band: var(--band);
+  --color-band-ink: var(--band-ink);
+  --color-band-muted: var(--band-muted);
+  --color-band-card: var(--band-card);
+  --color-band-line: var(--band-line);
+  --color-subj: var(--subj, var(--general));
+  --color-subj-soft: var(--subj-soft, var(--general-soft));
+  --color-subj-ink: var(--subj-ink, var(--general-ink));
+  --font-display: var(--font-bricolage), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-atkinson), ui-sans-serif, system-ui, sans-serif;
+  --radius-sticker: var(--r-sticker);
+  --shadow-sticker: var(--shadow-sticker);
+  --shadow-sticker-sm: var(--shadow-sticker-sm);
+  --shadow-sticker-lg: var(--shadow-sticker-lg);
+  --ease-spring: var(--ease-spring);
+  --ease-out-soft: var(--ease-out);
 }
 
-html { -webkit-text-size-adjust: 100%; }
+/* Subject scopes: set --subj* on any container with data-subject */
+[data-subject="mathematics"] { --subj: var(--maths); --subj-soft: var(--maths-soft); --subj-ink: var(--maths-ink); }
+[data-subject="physics"] { --subj: var(--physics); --subj-soft: var(--physics-soft); --subj-ink: var(--physics-ink); }
+[data-subject="chemistry"] { --subj: var(--chemistry); --subj-soft: var(--chemistry-soft); --subj-ink: var(--chemistry-ink); }
+[data-subject="biology"] { --subj: var(--biology); --subj-soft: var(--biology-soft); --subj-ink: var(--biology-ink); }
+[data-subject="english"] { --subj: var(--english); --subj-soft: var(--english-soft); --subj-ink: var(--english-ink); }
+
+/* ==========================================================================
+   Base
+   ========================================================================== */
+html { -webkit-text-size-adjust: 100%; -webkit-tap-highlight-color: transparent; }
 body {
-  background: var(--bg);
-  color: var(--text);
+  background: var(--paper);
+  color: var(--ink);
   font-family: var(--font-sans);
+  font-size: 1rem;
+  line-height: 1.55;
+}
+h1, h2, h3, .font-display { font-family: var(--font-display); letter-spacing: -0.02em; line-height: 1.1; }
+:focus-visible { outline: 3px solid var(--focus); outline-offset: 3px; border-radius: 6px; }
+::selection { background: var(--lime); color: #1c1a16; }
+
+/* ==========================================================================
+   Component utilities (Tailwind v4 @utility so they compose with @apply).
+   React components in src/components/ds wrap these — prefer the components.
+   ========================================================================== */
+
+/* Sticker surface: ink border + hard offset shadow */
+@utility sticker {
+  border: var(--border) solid var(--line);
+  border-radius: var(--r-sticker);
+  background: var(--card);
+  box-shadow: var(--shadow-sticker);
+}
+/* Pressable sticker: lifts on hover, pushes into its shadow when pressed */
+@utility pressable {
+  transition: transform var(--dur-fast) var(--ease-out), box-shadow var(--dur-fast) var(--ease-out), background-color var(--dur) var(--ease-out);
+  &:hover:not(:disabled):not([aria-disabled="true"]) { transform: translate(-1px, -1px); box-shadow: 4px 4px 0 var(--shadow-ink); }
+  &:active:not(:disabled):not([aria-disabled="true"]) { transform: translate(3px, 3px); box-shadow: 0 0 0 var(--shadow-ink); }
 }
 
-:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; border-radius: 6px; }
-
-/* Component utilities (Tailwind v4: @utility so they can be composed with @apply) */
-@utility card { @apply rounded-2xl border border-border bg-surface p-4; }
 @utility btn {
-  @apply inline-flex min-h-12 items-center justify-center gap-2 rounded-xl px-5 font-semibold transition-colors
-    disabled:cursor-not-allowed disabled:opacity-60;
+  display: inline-flex;
+  min-height: 3rem;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0 1.25rem;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1rem;
+  letter-spacing: -0.01em;
+  border: var(--border) solid var(--line);
+  border-radius: var(--r-md);
+  box-shadow: var(--shadow-sticker);
+  cursor: pointer;
+  user-select: none;
+  @apply pressable;
+  &:disabled, &[aria-disabled="true"] { cursor: not-allowed; opacity: 0.55; box-shadow: none; }
 }
-@utility btn-primary { @apply btn bg-brand text-white hover:bg-brand-strong; }
-@utility btn-secondary { @apply btn border border-border bg-surface text-text hover:bg-surface-2; }
-@utility btn-accent { @apply btn bg-accent text-[#2b1d00] hover:brightness-95; }
-@utility btn-ghost { @apply btn text-brand hover:bg-brand-soft; }
-@utility input {
-  @apply block min-h-12 w-full rounded-xl border border-border bg-surface px-4 text-base text-text
-    placeholder:text-muted focus:border-brand;
+@utility btn-primary { @apply btn; background: var(--lime); color: #1c1a16; &:hover:not(:disabled) { background: var(--lime-2); } }
+@utility btn-secondary { @apply btn; background: var(--card); color: var(--ink); }
+@utility btn-ghost {
+  @apply btn;
+  background: transparent; color: var(--ink); border-color: transparent; box-shadow: none;
+  &:hover:not(:disabled) { background: var(--paper-2); transform: none; box-shadow: none; }
+  &:active:not(:disabled) { transform: translateY(1px); }
 }
-@utility label { @apply mb-1 block text-sm font-medium; }
-@utility chip { @apply inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-semibold; }
-@utility muted { @apply text-muted; }
-@utility skeleton { @apply animate-pulse rounded-xl bg-surface-2; }
+@utility btn-danger { @apply btn; background: var(--danger-soft); color: var(--danger); }
 
-/* Rendered markdown (questions & explanations) */
-.prose-q { line-height: 1.6; overflow-wrap: anywhere; }
+@utility input {
+  display: block;
+  width: 100%;
+  min-height: 3rem;
+  padding: 0.625rem 1rem;
+  font-size: 1rem;
+  color: var(--ink);
+  background: var(--card);
+  border: var(--border) solid var(--line);
+  border-radius: var(--r-md);
+  transition: box-shadow var(--dur-fast) var(--ease-out);
+  &::placeholder { color: var(--ink-2); opacity: 0.8; }
+  &:focus { outline: none; box-shadow: 3px 3px 0 var(--focus); }
+  &[aria-invalid="true"] { border-color: var(--danger); }
+}
+@utility label { display: block; margin-bottom: 0.375rem; font-weight: 700; font-size: 0.9375rem; }
+@utility chip {
+  display: inline-flex; align-items: center; gap: 0.25rem;
+  padding: 0.125rem 0.5rem;
+  font-size: 0.75rem; font-weight: 700; line-height: 1.4;
+  border: 1.5px solid currentColor;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+@utility muted { color: var(--ink-2); }
+@utility skeleton {
+  border-radius: var(--r-md);
+  background: linear-gradient(90deg, var(--paper-2) 0%, var(--rule) 50%, var(--paper-2) 100%);
+  background-size: 200% 100%;
+  animation: shimmer 1.2s linear infinite;
+}
+/* Faint graph paper for practice areas (pure CSS, no image) */
+@utility graph-paper {
+  background-color: var(--paper);
+  background-image:
+    linear-gradient(var(--rule) 1px, transparent 1px),
+    linear-gradient(90deg, var(--rule) 1px, transparent 1px);
+  background-size: 22px 22px;
+  background-position: -1px -1px;
+}
+/* Ruled exercise-book lines with a red margin */
+@utility ruled {
+  background-color: var(--card);
+  background-image:
+    linear-gradient(90deg, transparent 2.25rem, color-mix(in oklab, var(--danger) 35%, transparent) 2.25rem, color-mix(in oklab, var(--danger) 35%, transparent) calc(2.25rem + 1.5px), transparent calc(2.25rem + 1.5px)),
+    repeating-linear-gradient(transparent 0, transparent calc(1.75rem - 1px), var(--rule) calc(1.75rem - 1px), var(--rule) 1.75rem);
+}
+/* Big chunky numbers for points, streaks, ranks */
+@utility num { font-family: var(--font-display); font-weight: 800; font-variant-numeric: tabular-nums; letter-spacing: -0.03em; line-height: 1; }
+
+/* ==========================================================================
+   Motion (transform + opacity only). Reduced motion → fades only.
+   ========================================================================== */
+@keyframes shimmer { from { background-position: 100% 0; } to { background-position: -100% 0; } }
+@keyframes pop { 0% { transform: scale(1); } 40% { transform: scale(1.06); } 100% { transform: scale(1); } }
+@keyframes shake { 0%, 100% { transform: translateX(0); } 20% { transform: translateX(-6px); } 40% { transform: translateX(5px); } 60% { transform: translateX(-3px); } 80% { transform: translateX(2px); } }
+@keyframes rise-in { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+@keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
+@keyframes stamp { 0% { opacity: 0; transform: scale(1.8) rotate(-14deg); } 60% { opacity: 1; transform: scale(0.94) rotate(-8deg); } 100% { opacity: 1; transform: scale(1) rotate(-8deg); } }
+@keyframes float-up { 0% { opacity: 0; transform: translateY(6px) scale(0.9); } 20% { opacity: 1; } 100% { opacity: 0; transform: translateY(-36px) scale(1.1); } }
+@keyframes flicker { 0%, 100% { transform: scaleY(1) rotate(0); } 50% { transform: scaleY(1.06) rotate(-2deg); } }
+@keyframes sheet-up { from { transform: translateY(100%); } to { transform: none; } }
+@keyframes bump { 0% { transform: translateY(0); } 30% { transform: translateY(-4px) scale(1.12); } 100% { transform: none; } }
+
+.anim-pop { animation: pop var(--dur-slow) var(--ease-spring); }
+.anim-shake { animation: shake 380ms var(--ease-out); }
+.anim-rise { animation: rise-in var(--dur-slow) var(--ease-out) both; }
+.anim-stamp { animation: stamp var(--dur-celebrate) var(--ease-spring) both; }
+.anim-bump { animation: bump var(--dur-slow) var(--ease-spring); }
+.anim-float { animation: float-up 900ms var(--ease-out) forwards; }
+.flame-flicker { transform-origin: 50% 100%; animation: flicker 1.6s ease-in-out infinite; }
+
+/* Scroll reveal: elements start visible; JS adds .reveal-armed only when IntersectionObserver exists */
+.reveal-armed [data-reveal] { opacity: 0; transform: translateY(14px); transition: opacity 400ms var(--ease-out), transform 400ms var(--ease-out); }
+.reveal-armed [data-reveal].is-visible { opacity: 1; transform: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 1ms !important; animation-iteration-count: 1 !important; transition-duration: 1ms !important; scroll-behavior: auto !important; }
+  .anim-pop, .anim-shake, .anim-bump, .flame-flicker { animation: none !important; }
+  .anim-rise, .anim-stamp { animation: fade-in 200ms ease both !important; }
+  .reveal-armed [data-reveal] { transform: none; }
+  .pressable:hover, .pressable:active { transform: none !important; }
+}
+
+/* ==========================================================================
+   Rendered content (questions & explanations)
+   ========================================================================== */
+.prose-q { line-height: 1.65; overflow-wrap: anywhere; }
 .prose-q p { margin: 0.5rem 0; }
 .prose-q p:first-child { margin-top: 0; }
+.prose-q p:last-child { margin-bottom: 0; }
 .prose-q ul, .prose-q ol { margin: 0.5rem 0; padding-left: 1.25rem; }
 .prose-q ul { list-style: disc; }
 .prose-q ol { list-style: decimal; }
 .prose-q strong { font-weight: 700; }
-.prose-q code { font-size: 0.9em; background: var(--surface-2); padding: 0 0.25rem; border-radius: 4px; }
-.prose-q .math-block { overflow-x: auto; overflow-y: hidden; padding: 0.25rem 0; }
+.prose-q code { font-size: 0.9em; background: var(--paper-2); padding: 0 0.25rem; border-radius: 4px; }
+.prose-q .math-block { overflow-x: auto; overflow-y: hidden; padding: 0.375rem 0; max-width: 100%; }
 .prose-q .katex { font-size: 1.08em; }
+.prose-q .katex-display { margin: 0.25rem 0; }
+
+/* Exercise-book workings: each step on its own ruled line with a margin number */
+.workings { counter-reset: step; }
+.workings > * { position: relative; }
+.workings ol { list-style: none; padding-left: 0; counter-reset: wstep; }
+.workings ol > li { counter-increment: wstep; position: relative; padding-left: 2.5rem; margin: 0.375rem 0; }
+.workings ol > li::before {
+  content: counter(wstep);
+  position: absolute; left: 0.25rem; top: 0.05rem;
+  width: 1.5rem; height: 1.5rem; display: grid; place-items: center;
+  font-family: var(--font-display); font-weight: 800; font-size: 0.8rem;
+  border: 1.5px solid var(--line); border-radius: 999px; background: var(--lime);
+  color: #1c1a16;
+}
+.workings strong { background: linear-gradient(transparent 60%, color-mix(in oklab, var(--lime) 70%, transparent) 60%); }
+
+/* Explanation steps slide in one after another */
+.steps-reveal > * { animation: rise-in var(--dur-slow) var(--ease-out) both; }
+.steps-reveal > *:nth-child(2) { animation-delay: 90ms; }
+.steps-reveal > *:nth-child(3) { animation-delay: 180ms; }
+.steps-reveal > *:nth-child(4) { animation-delay: 270ms; }
+.steps-reveal > *:nth-child(5) { animation-delay: 360ms; }
+.steps-reveal > *:nth-child(n + 6) { animation-delay: 440ms; }
+.steps-reveal ol > li { animation: rise-in var(--dur-slow) var(--ease-out) both; }
+.steps-reveal ol > li:nth-child(2) { animation-delay: 120ms; }
+.steps-reveal ol > li:nth-child(3) { animation-delay: 240ms; }
+.steps-reveal ol > li:nth-child(4) { animation-delay: 360ms; }
+.steps-reveal ol > li:nth-child(n + 5) { animation-delay: 460ms; }
+
+/* ==========================================================================
+   Admin: same tokens, calm and dense — no offset shadows or press motion.
+   ========================================================================== */
+@utility card {
+  display: block;
+  padding: 1rem;
+  background: var(--card);
+  border: 1.5px solid color-mix(in oklab, var(--ink) 22%, transparent);
+  border-radius: var(--r-md);
+}
+.calm .btn, .calm [class*="btn-"] { box-shadow: none; border-width: 1.5px; min-height: 2.5rem; font-size: 0.9375rem; }
+.calm .btn:hover, .calm .btn:active, .calm [class*="btn-"]:hover, .calm [class*="btn-"]:active { transform: none; box-shadow: none; }
+.calm .input { min-height: 2.5rem; border-width: 1.5px; }

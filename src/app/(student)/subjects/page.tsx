@@ -1,17 +1,20 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { Suspense } from "react";
+import { ArrowRight } from "lucide-react";
 import { db } from "@/lib/db";
 import { requireUser } from "@/lib/auth";
-import { PageHeader, SkeletonList } from "@/components/ui";
+import { subjectScope } from "@/lib/subjects";
+import { CardLink, Chip, SkeletonList } from "@/components/ds";
+import { SubjectIcon } from "@/components/subject-icon";
 
 export const metadata: Metadata = { title: "Subjects" };
 
 export default function SubjectsPage() {
   return (
     <>
-      <PageHeader title="Subjects" subtitle="Pick a subject, then work through it topic by topic." />
-      <Suspense fallback={<SkeletonList />}>
+      <h1 className="text-3xl font-extrabold">Pick a subject</h1>
+      <p className="muted mb-5 mt-1">Then work through it one topic at a time, the way the syllabus runs.</p>
+      <Suspense fallback={<SkeletonList rows={4} />}>
         <Subjects />
       </Suspense>
     </>
@@ -20,29 +23,43 @@ export default function SubjectsPage() {
 
 async function Subjects() {
   const user = await requireUser();
-  const [subjects, mine] = await Promise.all([
-    db.subject.findMany({
-      where: { isActive: true },
-      orderBy: { order: "asc" },
-      include: { topics: { where: { parentId: null }, select: { id: true } } },
-    }),
+  const [subjects, mine, counts] = await Promise.all([
+    db.subject.findMany({ where: { isActive: true }, orderBy: { order: "asc" }, include: { topics: { where: { parentId: null }, select: { id: true } } } }),
     db.userSubject.findMany({ where: { userId: user.id }, select: { subjectId: true } }),
+    db.question.groupBy({ by: ["topicId"], where: { status: "PUBLISHED" }, _count: true }),
   ]);
+  const topicSubject = new Map((await db.topic.findMany({ select: { id: true, subjectId: true } })).map((t) => [t.id, t.subjectId]));
+  const qCount = new Map<string, number>();
+  for (const c of counts) {
+    const s = topicSubject.get(c.topicId);
+    if (s) qCount.set(s, (qCount.get(s) ?? 0) + c._count);
+  }
   const mineSet = new Set(mine.map((m) => m.subjectId));
   const sorted = [...subjects].sort((a, b) => Number(mineSet.has(b.id)) - Number(mineSet.has(a.id)));
   return (
     <ul className="space-y-3">
-      {sorted.map((s) => (
-        <li key={s.id}>
-          <Link href={`/subjects/${s.slug}`} className="card flex items-center justify-between hover:border-brand">
-            <span>
-              <span className="block font-semibold">{s.name}</span>
-              <span className="muted text-sm">{s.topics.length} topics</span>
-            </span>
-            {mineSet.has(s.id) ? <span className="chip bg-brand-soft text-brand">My subject</span> : null}
-          </Link>
-        </li>
-      ))}
+      {sorted.map((s) => {
+        const n = qCount.get(s.id) ?? 0;
+        return (
+          <li key={s.id} data-subject={subjectScope(s.slug)}>
+            <CardLink href={`/subjects/${s.slug}`} padded={false} className="flex items-stretch overflow-hidden">
+              <span className="grid w-16 shrink-0 place-items-center border-r-2 border-line bg-subj text-on-fill">
+                <SubjectIcon slug={s.slug} className="size-7" />
+              </span>
+              <span className="flex min-w-0 flex-1 items-center justify-between gap-2 px-4 py-3">
+                <span className="min-w-0">
+                  <span className="block font-display text-lg font-extrabold">{s.name}</span>
+                  <span className="muted text-sm">{s.topics.length} topics · {n ? `${n} questions` : "questions coming soon"}</span>
+                </span>
+                <span className="flex shrink-0 items-center gap-2">
+                  {mineSet.has(s.id) ? <Chip tone="subject">Yours</Chip> : null}
+                  <ArrowRight aria-hidden className="size-5" />
+                </span>
+              </span>
+            </CardLink>
+          </li>
+        );
+      })}
     </ul>
   );
 }

@@ -3,7 +3,7 @@ import { Suspense } from "react";
 import { db } from "@/lib/db";
 import { requireRole } from "@/lib/auth";
 import { setFlagStatus } from "@/app/actions/admin";
-import { PageHeader, SkeletonList } from "@/components/ui";
+import { PageHeader, SkeletonList } from "@/components/admin-ui";
 
 export default function FlagsPage() {
   return (
@@ -32,7 +32,7 @@ async function Flags() {
           <div className="min-w-0 flex-1">
             <p className="muted text-xs">{f.createdAt.toLocaleString("en-NG")} · {f.question.topic.name} · from {f.user.name}</p>
             <p className="my-1 font-medium">“{f.reason}”</p>
-            <Link href={`/admin/questions/${f.question.id}`} className="line-clamp-2 text-sm text-brand underline">{f.question.stem}</Link>
+            <Link href={`/admin/questions/${f.question.id}`} className="line-clamp-2 text-sm text-info underline">{f.question.stem}</Link>
           </div>
           <form action={setFlagStatus} className="flex gap-2">
             <input type="hidden" name="id" value={f.id} />

@@ -1,59 +1,66 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { Suspense } from "react";
+import { Check, Minus } from "lucide-react";
 import { requireUser } from "@/lib/auth";
-import { isPremium } from "@/lib/entitlements";
-import { FREE_DAILY_LIMIT } from "@/lib/entitlements";
+import { FREE_DAILY_LIMIT, isPremium } from "@/lib/entitlements";
 import { planViews } from "@/lib/plans";
 import { checkout } from "@/app/actions/billing";
 import { PlanPicker } from "@/components/plan-picker";
 import { AskParent } from "@/components/ask-parent";
-import { SkeletonList } from "@/components/ui";
+import { ButtonLink, Card, SkeletonList, Underline } from "@/components/ds";
 
 export const metadata: Metadata = { title: "Premium" };
 
-const rows: [string, string, string][] = [
+const rows: [string, string | boolean, string | boolean][] = [
   ["Practice questions", `${FREE_DAILY_LIMIT} a day`, "Unlimited"],
-  ["Step-by-step explanations", "✓", "✓"],
-  ["Video solutions", "A few samples", "Every video"],
-  ["Streaks & leaderboard", "✓", "✓"],
+  ["Step-by-step workings", true, true],
+  ["Video solutions", "A few samples", "Every one"],
+  ["Streaks & leaderboard", true, true],
   ["Progress tracking", "Basic", "Detailed"],
-  ["Past questions & mock exams", "—", "Coming soon"],
+  ["Past questions & mock exams", false, "Coming soon"],
 ];
+
+function Cell({ v, strong }: { v: string | boolean; strong?: boolean }) {
+  if (v === true) return <span className="inline-flex items-center gap-1"><Check aria-hidden className="size-4 text-ok" strokeWidth={3} /><span className="sr-only">Included</span></span>;
+  if (v === false) return <span className="inline-flex items-center text-ink-2"><Minus aria-hidden className="size-4" /><span className="sr-only">Not included</span></span>;
+  return <span className={strong ? "font-bold" : "text-ink-2"}>{v}</span>;
+}
 
 export default function PremiumPage() {
   return (
-    <div className="space-y-5">
+    <div className="space-y-6">
       <header>
-        <h1 className="text-2xl font-bold">Practise without limits</h1>
-        <p className="muted mt-1">Unlimited questions and every video solution, so you&apos;re never stuck the night before an exam.</p>
+        <h1 className="text-3xl font-extrabold">Practise <Underline>without limits</Underline></h1>
+        <p className="muted mt-2">Unlimited questions and every video solution — so you&apos;re never stuck the night before the paper.</p>
       </header>
-      <section className="card overflow-hidden p-0">
+
+      <div className="sticker overflow-hidden p-0">
         <table className="w-full text-sm">
-          <thead className="bg-surface-2 text-left">
-            <tr>
-              <th className="px-3 py-2 font-semibold" scope="col"><span className="sr-only">Feature</span></th>
-              <th className="px-3 py-2 font-semibold" scope="col">Free</th>
-              <th className="px-3 py-2 font-semibold text-brand" scope="col">Premium</th>
+          <caption className="sr-only">Free vs Premium</caption>
+          <thead>
+            <tr className="border-b-2 border-line">
+              <th scope="col" className="px-3 py-2.5 text-left"><span className="sr-only">Feature</span></th>
+              <th scope="col" className="px-3 py-2.5 text-left font-display font-extrabold">Free</th>
+              <th scope="col" className="bg-lime px-3 py-2.5 text-left font-display font-extrabold text-on-fill">Premium</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-border">
+          <tbody className="divide-y-2 divide-dashed divide-rule">
             {rows.map(([f, a, b]) => (
               <tr key={f}>
-                <th scope="row" className="px-3 py-2 text-left font-medium">{f}</th>
-                <td className="muted px-3 py-2">{a}</td>
-                <td className="px-3 py-2 font-semibold">{b}</td>
+                <th scope="row" className="px-3 py-2.5 text-left font-semibold">{f}</th>
+                <td className="px-3 py-2.5"><Cell v={a} /></td>
+                <td className="bg-lime-soft px-3 py-2.5"><Cell v={b} strong /></td>
               </tr>
             ))}
           </tbody>
         </table>
-      </section>
+      </div>
+
       <Suspense fallback={<SkeletonList rows={4} />}>
         <Plans />
       </Suspense>
-      <p className="text-center">
-        <Link href="/dashboard" className="muted text-sm underline">Not now — keep practising free</Link>
-      </p>
+
+      <ButtonLink href="/dashboard" variant="ghost" block>Not now — keep practising free</ButtonLink>
     </div>
   );
 }
@@ -65,22 +72,25 @@ async function Plans() {
   return (
     <>
       {premium && user.subscription ? (
-        <p className="card border-brand bg-brand-soft text-sm">
-          ✅ You have Premium until <strong>{user.subscription.currentPeriodEnd.toLocaleDateString("en-NG", { day: "numeric", month: "long", year: "numeric" })}</strong>.
-          {user.subscription.mode === "FIXED_PERIOD" ? " Paying again adds more time." : ""}
-        </p>
+        <Card tone="ok" className="flex items-start gap-3 text-sm">
+          <Check aria-hidden className="mt-0.5 size-5 shrink-0 text-ok" strokeWidth={3} />
+          <p>
+            You have Premium until <strong>{user.subscription.currentPeriodEnd.toLocaleDateString("en-NG", { day: "numeric", month: "long", year: "numeric" })}</strong>.
+            {user.subscription.mode === "FIXED_PERIOD" ? " Paying again adds more time on top." : ""}
+          </p>
+        </Card>
       ) : null}
 
-      <section id="ask-parent" className="card scroll-mt-20 space-y-3">
-        <h2 className="text-lg font-semibold">Ask a parent to pay</h2>
-        <p className="muted text-sm">Send a secure link. Your parent can pay by bank transfer, USSD or card — and your Premium unlocks straight away.</p>
+      <Card as="section" id="ask-parent" className="scroll-mt-20 space-y-3" tone="paper">
+        <h2 className="text-xl font-extrabold">Ask a parent to pay</h2>
+        <p className="text-sm">Send a secure link on WhatsApp. They can pay by bank transfer, USSD or card, and your Premium unlocks straight away.</p>
         <AskParent firstName={user.name.split(" ")[0]} />
-      </section>
+      </Card>
 
-      <section className="card">
-        <h2 className="mb-3 text-lg font-semibold">Or pay now</h2>
+      <Card as="section">
+        <h2 className="mb-4 text-xl font-extrabold">Or pay now</h2>
         <PlanPicker plans={plans} action={checkout} defaultEmail={user.email} />
-      </section>
+      </Card>
     </>
   );
 }

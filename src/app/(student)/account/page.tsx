@@ -1,67 +1,145 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { Suspense } from "react";
+import { LogOut, Settings } from "lucide-react";
+import { db } from "@/lib/db";
 import { requireUser } from "@/lib/auth";
 import { isPremium } from "@/lib/entitlements";
 import { logout } from "@/app/actions/auth";
+import { activeDays, badgesFor, userStats } from "@/lib/gamify";
+import { displayStreak } from "@/lib/streaks";
+import { CLASS_LABEL, subjectScope } from "@/lib/subjects";
+import { Avatar, ButtonLink, Card, Chip, SkeletonList, StickerBadge } from "@/components/ds";
+import { SubmitButton } from "@/components/ds/submit-button";
+import { ThemeToggle } from "@/components/ds/theme-toggle";
 import { CancelRenewal } from "@/components/cancel-renewal";
-import { PageHeader, SkeletonList } from "@/components/ui";
+import { StreakCalendar } from "@/components/streak-calendar";
+import { SubjectIcon } from "@/components/subject-icon";
 
-export const metadata: Metadata = { title: "Account" };
+export const metadata: Metadata = { title: "Profile" };
 
-const CLASS_LABEL: Record<string, string> = { JSS3: "JSS 3", SS1: "SS 1", SS2: "SS 2", SS3: "SS 3" };
 const PLAN: Record<string, string> = { MONTHLY: "Monthly", TERMLY: "Per term", YEARLY: "Yearly", EXAM_PASS: "Exam season pass" };
 
 export default function AccountPage() {
   return (
-    <>
-      <PageHeader title="Account" />
-      <Suspense fallback={<SkeletonList rows={3} />}>
-        <Account />
-      </Suspense>
-    </>
+    <Suspense fallback={<SkeletonList rows={5} />}>
+      <Account />
+    </Suspense>
   );
 }
 
 async function Account() {
   const user = await requireUser({ allowUnonboarded: true });
+  const [stats, cal, subjects] = await Promise.all([
+    userStats(user.id),
+    activeDays(user.id, 35),
+    db.userSubject.findMany({ where: { userId: user.id }, include: { subject: true }, orderBy: { subject: { order: "asc" } } }),
+  ]);
+  const streak = displayStreak(user, cal.today);
+  const badges = badgesFor(stats, { current: streak, longest: user.longestStreak });
+  const earned = badges.filter((b) => b.earned).length;
   const sub = user.subscription;
   const premium = isPremium(sub);
   const fmt = (d: Date) => d.toLocaleDateString("en-NG", { day: "numeric", month: "long", year: "numeric" });
-  return (
-    <div className="space-y-4">
-      <section className="card space-y-1">
-        <p className="text-lg font-semibold">{user.name}</p>
-        <p className="muted text-sm">{user.phone ?? user.email}</p>
-        <p className="muted text-sm">
-          {user.classLevel ? CLASS_LABEL[user.classLevel] : "Class not set"} · {user.exams.join(", ") || "No exams chosen"}
-        </p>
-        <Link href="/onboarding" className="text-sm font-semibold text-brand">Change class, exams or subjects</Link>
-      </section>
+  const accuracy = stats.answered ? Math.round((stats.correct / stats.answered) * 100) : null;
 
-      <section className="card space-y-3">
-        <h2 className="font-semibold">Plan</h2>
+  return (
+    <div className="space-y-5">
+      <Card className="flex items-center gap-4">
+        <Avatar name={user.name} size="lg" />
+        <div className="min-w-0">
+          <h1 className="truncate text-2xl font-extrabold">{user.name}</h1>
+          <p className="muted truncate text-sm">{user.phone ?? user.email}</p>
+          <p className="mt-1 flex flex-wrap gap-1.5">
+            {user.classLevel ? <Chip tone="lime">{CLASS_LABEL[user.classLevel]}</Chip> : null}
+            {user.exams.map((e) => <Chip key={e}>{e}</Chip>)}
+            {premium ? <Chip tone="gold">Premium</Chip> : null}
+          </p>
+        </div>
+      </Card>
+
+      <dl className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+        {[
+          { k: "Points", v: user.totalPoints.toLocaleString("en-NG") },
+          { k: "Answered", v: stats.answered.toLocaleString("en-NG") },
+          { k: "Accuracy", v: accuracy === null ? "–" : `${accuracy}%` },
+          { k: "Best streak", v: `${user.longestStreak}d` },
+        ].map((s) => (
+          <div key={s.k} className="sticker px-3 py-3 text-center">
+            <dt className="text-xs font-bold text-ink-2">{s.k}</dt>
+            <dd className="num mt-1 text-3xl">{s.v}</dd>
+          </div>
+        ))}
+      </dl>
+
+      <Card as="section" aria-labelledby="cal-h">
+        <div className="mb-3 flex items-baseline justify-between">
+          <h2 id="cal-h" className="text-lg font-extrabold">Streak calendar</h2>
+          <span className="text-sm font-bold">{streak} day{streak === 1 ? "" : "s"} now</span>
+        </div>
+        <StreakCalendar from={cal.from} today={cal.today} active={cal.active} />
+      </Card>
+
+      <Card as="section" aria-labelledby="badges-h">
+        <div className="mb-3 flex items-baseline justify-between">
+          <h2 id="badges-h" className="text-lg font-extrabold">Sticker collection</h2>
+          <span className="text-sm font-bold">{earned}/{badges.length}</span>
+        </div>
+        <ul className="grid grid-cols-3 justify-items-center gap-y-4">
+          {badges.map((b) => <li key={b.id}><StickerBadge badge={b} size={64} /></li>)}
+        </ul>
+      </Card>
+
+      <Card as="section" aria-labelledby="subj-h">
+        <div className="mb-3 flex items-baseline justify-between">
+          <h2 id="subj-h" className="text-lg font-extrabold">Subjects</h2>
+          <ButtonLink href="/onboarding" variant="ghost" size="sm">Change</ButtonLink>
+        </div>
+        <ul className="flex flex-wrap gap-2">
+          {subjects.map(({ subject: s }) => (
+            <li key={s.id} data-subject={subjectScope(s.slug)} className="flex items-center gap-1.5 rounded-full border-2 border-line bg-subj px-3 py-1 font-bold text-on-fill">
+              <SubjectIcon slug={s.slug} className="size-4" /> {s.name}
+            </li>
+          ))}
+        </ul>
+      </Card>
+
+      <Card as="section" aria-labelledby="plan-h" className="space-y-3">
+        <h2 id="plan-h" className="text-lg font-extrabold">Plan</h2>
         {premium && sub ? (
           <>
             <p className="text-sm">
-              <span className="chip bg-brand-soft text-brand">Premium</span> {PLAN[sub.plan]} ·{" "}
-              {sub.mode === "AUTO_RENEW" && sub.status === "ACTIVE" ? `renews on ${fmt(sub.currentPeriodEnd)}` : `ends on ${fmt(sub.currentPeriodEnd)}`}
+              <strong>Premium · {PLAN[sub.plan]}</strong> — {sub.mode === "AUTO_RENEW" && sub.status === "ACTIVE" ? `renews on ${fmt(sub.currentPeriodEnd)}` : `ends on ${fmt(sub.currentPeriodEnd)}`}
             </p>
-            {sub.mode === "AUTO_RENEW" && sub.status === "ACTIVE" ? <CancelRenewal /> : <Link href="/premium" className="btn-secondary w-full">Add more time</Link>}
+            {sub.mode === "AUTO_RENEW" && sub.status === "ACTIVE" ? <CancelRenewal /> : <ButtonLink href="/premium" variant="secondary" block>Add more time</ButtonLink>}
           </>
         ) : (
           <>
             <p className="muted text-sm">Free plan{sub ? ` · Premium ended on ${fmt(sub.currentPeriodEnd)}` : ""}</p>
-            <Link href="/premium" className="btn-accent w-full">See Premium</Link>
+            <ButtonLink href="/premium" block>See Premium</ButtonLink>
           </>
         )}
-      </section>
+      </Card>
 
-      {user.role !== "STUDENT" ? <Link href="/admin" className="btn-secondary w-full">Content admin</Link> : null}
-
-      <form action={logout}>
-        <button className="btn-ghost w-full">Log out</button>
-      </form>
+      <Card as="section" aria-labelledby="settings-h" flat className="space-y-1">
+        <h2 id="settings-h" className="mb-1 flex items-center gap-2 text-lg font-extrabold"><Settings aria-hidden className="size-5" /> Settings</h2>
+        <div className="flex min-h-12 items-center justify-between border-b-2 border-dashed border-rule">
+          <span className="font-semibold">Light / dark mode</span>
+          <ThemeToggle />
+        </div>
+        <div className="flex min-h-12 items-center justify-between border-b-2 border-dashed border-rule">
+          <span className="font-semibold">Class, exams and subjects</span>
+          <ButtonLink href="/onboarding" variant="ghost" size="sm">Edit</ButtonLink>
+        </div>
+        {user.role !== "STUDENT" ? (
+          <div className="flex min-h-12 items-center justify-between border-b-2 border-dashed border-rule">
+            <span className="font-semibold">Content admin</span>
+            <ButtonLink href="/admin" variant="ghost" size="sm">Open</ButtonLink>
+          </div>
+        ) : null}
+        <form action={logout} className="pt-2">
+          <SubmitButton variant="ghost" block icon={<LogOut className="size-5" />}>Log out</SubmitButton>
+        </form>
+      </Card>
     </div>
   );
 }

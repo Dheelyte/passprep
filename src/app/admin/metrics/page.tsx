@@ -1,7 +1,7 @@
 import { Suspense, type ReactNode } from "react";
 import { requireRole } from "@/lib/auth";
 import * as m from "@/lib/metrics";
-import { PageHeader, SkeletonList } from "@/components/ui";
+import { PageHeader, SkeletonList } from "@/components/admin-ui";
 
 export default function MetricsPage() {
   return (
@@ -26,7 +26,7 @@ function Kpi({ title, question, children, rule }: { title: string; question: str
         <h2 className="font-semibold">{title}</h2>
       </header>
       {children}
-      <p className="muted border-t border-border pt-2 text-xs"><strong>Decision rule:</strong> {rule}</p>
+      <p className="muted border-t border-rule pt-2 text-xs"><strong>Decision rule:</strong> {rule}</p>
     </section>
   );
 }
@@ -39,7 +39,7 @@ function Bars({ data }: { data: { label: string; value: number; display: string 
       {data.map((d) => (
         <div key={d.label} className="flex flex-1 flex-col items-center gap-1">
           <span className="text-[10px] font-semibold">{d.display}</span>
-          <div className="w-full rounded-t bg-brand" style={{ height: `${Math.max(3, (d.value / max) * 80)}px` }} />
+          <div className="w-full rounded-t bg-info" style={{ height: `${Math.max(3, (d.value / max) * 80)}px` }} />
           <span className="muted text-[10px]">{d.label}</span>
         </div>
       ))}
@@ -78,7 +78,7 @@ async function Metrics() {
           <thead className="muted text-left text-xs"><tr><th>Cohort</th><th>Size</th><th>D1</th><th>D7</th><th>D30</th></tr></thead>
           <tbody>
             {cohorts.map((c) => (
-              <tr key={c.week.toISOString()} className="border-t border-border"><td>{wk(c.week)}</td><td>{c.size}</td><td>{pct(c.d1)}</td><td>{pct(c.d7)}</td><td>{pct(c.d30)}</td></tr>
+              <tr key={c.week.toISOString()} className="border-t border-rule"><td>{wk(c.week)}</td><td>{c.size}</td><td>{pct(c.d1)}</td><td>{pct(c.d7)}</td><td>{pct(c.d30)}</td></tr>
             ))}
           </tbody>
         </table>
@@ -102,8 +102,8 @@ async function Metrics() {
         <ul className="space-y-1 text-sm">
           {missed.map((q) => (
             <li key={q.id} className="flex gap-2">
-              <span className="w-10 shrink-0 font-semibold text-bad">{pct(q.wrongRate)}</span>
-              <a href={`/admin/questions/${q.id}`} className="line-clamp-1 text-brand underline">{q.topic}: {q.stem}</a>
+              <span className="w-10 shrink-0 font-semibold text-danger">{pct(q.wrongRate)}</span>
+              <a href={`/admin/questions/${q.id}`} className="line-clamp-1 text-info underline">{q.topic}: {q.stem}</a>
             </li>
           ))}
           {missed.length === 0 ? <li className="muted">Not enough answers yet.</li> : null}
@@ -124,7 +124,7 @@ async function Metrics() {
           <thead className="muted text-left text-xs"><tr><th>Plan</th><th>Billing</th><th>Channel</th><th>#</th><th>Revenue</th><th>Parent link</th></tr></thead>
           <tbody>
             {mix.map((r, i) => (
-              <tr key={i} className="border-t border-border"><td>{r.plan.toLowerCase()}</td><td>{r.mode === "AUTO_RENEW" ? "auto" : "one-off"}</td><td>{r.channel}</td><td>{r.count}</td><td>{naira(r.revenueKobo)}</td><td>{r.viaParentLink}</td></tr>
+              <tr key={i} className="border-t border-rule"><td>{r.plan.toLowerCase()}</td><td>{r.mode === "AUTO_RENEW" ? "auto" : "one-off"}</td><td>{r.channel}</td><td>{r.count}</td><td>{naira(r.revenueKobo)}</td><td>{r.viaParentLink}</td></tr>
             ))}
           </tbody>
         </table>

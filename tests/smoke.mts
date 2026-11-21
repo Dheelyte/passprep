@@ -48,21 +48,21 @@ const session = await db.practiceSession.create({
 });
 const link = await db.payLink.create({ data: { studentId: tobi.id, token: `smoke${Date.now()}`, expiresAt: new Date(Date.now() + 86_400_000) } });
 
-await check("/", { expect: ["Master every WAEC, NECO and JAMB topic", "katex"] });
-await check("/login", { expect: ["Welcome back"] });
-await check("/signup?utm_source=whatsapp", { expect: ["Start practising for free", 'value="whatsapp"'] });
+await check("/", { expect: ["Every answer", "Start practising free", "katex", "Premium plans", "data-reveal"] });
+await check("/login", { expect: ["Welcome back", "Phone number or email"] });
+await check("/signup?utm_source=whatsapp", { expect: ["exam-ready", 'value="whatsapp"'] });
 await check("/dashboard", { status: 307, expect: [] }); // signed out → proxy redirect
-await check("/dashboard", { cookie: s, expect: ["Hi Tobi", "Daily streak", "This week", "Your subjects"] });
-await check("/subjects", { cookie: s, expect: ["Mathematics", "Physics", "My subject"] });
-await check("/subjects/mathematics", { cookie: s, expect: ["Number and Numeration", "Logarithms", "Practise"] });
-await check(`/practice/${session.id}`, { cookie: s, expect: ["Question 1 of 3", "katex"] });
-await check("/leaderboard", { cookie: s, expect: ["This week", "Chidinma O.", "left this week"] });
+await check("/dashboard", { cookie: s, expect: ["Hi Tobi", "day streak", "Today", "Your subjects", "This week"] });
+await check("/subjects", { cookie: s, expect: ["Mathematics", "Physics", "Yours"] });
+await check("/subjects/mathematics", { cookie: s, expect: ["Number and Numeration", "Logarithms", "Mastered", "data-subject=\"mathematics\""] });
+await check(`/practice/${session.id}`, { cookie: s, expect: [/Question 1 <span[^>]*>of 3/, "katex", "Practice set progress"] });
+await check("/leaderboard", { cookie: s, expect: ["This week", "Chidinma O.", "Resets Monday", "Top three"] });
 await check("/progress", { cookie: s, expect: ["Your progress", "Mathematics"] });
-await check("/progress/mathematics", { cookie: s, expect: ["Topics", "Detailed progress"] });
-await check("/premium", { cookie: s, expect: ["Practise without limits", "Ask a parent to pay", "Per term"] });
-await check("/account", { cookie: s, expect: ["Tobi Adebayo", "+2348012345678", "Free plan"] });
+await check("/progress/mathematics", { cookie: s, expect: ["Every topic", "See the full picture"] });
+await check("/premium", { cookie: s, expect: ["without limits", "Ask a parent to pay", "Per term", "Popular with parents"] });
+await check("/account", { cookie: s, expect: ["Tobi Adebayo", "+2348012345678", "Free plan", "Sticker collection", "Streak calendar"] });
 await check(`/pay/${link.token}`, { expect: ["Unlock Premium for Tobi A.", "Pay securely"] });
-await check("/pay/does-not-exist", { expect: [/could not be found/] }); // streamed → 200 with not-found UI
+await check("/pay/does-not-exist", { expect: [/don waka/] }); // streamed → 200 with not-found UI
 await check("/admin", { cookie: s, status: 200, expect: [/NEXT_REDIRECT|\/dashboard/] }); // students bounced
 await check("/admin", { cookie: a, expect: ["Content overview", "Published"] });
 await check("/admin/import", { cookie: a, expect: ["Bulk import", "questions-template.csv"] });

@@ -6,7 +6,7 @@ import { requireRole } from "@/lib/auth";
 import { unpublishQuestion } from "@/app/actions/admin";
 import { QuestionEditor } from "@/components/question-editor";
 import { QuestionPreview } from "@/components/question-preview";
-import { SkeletonList } from "@/components/ui";
+import { SkeletonList } from "@/components/admin-ui";
 
 export default function EditQuestionPage({ params }: PageProps<"/admin/questions/[id]">) {
   return (
@@ -37,12 +37,12 @@ async function Edit({ params }: { params: PageProps<"/admin/questions/[id]">["pa
 
   return (
     <div className="space-y-4">
-      <Link href="/admin/questions" className="text-sm text-brand">← Question bank</Link>
+      <Link href="/admin/questions" className="text-sm text-info">← Question bank</Link>
       <p className="muted text-sm">
-        Status <strong className="text-text">{q.status.replace("_", " ").toLowerCase()}</strong> · written by {q.author?.name ?? "—"} · reviewed by {q.reviewer?.name ?? "—"} ·{" "}
+        Status <strong className="text-ink">{q.status.replace("_", " ").toLowerCase()}</strong> · written by {q.author?.name ?? "—"} · reviewed by {q.reviewer?.name ?? "—"} ·{" "}
         answered {q._count.attempts}× ({q._count.attempts ? Math.round((wrong / q._count.attempts) * 100) : 0}% wrong)
       </p>
-      {q.reviewNote ? <p className="card bg-accent-soft text-sm"><strong>Review note:</strong> {q.reviewNote}</p> : null}
+      {q.reviewNote ? <p className="card bg-lime-soft text-sm"><strong>Review note:</strong> {q.reviewNote}</p> : null}
       {user.role !== "ADMIN" && q.status === "PUBLISHED" ? (
         <p className="card text-sm">Saving changes to a published question sends it back for review by another teacher.</p>
       ) : null}
@@ -67,7 +67,7 @@ async function Edit({ params }: { params: PageProps<"/admin/questions/[id]">["pa
       {user.role === "ADMIN" && q.status === "PUBLISHED" ? (
         <form action={unpublishQuestion}>
           <input type="hidden" name="id" value={q.id} />
-          <button className="btn-secondary text-bad">Unpublish (hide from students)</button>
+          <button className="btn-secondary text-danger">Unpublish (hide from students)</button>
         </form>
       ) : null}
     </div>

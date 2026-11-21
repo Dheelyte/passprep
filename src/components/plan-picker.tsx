@@ -1,8 +1,11 @@
 "use client";
 
 import { useActionState, useState } from "react";
+import { Check, CreditCard, Landmark, Lock, RotateCcw, Smartphone } from "lucide-react";
 import type { CheckoutState } from "@/app/actions/billing";
-import { FormError } from "./ui";
+import { Button } from "./ds/button";
+import { Field, FormError, Input } from "./ds/field";
+import { cn } from "./ds/cn";
 
 export type PlanView = {
   code: "MONTHLY" | "TERMLY" | "YEARLY" | "EXAM_PASS";
@@ -16,9 +19,13 @@ const naira = (kobo: number) => `₦${(kobo / 100).toLocaleString("en-NG")}`;
 const blurb: Record<PlanView["code"], string> = {
   MONTHLY: "Try it for a month",
   TERMLY: "Covers a full school term",
-  YEARLY: "Best value for the whole session",
-  EXAM_PASS: "For WAEC / JAMB candidates · 3 months",
+  YEARLY: "Best value for the session",
+  EXAM_PASS: "For WAEC & JAMB candidates",
 };
+
+const radioCard =
+  "pressable flex cursor-pointer items-center gap-3 border-2 border-line bg-card px-4 py-3 shadow-sticker-sm [border-radius:var(--r-sticker)] " +
+  "has-[:checked]:bg-lime has-[:checked]:text-on-fill has-[:focus-visible]:outline-3 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-[var(--focus)]";
 
 export function PlanPicker({
   plans,
@@ -41,71 +48,63 @@ export function PlanPicker({
   const effectiveMode = canAuto ? mode : "FIXED_PERIOD";
 
   return (
-    <form action={formAction} className="space-y-5">
+    <form action={formAction} className="space-y-6">
       {token ? <input type="hidden" name="token" value={token} /> : null}
       <FormError message={state?.error} />
+
       <fieldset>
-        <legend className="label">1. Choose a plan</legend>
-        <div className="space-y-2">
+        <legend className="mb-2 font-display text-lg font-extrabold">1. Pick a plan</legend>
+        <div className="space-y-2.5">
           {plans.map((p) => (
-            <label
-              key={p.code}
-              className="flex min-h-16 cursor-pointer items-center gap-3 rounded-xl border-2 border-border bg-surface px-4 py-3 has-[:checked]:border-brand has-[:checked]:bg-brand-soft"
-            >
-              <input type="radio" name="plan" value={p.code} checked={plan === p.code} onChange={() => setPlan(p.code)} className="size-5 accent-[var(--brand)]" />
-              <span className="flex-1">
-                <span className="flex items-center gap-2 font-semibold">
-                  {p.name}
-                  {p.code === "TERMLY" ? <span className="chip bg-accent text-[#2b1d00]">Popular with parents</span> : null}
-                </span>
-                <span className="muted block text-sm">{blurb[p.code]}</span>
+            <label key={p.code} className={cn(radioCard, "min-h-16 px-3 sm:px-4")}>
+              <input type="radio" name="plan" value={p.code} checked={plan === p.code} onChange={() => setPlan(p.code)} className="peer sr-only" />
+              <span aria-hidden className="grid size-6 shrink-0 place-items-center rounded-full border-2 border-line bg-card text-transparent peer-checked:text-on-fill">
+                <Check className="size-3.5" strokeWidth={3.5} />
               </span>
-              <span className="text-right">
-                <span className="block text-lg font-bold">{naira(p.amountKobo)}</span>
-                <span className="muted text-xs">{p.periodDays} days</span>
+              <span className="min-w-0 flex-1">
+                <span className="block font-display text-lg font-extrabold leading-tight">{p.name}</span>
+                <span className="block text-sm">{blurb[p.code]} · {p.periodDays} days</span>
+                {p.code === "TERMLY" ? <span className="mt-1 inline-block rounded-full border-2 border-line bg-gold px-2 text-xs font-extrabold text-on-fill">Popular with parents</span> : null}
               </span>
+              <span className="num shrink-0 text-xl sm:text-2xl">{naira(p.amountKobo)}</span>
             </label>
           ))}
         </div>
       </fieldset>
 
       <fieldset>
-        <legend className="label">2. How will you pay?</legend>
+        <legend className="mb-2 font-display text-lg font-extrabold">2. How do you want to pay?</legend>
         <input type="hidden" name="mode" value={effectiveMode} />
-        <div className="grid gap-2">
-          <button
-            type="button"
-            onClick={() => setMode("FIXED_PERIOD")}
-            aria-pressed={effectiveMode === "FIXED_PERIOD"}
-            className={`rounded-xl border-2 px-4 py-3 text-left ${effectiveMode === "FIXED_PERIOD" ? "border-brand bg-brand-soft" : "border-border bg-surface"}`}
-          >
-            <span className="block font-semibold">Bank transfer, USSD or card — pay once</span>
-            <span className="muted text-sm">Access for {selected?.periodDays} days. We&apos;ll remind you before it ends. Nothing renews automatically.</span>
-          </button>
+        <div className="grid gap-2.5">
+          <label className={radioCard}>
+            <input type="radio" name="_mode" checked={effectiveMode === "FIXED_PERIOD"} onChange={() => setMode("FIXED_PERIOD")} className="peer sr-only" />
+            <span className="flex shrink-0 gap-1" aria-hidden><Landmark className="size-5" /><Smartphone className="size-5" /><CreditCard className="size-5" /></span>
+            <span className="min-w-0">
+              <span className="block font-bold">Bank transfer, USSD or card — pay once</span>
+              <span className="block text-sm">Access for {selected?.periodDays} days. We remind you before it ends. Nothing renews by itself.</span>
+            </span>
+          </label>
           {canAuto ? (
-            <button
-              type="button"
-              onClick={() => setMode("AUTO_RENEW")}
-              aria-pressed={effectiveMode === "AUTO_RENEW"}
-              className={`rounded-xl border-2 px-4 py-3 text-left ${effectiveMode === "AUTO_RENEW" ? "border-brand bg-brand-soft" : "border-border bg-surface"}`}
-            >
-              <span className="block font-semibold">Card — renew automatically</span>
-              <span className="muted text-sm">Never lose access. Cancel anytime from the account page.</span>
-            </button>
+            <label className={radioCard}>
+              <input type="radio" name="_mode" checked={effectiveMode === "AUTO_RENEW"} onChange={() => setMode("AUTO_RENEW")} className="peer sr-only" />
+              <span className="flex shrink-0 gap-1" aria-hidden><CreditCard className="size-5" /><RotateCcw className="size-5" /></span>
+              <span className="min-w-0">
+                <span className="block font-bold">Card — renew automatically</span>
+                <span className="block text-sm">Never lose access. Cancel any time from your profile.</span>
+              </span>
+            </label>
           ) : null}
         </div>
       </fieldset>
 
-      <div>
-        <label className="label" htmlFor="email">3. Email for the receipt</label>
-        <input className="input" id="email" name="email" type="email" required autoComplete="email" defaultValue={defaultEmail ?? ""} placeholder="parent@example.com" />
-        <p className="muted mt-1 text-xs">Paystack sends the receipt here. It can be a parent&apos;s email.</p>
-      </div>
+      <Field id="email" label={<span className="font-display text-lg font-extrabold">3. Email for the receipt</span>} hint="Paystack sends the receipt here. A parent's email is fine.">
+        <Input id="email" name="email" type="email" required autoComplete="email" defaultValue={defaultEmail ?? ""} placeholder="parent@example.com" aria-describedby="email-hint" />
+      </Field>
 
-      <button className="btn-accent w-full text-lg" disabled={pending}>
+      <Button type="submit" block size="lg" loading={pending} icon={<Lock className="size-5" />}>
         {pending ? "Opening secure payment…" : `${submitLabel} · ${selected ? naira(selected.amountKobo) : ""}`}
-      </button>
-      <p className="muted text-center text-xs">Secure payment by Paystack. Access unlocks as soon as payment is confirmed.</p>
+      </Button>
+      <p className="muted text-center text-xs">Secure payment by Paystack. Premium unlocks as soon as payment is confirmed.</p>
     </form>
   );
 }

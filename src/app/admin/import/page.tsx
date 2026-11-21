@@ -1,7 +1,7 @@
 import { Suspense } from "react";
 import { requireRole } from "@/lib/auth";
 import { ImportForm } from "@/components/import-form";
-import { PageHeader, SkeletonList } from "@/components/ui";
+import { PageHeader, SkeletonList } from "@/components/admin-ui";
 
 export default function ImportPage() {
   return (

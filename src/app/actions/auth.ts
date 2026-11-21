@@ -114,5 +114,5 @@ export async function completeOnboarding(_: FormState, form: FormData): Promise<
     }),
   ]);
   track("onboarded", session.uid, { classLevel: parsed.data.classLevel, exams: parsed.data.exams, subjects: valid.length });
-  redirect("/dashboard");
+  redirect("/dashboard?welcome=1");
 }

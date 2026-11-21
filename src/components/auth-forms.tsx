@@ -2,31 +2,31 @@
 
 import Link from "next/link";
 import { useActionState } from "react";
+import { ArrowRight } from "lucide-react";
 import { login, signup } from "@/app/actions/auth";
-import { FormError } from "./ui";
+import { Button } from "./ds/button";
+import { Field, FormError, Input } from "./ds/field";
 
 export function SignupForm({ source }: { source?: string }) {
   const [state, action, pending] = useActionState(signup, undefined);
   return (
-    <form action={action} className="space-y-4">
+    <form action={action} className="sticker space-y-4 p-5">
       <input type="hidden" name="source" value={source ?? ""} />
       <FormError message={state?.error} />
-      <div>
-        <label className="label" htmlFor="name">Your name</label>
-        <input className="input" id="name" name="name" autoComplete="name" required defaultValue={state?.fields?.name} placeholder="e.g. Tobi Adebayo" />
-      </div>
-      <div>
-        <label className="label" htmlFor="identifier">Phone number or email</label>
-        <input className="input" id="identifier" name="identifier" autoComplete="username" inputMode="email" required defaultValue={state?.fields?.identifier} placeholder="0801 234 5678" />
-      </div>
-      <div>
-        <label className="label" htmlFor="password">Create a password</label>
-        <input className="input" id="password" name="password" type="password" autoComplete="new-password" minLength={6} required />
-        <p className="muted mt-1 text-xs">At least 6 characters.</p>
-      </div>
-      <button className="btn-primary w-full" disabled={pending}>{pending ? "Creating account…" : "Create free account"}</button>
-      <p className="muted text-center text-sm">
-        Already have an account? <Link className="font-semibold text-brand" href="/login">Log in</Link>
+      <Field id="name" label="What should we call you?">
+        <Input id="name" name="name" autoComplete="name" required defaultValue={state?.fields?.name} placeholder="e.g. Tobi Adebayo" />
+      </Field>
+      <Field id="identifier" label="Phone number or email" hint="Your phone number works. No email needed.">
+        <Input id="identifier" name="identifier" autoComplete="username" inputMode="email" required defaultValue={state?.fields?.identifier} placeholder="0801 234 5678" aria-describedby="identifier-hint" />
+      </Field>
+      <Field id="password" label="Create a password" hint="At least 6 characters.">
+        <Input id="password" name="password" type="password" autoComplete="new-password" minLength={6} required aria-describedby="password-hint" />
+      </Field>
+      <Button type="submit" block size="lg" loading={pending} iconRight={<ArrowRight className="size-5" />}>
+        {pending ? "Creating your account…" : "Create free account"}
+      </Button>
+      <p className="text-center text-sm text-ink-2">
+        Already have an account? <Link className="font-bold text-ink underline decoration-lime decoration-[3px] underline-offset-2" href="/login">Log in</Link>
       </p>
     </form>
   );
@@ -35,20 +35,20 @@ export function SignupForm({ source }: { source?: string }) {
 export function LoginForm({ next }: { next?: string }) {
   const [state, action, pending] = useActionState(login, undefined);
   return (
-    <form action={action} className="space-y-4">
+    <form action={action} className="sticker space-y-4 p-5">
       <input type="hidden" name="next" value={next ?? ""} />
       <FormError message={state?.error} />
-      <div>
-        <label className="label" htmlFor="identifier">Phone number or email</label>
-        <input className="input" id="identifier" name="identifier" autoComplete="username" inputMode="email" required defaultValue={state?.fields?.identifier} />
-      </div>
-      <div>
-        <label className="label" htmlFor="password">Password</label>
-        <input className="input" id="password" name="password" type="password" autoComplete="current-password" required />
-      </div>
-      <button className="btn-primary w-full" disabled={pending}>{pending ? "Logging in…" : "Log in"}</button>
-      <p className="muted text-center text-sm">
-        New here? <Link className="font-semibold text-brand" href="/signup">Create a free account</Link>
+      <Field id="identifier" label="Phone number or email">
+        <Input id="identifier" name="identifier" autoComplete="username" inputMode="email" required defaultValue={state?.fields?.identifier} />
+      </Field>
+      <Field id="password" label="Password">
+        <Input id="password" name="password" type="password" autoComplete="current-password" required />
+      </Field>
+      <Button type="submit" block size="lg" loading={pending}>
+        {pending ? "Logging in…" : "Log in"}
+      </Button>
+      <p className="text-center text-sm text-ink-2">
+        New here? <Link className="font-bold text-ink underline decoration-lime decoration-[3px] underline-offset-2" href="/signup">Create a free account</Link>
       </p>
     </form>
   );

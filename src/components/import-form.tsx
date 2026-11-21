@@ -2,7 +2,7 @@
 
 import { startTransition, useActionState, useState } from "react";
 import { runImport } from "@/app/actions/admin";
-import { FormError } from "./ui";
+import { FormError } from "./admin-ui";
 
 export function ImportForm({ canEditSyllabus }: { canEditSyllabus: boolean }) {
   const [state, action, pending] = useActionState(runImport, undefined);
@@ -25,7 +25,7 @@ export function ImportForm({ canEditSyllabus }: { canEditSyllabus: boolean }) {
           <legend className="label">What are you importing?</legend>
           <div className="grid grid-cols-2 gap-2">
             {(["questions", "syllabus"] as const).map((k) => (
-              <label key={k} className={`btn-secondary cursor-pointer has-[:checked]:border-brand has-[:checked]:bg-brand-soft ${k === "syllabus" && !canEditSyllabus ? "opacity-50" : ""}`}>
+              <label key={k} className={`btn-secondary cursor-pointer has-[:checked]:border-brand has-[:checked]:bg-info-soft ${k === "syllabus" && !canEditSyllabus ? "opacity-50" : ""}`}>
                 <input type="radio" name="kind" value={k} className="sr-only" checked={kind === k} disabled={k === "syllabus" && !canEditSyllabus} onChange={() => setKind(k)} />
                 {k === "questions" ? "Questions" : "Syllabus (topics)"}
               </label>
@@ -39,11 +39,11 @@ export function ImportForm({ canEditSyllabus }: { canEditSyllabus: boolean }) {
             Templates:{" "}
             {kind === "questions" ? (
               <>
-                <a className="font-semibold text-brand" href="/templates/questions-template.csv" download>questions.csv</a> ·{" "}
-                <a className="font-semibold text-brand" href="/templates/questions-template.xlsx" download>questions.xlsx</a>
+                <a className="font-semibold text-info" href="/templates/questions-template.csv" download>questions.csv</a> ·{" "}
+                <a className="font-semibold text-info" href="/templates/questions-template.xlsx" download>questions.xlsx</a>
               </>
             ) : (
-              <a className="font-semibold text-brand" href="/templates/syllabus-template.csv" download>syllabus.csv</a>
+              <a className="font-semibold text-info" href="/templates/syllabus-template.csv" download>syllabus.csv</a>
             )}
           </p>
         </div>
@@ -95,12 +95,12 @@ export function ImportForm({ canEditSyllabus }: { canEditSyllabus: boolean }) {
             ) : null}
             <p>
               <strong>{report.total}</strong> rows · <strong className="text-ok">{report.valid} ready</strong> ·{" "}
-              <strong className={report.invalid.length ? "text-bad" : ""}>{report.invalid.length} with problems</strong>
+              <strong className={report.invalid.length ? "text-danger" : ""}>{report.invalid.length} with problems</strong>
             </p>
             {report.invalid.length ? (
               <div>
                 <h3 className="mb-1 font-semibold">Fix these rows (they will be skipped):</h3>
-                <ul className="max-h-72 space-y-1 overflow-auto rounded-xl bg-bad-soft p-3">
+                <ul className="max-h-72 space-y-1 overflow-auto rounded-xl bg-danger-soft p-3">
                   {report.invalid.map((r) => (
                     <li key={r.line}><strong>Row {r.line}:</strong> {r.errors.join("; ")}</li>
                   ))}

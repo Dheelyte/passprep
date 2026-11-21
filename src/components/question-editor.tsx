@@ -2,7 +2,7 @@
 
 import { useActionState } from "react";
 import { saveQuestion } from "@/app/actions/admin";
-import { FormError } from "./ui";
+import { FormError } from "./admin-ui";
 
 type Q = { id: string; topicId: string; stem: string; options: string[]; correctIndex: number; explanation: string; difficulty: string; videoUrl: string; videoFree: boolean };
 

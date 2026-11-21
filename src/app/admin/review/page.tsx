@@ -4,7 +4,7 @@ import { db } from "@/lib/db";
 import { requireRole } from "@/lib/auth";
 import { reviewQuestion } from "@/app/actions/admin";
 import { QuestionPreview } from "@/components/question-preview";
-import { FormError, PageHeader, SkeletonList } from "@/components/ui";
+import { FormError, PageHeader, SkeletonList } from "@/components/admin-ui";
 
 export default function ReviewPage({ searchParams }: PageProps<"/admin/review">) {
   return (

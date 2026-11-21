@@ -2,7 +2,7 @@ import Link from "next/link";
 import { Suspense } from "react";
 import { db } from "@/lib/db";
 import { requireRole } from "@/lib/auth";
-import { PageHeader, SkeletonList } from "@/components/ui";
+import { PageHeader, SkeletonList } from "@/components/admin-ui";
 
 export default function AdminHome() {
   return (
@@ -46,13 +46,13 @@ async function Overview() {
       <section className="card">
         <h2 className="mb-2 font-semibold">Published questions by subject</h2>
         <table className="w-full text-sm">
-          <thead className="text-left text-muted"><tr><th className="py-1">Subject</th><th>Topics</th><th>Topics with no questions</th><th>Questions</th></tr></thead>
+          <thead className="text-left text-ink-2"><tr><th className="py-1">Subject</th><th>Topics</th><th>Topics with no questions</th><th>Questions</th></tr></thead>
           <tbody>
             {subjects.map((s) => {
               const n = s.topics.reduce((a, t) => a + t._count.questions, 0);
               const empty = s.topics.filter((t) => t._count.questions === 0).length;
               return (
-                <tr key={s.id} className="border-t border-border">
+                <tr key={s.id} className="border-t border-rule">
                   <td className="py-2 font-medium">{s.name}</td><td>{s.topics.length}</td><td>{empty}</td><td className="font-semibold">{n}</td>
                 </tr>
               );

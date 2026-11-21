@@ -7,16 +7,19 @@ import { renderInline, renderMarkdown } from "@/lib/markdown";
 import { studentToday } from "@/lib/student";
 import { isPremium, canWatchVideo } from "@/lib/entitlements";
 import { youtubeId } from "@/lib/youtube";
+import { subjectScope } from "@/lib/subjects";
 import { PracticeRunner, type RunnerQuestion } from "@/components/practice-runner";
-import { SkeletonList } from "@/components/ui";
+import { SkeletonQuestion } from "@/components/ds";
 
 export const metadata: Metadata = { title: "Practice" };
 
 export default function PracticePage({ params }: PageProps<"/practice/[id]">) {
   return (
-    <Suspense fallback={<SkeletonList rows={5} />}>
-      <Practice params={params} />
-    </Suspense>
+    <div className="mx-auto w-full max-w-2xl px-4 pb-10 pt-4">
+      <Suspense fallback={<SkeletonQuestion />}>
+        <Practice params={params} />
+      </Suspense>
+    </div>
   );
 }
 
@@ -65,18 +68,21 @@ async function Practice({ params }: { params: PageProps<"/practice/[id]">["param
       };
     });
 
-  const topicTitle = session.topic.parent ? `${session.topic.parent.name} › ${session.topic.name}` : session.topic.name;
+  const topicTitle = session.topic.parent ? `${session.topic.parent.name} · ${session.topic.name}` : session.topic.name;
 
   return (
-    <PracticeRunner
-      sessionId={session.id}
-      topicId={session.topicId}
-      subjectSlug={session.topic.subject.slug}
-      title={topicTitle}
-      subject={session.topic.subject.name}
-      questions={items}
-      initialStreak={day.streak}
-      remaining={day.remaining}
-    />
+    <div data-subject={subjectScope(session.topic.subject.slug)}>
+      <PracticeRunner
+        sessionId={session.id}
+        topicId={session.topicId}
+        subjectSlug={session.topic.subject.slug}
+        title={topicTitle}
+        subject={session.topic.subject.name}
+        questions={items}
+        initialStreak={day.streak}
+        initialPoints={user.totalPoints}
+        remaining={day.remaining}
+      />
+    </div>
   );
 }
