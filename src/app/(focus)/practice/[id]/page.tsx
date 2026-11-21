@@ -15,7 +15,7 @@ export const metadata: Metadata = { title: "Practice" };
 
 export default function PracticePage({ params }: PageProps<"/practice/[id]">) {
   return (
-    <div className="mx-auto w-full max-w-2xl px-4 pb-10 pt-4">
+    <div className="mx-auto w-full max-w-2xl px-4 pb-10 pt-4 lg:max-w-3xl lg:pt-6">
       <Suspense fallback={<SkeletonQuestion />}>
         <Practice params={params} />
       </Suspense>

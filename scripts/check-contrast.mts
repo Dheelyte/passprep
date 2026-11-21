@@ -32,7 +32,7 @@ const pairs = (t: Record<string, string>): Pair[] => [
   [INK, t.sun, 4.5], [INK, t.coral, 4.5], [INK, t.ok, 4.5], [INK, t.oops, 4.5], [INK, t.silver, 4.5], [INK, t.bronze, 4.5],
   ...subjects.flatMap((s): Pair[] => [[t[`${s}-on`], t[s], 4.5], [t[`${s}-ink`], t[`${s}-soft`], 4.5], [t.ink, t[`${s}-soft`], 4.5], [t["ink-2"], t[`${s}-soft`], 4.5]]),
   // non-text UI
-  [t.focus, t.paper, 3], [t.primary, t.paper, 3],
+  [t.focus, t.paper, 3], [t.primary, t.paper, 3], [t.line, t.paper, 3], [t.line, t.card, 3], [t.line, t["paper-2"], 3],
 ];
 const names = (t: Record<string, string>) => Object.fromEntries(Object.entries(t).map(([k, v]) => [v, k]));
 

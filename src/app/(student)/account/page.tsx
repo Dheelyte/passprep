@@ -71,6 +71,7 @@ async function Account() {
         ))}
       </dl>
 
+      <div className="grid items-start gap-5 lg:grid-cols-2">
       <Card as="section" aria-labelledby="cal-h">
         <div className="mb-3 flex items-baseline justify-between">
           <h2 id="cal-h" className="text-lg font-extrabold">Streak calendar</h2>
@@ -84,11 +85,13 @@ async function Account() {
           <h2 id="badges-h" className="text-lg font-extrabold">Sticker collection</h2>
           <span className="text-sm font-bold">{earned}/{badges.length}</span>
         </div>
-        <ul className="grid grid-cols-3 justify-items-center gap-y-4">
+        <ul className="grid grid-cols-3 justify-items-center gap-y-4 sm:grid-cols-5 lg:grid-cols-3 xl:grid-cols-5">
           {badges.map((b) => <li key={b.id}><StickerBadge badge={b} size={64} /></li>)}
         </ul>
       </Card>
 
+      </div>
+      <div className="grid items-start gap-5 lg:grid-cols-2">
       <Card as="section" aria-labelledby="subj-h">
         <div className="mb-3 flex items-baseline justify-between">
           <h2 id="subj-h" className="text-lg font-extrabold">Subjects</h2>
@@ -120,6 +123,7 @@ async function Account() {
         )}
       </Card>
 
+      </div>
       <Card as="section" aria-labelledby="settings-h" flat className="space-y-1">
         <h2 id="settings-h" className="mb-1 flex items-center gap-2 text-lg font-extrabold"><Settings aria-hidden className="size-5" /> Settings</h2>
         <div className="flex min-h-12 items-center justify-between border-b-2 border-dashed border-rule">

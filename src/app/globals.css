@@ -48,11 +48,11 @@
   --paper: #121024;
   --paper-2: #1a1730;
   --card: #1e1b33;
-  --rule: #2c2848;
+  --rule: #3a3560;
   --ink: #f6f2ff;
   --ink-2: #c4bdda;
-  --line: #05040c;
-  --shadow-ink: #05040c;
+  --line: #9b93c9; /* chalk outline: 6.6:1 on bg, 5.9:1 on cards */
+  --shadow-ink: #000000;
   --primary-soft: #232a5c; --primary-ink: #a9b8ff;
   --sun-soft: #3a2f12; --sun-ink: #ffd766;
   --coral-soft: #3d1c22; --coral-ink: #ffa3a3;
@@ -79,11 +79,11 @@
     --paper: #121024;
     --paper-2: #1a1730;
     --card: #1e1b33;
-    --rule: #2c2848;
+    --rule: #3a3560;
     --ink: #f6f2ff;
     --ink-2: #c4bdda;
-    --line: #05040c;
-    --shadow-ink: #05040c;
+    --line: #9b93c9; /* chalk outline: 6.6:1 on bg, 5.9:1 on cards */
+    --shadow-ink: #000000;
     --primary-soft: #232a5c; --primary-ink: #a9b8ff;
     --sun-soft: #3a2f12; --sun-ink: #ffd766;
     --coral-soft: #3d1c22; --coral-ink: #ffa3a3;
@@ -256,6 +256,8 @@ h1, h2, h3, .font-display { font-family: var(--font-display); letter-spacing: -0
   &:disabled, &[aria-disabled="true"] { cursor: not-allowed; opacity: 0.55; box-shadow: none; }
 }
 @utility btn-primary { @apply btn; background: var(--primary); color: var(--on-primary); &:hover:not(:disabled) { background: color-mix(in oklab, var(--primary) 88%, #000); } }
+/* high-contrast neutral button: ink fill (dark ink in light mode, near-white in dark mode) */
+@utility btn-ink { @apply btn; background: var(--ink); color: var(--paper); &:hover:not(:disabled) { background: color-mix(in oklab, var(--ink) 85%, var(--paper)); } }
 /* reward / celebration button (ink on sunshine) */
 @utility btn-sun { @apply btn; background: var(--sun); color: #16131f; &:hover:not(:disabled) { background: color-mix(in oklab, var(--sun) 90%, #000); } }
 @utility btn-secondary { @apply btn; background: var(--card); color: var(--ink); }
@@ -382,7 +384,7 @@ h1, h2, h3, .font-display { font-family: var(--font-display); letter-spacing: -0
   color: var(--subj-on, #fff);
 }
 /* marker-pen highlight in Sunshine for key steps; key terms (*italic* in content) underlined in the subject colour */
-.workings strong, .prose-q mark { background: linear-gradient(100deg, transparent 2%, var(--sun) 3%, var(--sun) 97%, transparent 98%) 0 62% / 100% 52% no-repeat; padding: 0 0.15em; color: inherit; }
+.workings strong, .prose-q mark { background: linear-gradient(100deg, transparent 2%, var(--sun) 3%, var(--sun) 97%, transparent 98%) 0 62% / 100% 52% no-repeat; padding: 0 0.15em; color: #16131f; /* ink on the sunshine marker in both themes */ }
 .workings em, .prose-q em { font-style: normal; font-weight: 700; text-decoration: underline wavy var(--subj, var(--primary)); text-decoration-thickness: 2px; text-underline-offset: 4px; }
 
 /* Explanation steps slide in one after another */
@@ -413,7 +415,10 @@ h1, h2, h3, .font-display { font-family: var(--font-display); letter-spacing: -0
 .calm .input { min-height: 2.5rem; border-width: 1.5px; }
 
 /* Full-bleed colour block (screen headers, landing sections) that escapes the centred column */
+/* --bleed-w = width of the area the block should fill: the viewport, or the area beside the desktop sidebar */
+:root { --bleed-w: 100vw; --sidebar-w: 16rem; }
+@media (min-width: 1024px) { .with-sidebar { --bleed-w: calc(100vw - var(--sidebar-w)); } }
 @utility bleed {
-  margin-inline: calc(50% - 50vw);
-  padding-inline: calc(50vw - 50%); /* content stays aligned with the column */
+  margin-inline: calc(50% - var(--bleed-w) / 2);
+  padding-inline: calc(var(--bleed-w) / 2 - 50%); /* content stays aligned with the column */
 }

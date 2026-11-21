@@ -71,20 +71,28 @@ async function Board() {
         className="mb-0"
       >
         {podium.length ? (
-          <ol className="grid grid-cols-3 items-end gap-2" aria-label="Top three">
+          <ol className="mx-auto grid max-w-xl grid-cols-3 items-end gap-2 sm:gap-4" aria-label="Top three">
             {[podium[1], podium[0], podium[2]].map((r, i) => {
               if (!r) return <li key={i} aria-hidden />;
               const place = r.rank as 1 | 2 | 3;
-              const height = { 1: "h-28", 2: "h-20", 3: "h-14" }[place];
-              const fill = { 1: "bg-sun", 2: "bg-silver", 3: "bg-bronze" }[place];
+              const style = {
+                1: { step: "h-32 bg-sun", ring: "bg-sun", plate: "bg-sun", label: "1st" },
+                2: { step: "h-24 bg-silver", ring: "bg-silver", plate: "bg-silver", label: "2nd" },
+                3: { step: "h-16 bg-bronze", ring: "bg-bronze", plate: "bg-bronze", label: "3rd" },
+              }[place];
               const mine = r.userId === user.id;
               return (
                 <li key={r.userId} className="flex flex-col items-center text-center">
-                  <TrophyIcon place={place} size={place === 1 ? 44 : 34} />
-                  <span className="mt-1 w-full truncate px-1 font-display text-sm font-extrabold">{r.name}{mine ? " (you)" : ""}</span>
-                  <span className="num text-base">{r.points}<span className="text-xs font-bold"> pts</span></span>
-                  <span className={cn("mt-1 grid w-full place-items-center border-2 border-b-0 border-line font-display text-3xl font-extrabold text-on-fill shadow-sticker-sm [border-radius:10px_10px_0_0]", height, fill)}>
-                    {place}
+                  <TrophyIcon place={place} size={place === 1 ? 46 : 34} />
+                  <span className={cn("mt-1 rounded-full border-2 border-line p-1 shadow-sticker-sm", style.ring)}>
+                    <Avatar name={r.name} size={place === 1 ? "md" : "sm"} />
+                  </span>
+                  <span className="mt-2 w-full truncate rounded-[8px] border-2 border-line bg-white px-1.5 py-0.5 font-display text-sm font-extrabold text-[#16131f]">
+                    {r.name}{mine ? " (you)" : ""}
+                  </span>
+                  <span className={cn("mt-2 flex w-full flex-col items-center justify-start gap-1 border-2 border-b-0 border-line pt-2 text-on-fill shadow-sticker [border-radius:12px_12px_0_0]", style.step)}>
+                    <span className="num text-3xl leading-none">{style.label}</span>
+                    <span className="rounded-full border-2 border-line bg-white px-2 text-xs font-extrabold text-[#16131f]">{r.points} pts</span>
                   </span>
                 </li>
               );
@@ -93,6 +101,7 @@ async function Board() {
         ) : null}
       </ScreenHeader>
 
+      <div className="mx-auto max-w-3xl space-y-5">
       {climbed > 0 ? (
         <Card tone="sun" className="anim-rise flex items-center gap-3">
           <TrendingUp aria-hidden className="size-6 shrink-0" />
@@ -113,7 +122,7 @@ async function Board() {
       ) : null}
 
       {/* Your row, always visible above the bottom nav */}
-      <div className="sticky bottom-20 z-20">
+      <div className="sticky bottom-20 z-20 lg:bottom-6">
         {me ? (
           <div className="overflow-hidden border-2 border-line shadow-sticker [border-radius:var(--r-sticker)]" aria-label="Your position">
             <Row r={me} mine prev={myPrev} />
@@ -124,6 +133,7 @@ async function Board() {
       </div>
 
       <p className="muted text-xs">Correct +10 · wrong +2 (for trying) · streak milestones earn bonus points. Re-solving a question you already got right earns nothing.</p>
+      </div>
     </div>
   );
 }

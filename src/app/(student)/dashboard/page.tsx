@@ -56,10 +56,10 @@ async function Dashboard({ searchParams }: { searchParams: PageProps<"/dashboard
   return (
     <div className="space-y-5">
       {/* Dominant colour: Sunshine — today, streak and goal */}
-      <header className="bleed -mt-5 border-b-2 border-line bg-sun pb-6 pt-5 text-on-fill">
+      <header className="bleed -mt-5 lg:-mt-8 border-b-2 border-line bg-sun pb-6 pt-5 text-on-fill">
         <h1 className="text-3xl font-extrabold">Hi {firstName}</h1>
         <p className="mt-1 font-semibold">{greeting(day.streak, day.practisedToday)}</p>
-        <div className="mt-4 grid grid-cols-[0.85fr_1.15fr] gap-2.5">
+        <div className="mt-4 grid grid-cols-[0.85fr_1.15fr] gap-2.5 lg:max-w-xl">
           <div className="flex items-center gap-2 border-2 border-line bg-card px-2.5 py-3 text-ink shadow-sticker [border-radius:var(--r-sticker)]">
             <Flame days={day.streak} size={day.streak >= 7 ? 46 : day.streak >= 3 ? 40 : 34} />
             <span>
@@ -102,23 +102,43 @@ async function Dashboard({ searchParams }: { searchParams: PageProps<"/dashboard
         </CardLink>
       ) : null}
 
+      <div className="grid gap-5 lg:grid-cols-[1.4fr_1fr]">
       {open ? (
-        <CardLink href={`/practice/${open.id}`} tone="primary" className="flex items-center gap-4 p-5">
-          <span data-subject={subjectScope(open.topic.subject.slug)} className="grid size-12 shrink-0 place-items-center rounded-[10px] border-2 border-line bg-subj text-on-subj">
-            <SubjectIcon slug={open.topic.subject.slug} className="size-6" />
+          <CardLink href={`/practice/${open.id}`} tone="primary" className="flex h-full items-center gap-4 p-5">
+            <span data-subject={subjectScope(open.topic.subject.slug)} className="grid size-12 shrink-0 place-items-center rounded-[10px] border-2 border-line bg-subj text-on-subj">
+              <SubjectIcon slug={open.topic.subject.slug} className="size-6" />
+            </span>
+            <span className="min-w-0 flex-1">
+              <span className="block text-sm font-bold">Continue where you stopped</span>
+              <span className="block truncate font-display text-xl font-extrabold">{open.topic.name}</span>
+              <ProgressBar value={open.answered} max={open.questionIds.length} label={`${open.answered} of ${open.questionIds.length} answered`} tone="sun" size="sm" className="mt-2" />
+            </span>
+            <ArrowRight aria-hidden className="size-6 shrink-0" />
+          </CardLink>
+        ) : (
+          <ButtonLink href="/subjects" block size="lg" iconRight={<ArrowRight className="size-5" />}>
+            Start practising
+          </ButtonLink>
+        )}
+        <CardLink href="/leaderboard" className="flex h-full items-center gap-4" aria-label="This week's leaderboard">
+          <span className="flex flex-col items-center rounded-[10px] border-2 border-line bg-sun px-3 py-2 text-on-fill">
+            <span className="text-xs font-bold">Rank</span>
+            <span className="num text-3xl">{board.me ? `#${board.me.rank}` : "–"}</span>
           </span>
           <span className="min-w-0 flex-1">
-            <span className="block text-sm font-bold">Continue where you stopped</span>
-            <span className="block truncate font-display text-xl font-extrabold">{open.topic.name}</span>
-            <ProgressBar value={open.answered} max={open.questionIds.length} label={`${open.answered} of ${open.questionIds.length} answered`} tone="sun" size="sm" className="mt-2" />
+            <span className="block font-display font-extrabold">This week&apos;s leaderboard</span>
+            {board.me ? (
+              <RankChange now={board.me.rank} prev={prevRank} />
+            ) : (
+              <span className="muted block text-sm">Answer a question to get on the board.</span>
+            )}
+            {board.rows[0] && board.me?.rank !== 1 ? (
+              <span className="muted block truncate text-xs">Top: {board.rows[0].name} · {board.rows[0].points} pts</span>
+            ) : null}
           </span>
-          <ArrowRight aria-hidden className="size-6 shrink-0" />
+          <ArrowRight aria-hidden className="size-5 shrink-0" />
         </CardLink>
-      ) : (
-        <ButtonLink href="/subjects" block size="lg" iconRight={<ArrowRight className="size-5" />}>
-          Start practising
-        </ButtonLink>
-      )}
+      </div>
 
       <section aria-labelledby="subjects-h">
         <div className="mb-2 flex items-end justify-between">
@@ -128,7 +148,7 @@ async function Dashboard({ searchParams }: { searchParams: PageProps<"/dashboard
         {subjects.length === 0 ? (
           <EmptyState title="No subjects yet" body="Pick the subjects you're writing and we'll line up the topics." action={<ButtonLink href="/onboarding">Choose subjects</ButtonLink>} />
         ) : (
-          <ul className="grid grid-cols-2 gap-3">
+          <ul className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
             {subjects.map((s, i) => {
               const topics = progress[i];
               const strong = topics.filter((t) => t.mastery === "strong").length;
@@ -155,24 +175,6 @@ async function Dashboard({ searchParams }: { searchParams: PageProps<"/dashboard
         )}
       </section>
 
-      <CardLink href="/leaderboard" className="flex items-center gap-4" aria-label="This week's leaderboard">
-        <span className="flex flex-col items-center rounded-[10px] border-2 border-line bg-sun px-3 py-2 text-on-fill">
-          <span className="text-xs font-bold">Rank</span>
-          <span className="num text-3xl">{board.me ? `#${board.me.rank}` : "–"}</span>
-        </span>
-        <span className="min-w-0 flex-1">
-          <span className="block font-display font-extrabold">This week&apos;s leaderboard</span>
-          {board.me ? (
-            <RankChange now={board.me.rank} prev={prevRank} />
-          ) : (
-            <span className="muted block text-sm">Answer a question to get on the board.</span>
-          )}
-          {board.rows[0] && board.me?.rank !== 1 ? (
-            <span className="muted block truncate text-xs">Top: {board.rows[0].name} · {board.rows[0].points} pts</span>
-          ) : null}
-        </span>
-        <ArrowRight aria-hidden className="size-5 shrink-0" />
-      </CardLink>
     </div>
   );
 }

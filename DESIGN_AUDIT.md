@@ -106,3 +106,15 @@ Layout, components, typography and the sticker style are unchanged. Colour now f
   - **States:** colourful doodles, tinted empty and error cards, skeletons tinted per section.
 - **360px:** each colour block was worked out by hand and adjusted: full-bleed headers keep their content aligned with the column, and the dashboard header tiles were tightened. Small pills on coloured fills use a fixed white background, so they read the same in dark mode. A source scan confirmed that every bright fill sets an AA-safe text colour.
 - **Still not done:** real screenshots at 360px in both themes. Chromium can't run on this machine. Please run the Playwright suite or check on a device.
+
+## Desktop pass
+
+- **Layout:** a sidebar replaces the bottom bar from 1024px up, and the main column widens to `max-w-6xl` with desktop grids on each screen. Full-bleed colour headers are sidebar-aware.
+- **Podium:** each place has its own colour (gold / silver / bronze steps, a place-coloured avatar ring, white name plates and a points pill on the step).
+- **Reported unstyled buttons** ("Start free", onboarding "Next"): both use `btn-sun`. It's generated correctly in both the dev and production CSS here, so the likely cause is a stale `globals.css` or Turbopack cache in the copied project.
+
+## Dark-mode visibility pass
+
+- **Root cause:** dark-mode outlines and hard shadows used a near-black `--line` on the navy background, so buttons, inputs, cards, options and progress tracks lost their edges. The dark `--line` is now chalk `#9B93C9`, the shadows are black, and the dividers are stronger. `check-contrast.mts` now also checks outline against background, card and paper-2 (all ≥ 3:1).
+- Sunshine marker highlights in explanations now force ink text. It previously inherited the light dark-mode text and was unreadable.
+- **Landing:** removed the hero's "No payment…" line. The hero CTA is a full-width (on phones) Sunshine button. The final CTA on Coral uses the new high-contrast **Ink** button.

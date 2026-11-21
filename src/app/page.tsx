@@ -71,9 +71,8 @@ export default async function Home() {
             <p className="mt-5 max-w-md text-lg font-semibold">
               Practise one topic at a time. Get the workings for every answer, a teacher&apos;s video when you&apos;re stuck, and a streak that keeps you coming back.
             </p>
-            <div className="mt-7 flex flex-col gap-3 sm:flex-row sm:items-center">
-              <ButtonLink href="/signup" variant="sun" size="lg" iconRight={<ArrowRight className="size-5" />}>Start practising free</ButtonLink>
-              <span className="text-sm font-bold">No payment. Sign up with your phone number.</span>
+            <div className="mt-8">
+              <ButtonLink href="/signup" variant="sun" size="lg" className="w-full sm:w-auto" iconRight={<ArrowRight className="size-5" />}>Start practising free</ButtonLink>
             </div>
           </div>
           <div className="relative text-ink">
@@ -240,7 +239,7 @@ export default async function Home() {
         <section className="border-t-2 border-line bg-coral px-4 py-16 text-center text-on-fill" data-reveal>
           <h2 className="text-3xl font-extrabold sm:text-5xl">Your exam no go wait for you.</h2>
           <p className="mx-auto mt-3 max-w-md text-lg font-semibold">Start with one topic today. Ten questions. Ten minutes. Free.</p>
-          <ButtonLink href="/signup" size="lg" className="mt-6" iconRight={<ArrowRight className="size-5" />}>Start practising free</ButtonLink>
+          <ButtonLink href="/signup" variant="ink" size="lg" className="mt-6 w-full sm:w-auto" iconRight={<ArrowRight className="size-5" />}>Start practising free</ButtonLink>
         </section>
       </main>
 

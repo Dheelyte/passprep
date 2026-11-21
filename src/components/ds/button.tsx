@@ -3,12 +3,13 @@ import type { ComponentProps, ReactNode } from "react";
 import { LoaderCircle } from "lucide-react";
 import { cn } from "./cn";
 
-export type ButtonVariant = "primary" | "sun" | "secondary" | "ghost" | "danger";
+export type ButtonVariant = "primary" | "sun" | "ink" | "secondary" | "ghost" | "danger";
 export type ButtonSize = "sm" | "md" | "lg";
 
 const variants: Record<ButtonVariant, string> = {
   primary: "btn-primary",
   sun: "btn-sun",
+  ink: "btn-ink",
   secondary: "btn-secondary",
   ghost: "btn-ghost",
   danger: "btn-danger",

@@ -53,7 +53,7 @@ async function Subject({ params }: { params: PageProps<"/subjects/[slug]">["para
   return (
     <div data-screen={subjectScope(subject.slug)} data-subject={subjectScope(subject.slug)}>
       {/* The whole screen takes the subject's identity: coloured header, tinted page */}
-      <header className="bleed -mt-5 mb-6 border-b-2 border-line bg-subj pb-5 pt-3 text-on-subj">
+      <header className="bleed -mt-5 lg:-mt-8 mb-6 border-b-2 border-line bg-subj pb-5 pt-3 text-on-subj">
         <Link href="/subjects" className="mb-2 inline-flex min-h-10 items-center gap-1 text-sm font-bold">
           <ArrowLeft aria-hidden className="size-4" /> All subjects
         </Link>
@@ -73,7 +73,7 @@ async function Subject({ params }: { params: PageProps<"/subjects/[slug]">["para
         </dl>
       </header>
 
-      <ol className="relative" aria-label={`${subject.name} topics in order`}>
+      <ol className="relative max-w-3xl" aria-label={`${subject.name} topics in order`}>
         {roots.map((t, i) => {
           const subs = childrenOf(t.id);
           const n = total(t.id);

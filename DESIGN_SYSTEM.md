@@ -48,6 +48,8 @@ Each subject has a bright **fill**, a light **tint** for backgrounds, a **deep**
 ### Dark mode
 
 - Background `#121024` (deep ink-navy), cards `#1E1B33`, text `#F6F2FF`.
+- Outlines become a light "chalk" lavender `#9B93C9` (6.6:1 on the background, 5.9:1 on cards), so sticker borders, inputs and buttons stay visible. Hard shadows are black.
+- Text on the Sunshine marker highlight is always ink.
 - Bright fills stay the same, so the text-on-fill rules are identical in both themes.
 - Tints become deep tinted navies, and the deep shades become light pastels so text on tints still passes.
 - Primary as *text* is `primary-ink` (`#A9B8FF` in dark). Raw Cobalt is only used for fills and large text.
@@ -117,7 +119,7 @@ Each subject has a bright **fill**, a light **tint** for backgrounds, a **deep**
 
 | Component | Notes |
 |---|---|
-| `Button` / `ButtonLink` | `variant`: primary (Cobalt, white text) · sun (Sunshine, for use on Cobalt/Grape surfaces and rewards) · secondary · ghost (inherits its surface's text colour) · danger. `size`: sm · md · lg. `block`, `icon`, `iconRight`, `loading` (spinner plus disabled). Pushes into its shadow on press. |
+| `Button` / `ButtonLink` | `variant`: primary (Cobalt, white text) · sun (Sunshine, for use on Cobalt/Grape surfaces and rewards) · ink (highest-contrast neutral, for use on Coral or any bright block) · secondary · ghost (inherits its surface's text colour) · danger. `size`: sm · md · lg. `block`, `icon`, `iconRight`, `loading` (spinner plus disabled). Pushes into its shadow on press. |
 | `SubmitButton` | Client. Shows `loading` while the parent `<form>`'s server action is pending. |
 | `Card` / `CardLink` | Sticker surface. `tone`: card · paper · primary · sun · coral · grape · subject · subject-soft · ok · oops · info. `flat` removes the shadow, `padded={false}` removes padding. `CardLink` presses like a button. |
 | `Chip` | Small pill: neutral · sun · primary · coral · grape · ok · oops · info · subject · subject-fill. Pair state colours with an `icon`. |
@@ -146,3 +148,14 @@ Icons come from **Lucide** only (`lucide-react`, tree-shaken), at stroke 2–2.5
 - Touch targets are at least 48px (`min-h-12`). Options are 56px.
 - Copy voice: an older sibling who aced their exams. Short, warm, a little Naija ("No wahala", "You dey try"), never babyish.
 - Admin pages sit inside `.calm`, which gives flat buttons, 1.5px borders and denser inputs. Don't add game styling there.
+
+## Layout and breakpoints
+
+| Width | Student layout |
+|---|---|
+| < 1024px | Sticky top bar, content column `max-w-xl` (phones) / `max-w-2xl` (tablets), bottom tab bar |
+| ≥ 1024px | Fixed left **sidebar** (`--sidebar-w: 16rem`: logo, nav, Go Premium card, theme), no top or bottom bar, content up to `max-w-6xl` with `px-10` |
+
+- Pages spread out on desktop: dashboard "Continue" and rank sit side by side with four subject columns; subjects and progress use two columns; the profile pairs calendar with badges and subjects with plan; Premium shows the comparison table beside the plans.
+- The leaderboard and topic path keep a readable `max-w-3xl`.
+- `.with-sidebar` sets `--bleed-w`, so full-bleed colour blocks (`bleed`, `ScreenHeader`) fill the area beside the sidebar instead of the whole viewport.

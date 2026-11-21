@@ -37,7 +37,8 @@ export default function PremiumPage() {
         subtitle="Unlimited questions and every video solution — so you're never stuck the night before the paper."
       />
 
-      <div className="sticker overflow-hidden p-0">
+      <div className="grid gap-6 lg:grid-cols-[1fr_1.15fr] lg:items-start">
+      <div className="sticker overflow-hidden p-0 lg:sticky lg:top-8">
         <table className="w-full text-sm">
           <caption className="sr-only">Free vs Premium</caption>
           <thead>
@@ -62,6 +63,7 @@ export default function PremiumPage() {
       <Suspense fallback={<SkeletonList rows={4} />}>
         <Plans />
       </Suspense>
+      </div>
 
       <ButtonLink href="/dashboard" variant="ghost" block>Not now — keep practising free</ButtonLink>
     </div>
@@ -73,7 +75,7 @@ async function Plans() {
   const premium = isPremium(user.subscription);
   const plans = await planViews();
   return (
-    <>
+    <div className="space-y-6">
       {premium && user.subscription ? (
         <Card tone="ok" className="flex items-start gap-3 text-sm">
           <Check aria-hidden className="mt-0.5 size-5 shrink-0 text-ok-ink" strokeWidth={3} />
@@ -94,6 +96,6 @@ async function Plans() {
         <h2 className="mb-4 text-xl font-extrabold">Or pay now</h2>
         <PlanPicker plans={plans} action={checkout} defaultEmail={user.email} />
       </Card>
-    </>
+    </div>
   );
 }
