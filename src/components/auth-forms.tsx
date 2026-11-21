@@ -10,7 +10,7 @@ import { Field, FormError, Input } from "./ds/field";
 export function SignupForm({ source }: { source?: string }) {
   const [state, action, pending] = useActionState(signup, undefined);
   return (
-    <form action={action} className="sticker space-y-4 p-5">
+    <form action={action} className="sticker space-y-4 p-5 text-ink">
       <input type="hidden" name="source" value={source ?? ""} />
       <FormError message={state?.error} />
       <Field id="name" label="What should we call you?">
@@ -26,7 +26,7 @@ export function SignupForm({ source }: { source?: string }) {
         {pending ? "Creating your account…" : "Create free account"}
       </Button>
       <p className="text-center text-sm text-ink-2">
-        Already have an account? <Link className="font-bold text-ink underline decoration-lime decoration-[3px] underline-offset-2" href="/login">Log in</Link>
+        Already have an account? <Link className="font-bold text-ink underline decoration-primary decoration-[3px] underline-offset-2" href="/login">Log in</Link>
       </p>
     </form>
   );
@@ -35,7 +35,7 @@ export function SignupForm({ source }: { source?: string }) {
 export function LoginForm({ next }: { next?: string }) {
   const [state, action, pending] = useActionState(login, undefined);
   return (
-    <form action={action} className="sticker space-y-4 p-5">
+    <form action={action} className="sticker space-y-4 p-5 text-ink">
       <input type="hidden" name="next" value={next ?? ""} />
       <FormError message={state?.error} />
       <Field id="identifier" label="Phone number or email">
@@ -48,7 +48,7 @@ export function LoginForm({ next }: { next?: string }) {
         {pending ? "Logging in…" : "Log in"}
       </Button>
       <p className="text-center text-sm text-ink-2">
-        New here? <Link className="font-bold text-ink underline decoration-lime decoration-[3px] underline-offset-2" href="/signup">Create a free account</Link>
+        New here? <Link className="font-bold text-ink underline decoration-primary decoration-[3px] underline-offset-2" href="/signup">Create a free account</Link>
       </p>
     </form>
   );

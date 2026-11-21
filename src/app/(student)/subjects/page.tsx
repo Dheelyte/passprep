@@ -4,7 +4,7 @@ import { ArrowRight } from "lucide-react";
 import { db } from "@/lib/db";
 import { requireUser } from "@/lib/auth";
 import { subjectScope } from "@/lib/subjects";
-import { CardLink, Chip, SkeletonList } from "@/components/ds";
+import { CardLink, Chip, ScreenHeader, SkeletonList } from "@/components/ds";
 import { SubjectIcon } from "@/components/subject-icon";
 
 export const metadata: Metadata = { title: "Subjects" };
@@ -12,8 +12,7 @@ export const metadata: Metadata = { title: "Subjects" };
 export default function SubjectsPage() {
   return (
     <>
-      <h1 className="text-3xl font-extrabold">Pick a subject</h1>
-      <p className="muted mb-5 mt-1">Then work through it one topic at a time, the way the syllabus runs.</p>
+      <ScreenHeader tone="primary" title="Pick a subject" subtitle="Then work through it one topic at a time, the way the syllabus runs." />
       <Suspense fallback={<SkeletonList rows={4} />}>
         <Subjects />
       </Suspense>
@@ -42,19 +41,17 @@ async function Subjects() {
         const n = qCount.get(s.id) ?? 0;
         return (
           <li key={s.id} data-subject={subjectScope(s.slug)}>
-            <CardLink href={`/subjects/${s.slug}`} padded={false} className="flex items-stretch overflow-hidden">
-              <span className="grid w-16 shrink-0 place-items-center border-r-2 border-line bg-subj text-on-fill">
+            <CardLink href={`/subjects/${s.slug}`} tone="subject" className="flex items-center gap-4 py-5">
+              <span className="grid size-14 shrink-0 place-items-center rounded-full border-2 border-line bg-card text-ink">
                 <SubjectIcon slug={s.slug} className="size-7" />
               </span>
-              <span className="flex min-w-0 flex-1 items-center justify-between gap-2 px-4 py-3">
-                <span className="min-w-0">
-                  <span className="block font-display text-lg font-extrabold">{s.name}</span>
-                  <span className="muted text-sm">{s.topics.length} topics · {n ? `${n} questions` : "questions coming soon"}</span>
-                </span>
-                <span className="flex shrink-0 items-center gap-2">
-                  {mineSet.has(s.id) ? <Chip tone="subject">Yours</Chip> : null}
-                  <ArrowRight aria-hidden className="size-5" />
-                </span>
+              <span className="min-w-0 flex-1">
+                <span className="block font-display text-2xl font-extrabold">{s.name}</span>
+                <span className="text-sm font-bold">{s.topics.length} topics · {n ? `${n} questions` : "questions coming soon"}</span>
+              </span>
+              <span className="flex shrink-0 items-center gap-2">
+                {mineSet.has(s.id) ? <Chip tone="sun">Yours</Chip> : null}
+                <ArrowRight aria-hidden className="size-6" />
               </span>
             </CardLink>
           </li>

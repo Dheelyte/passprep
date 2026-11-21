@@ -12,7 +12,7 @@ export function QuestionEditor({ q, topics }: { q: Q; topics: { id: string; labe
     <form action={action} className="card space-y-3">
       <input type="hidden" name="id" value={q.id} />
       <FormError message={state?.error} />
-      {state?.saved ? <p role="status" className="rounded-xl bg-ok-soft px-4 py-2 text-sm font-semibold text-ok">Saved.</p> : null}
+      {state?.saved ? <p role="status" className="rounded-xl bg-ok-soft px-4 py-2 text-sm font-semibold text-ok-ink">Saved.</p> : null}
       <div>
         <label className="label" htmlFor="topicId">Topic</label>
         <select id="topicId" name="topicId" defaultValue={q.topicId} className="input">

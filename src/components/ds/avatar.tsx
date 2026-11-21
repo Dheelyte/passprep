@@ -1,6 +1,6 @@
 import { cn } from "./cn";
 
-const fills = ["var(--maths)", "var(--physics)", "var(--chemistry)", "var(--biology)", "var(--english)", "var(--lime)", "var(--gold)"];
+const fills = ["var(--maths)", "var(--physics)", "var(--chemistry)", "var(--biology)", "var(--english)", "var(--sun)", "var(--sun)"];
 
 function hash(s: string) {
   let h = 0;

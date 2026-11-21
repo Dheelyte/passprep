@@ -7,7 +7,7 @@ import { mySubjects } from "@/lib/student";
 import { subjectProgress } from "@/lib/progress";
 import { startPractice } from "@/app/actions/practice";
 import { subjectScope } from "@/lib/subjects";
-import { ButtonLink, Card, EmptyState, SkeletonList } from "@/components/ds";
+import { ButtonLink, Card, EmptyState, ScreenHeader, SkeletonList } from "@/components/ds";
 import { SubmitButton } from "@/components/ds/submit-button";
 import { AccuracyBar, MasteryChip } from "@/components/mastery";
 import { SubjectIcon } from "@/components/subject-icon";
@@ -17,8 +17,7 @@ export const metadata: Metadata = { title: "Progress" };
 export default function ProgressPage() {
   return (
     <>
-      <h1 className="text-3xl font-extrabold">Your progress</h1>
-      <p className="muted mb-5 mt-1">Strong and weak topics, from your most recent answers.</p>
+      <ScreenHeader tone="coral" title="Your progress" subtitle="Strong and weak topics, from your most recent answers." />
       <Suspense fallback={<SkeletonList rows={4} />}>
         <Progress />
       </Suspense>
@@ -42,7 +41,7 @@ async function Progress() {
         const next = weak[0] ?? topics.find((t) => t.attempts === 0);
         return (
           <Card key={s.id} as="section" padded={false} className="overflow-hidden" data-subject={subjectScope(s.slug)} aria-labelledby={`p-${s.id}`}>
-            <header className="flex items-center justify-between gap-3 border-b-2 border-line bg-subj px-4 py-3 text-on-fill">
+            <header className="flex items-center justify-between gap-3 border-b-2 border-line bg-subj px-4 py-3 text-on-subj">
               <h2 id={`p-${s.id}`} className="flex items-center gap-2 text-xl font-extrabold"><SubjectIcon slug={s.slug} /> {s.name}</h2>
               <Link href={`/progress/${s.slug}`} className="flex min-h-10 items-center gap-1 text-sm font-bold underline underline-offset-2">Details <ArrowRight aria-hidden className="size-4" /></Link>
             </header>
@@ -52,9 +51,9 @@ async function Progress() {
               ) : (
                 <>
                   <dl className="mb-4 grid grid-cols-3 gap-2 text-center">
-                    <div className="rounded-[10px] bg-ok-soft py-2"><dt className="text-xs font-bold text-ok">Strong</dt><dd className="num text-2xl">{strong.length}</dd></div>
-                    <div className="rounded-[10px] bg-oops-soft py-2"><dt className="text-xs font-bold text-oops">Needs work</dt><dd className="num text-2xl">{weak.length}</dd></div>
-                    <div className="rounded-[10px] bg-paper-2 py-2"><dt className="text-xs font-bold text-ink-2">Not started</dt><dd className="num text-2xl">{topics.length - tried.length}</dd></div>
+                    <div className="rounded-[10px] border-2 border-line bg-ok py-2 text-on-fill"><dt className="text-xs font-bold">Strong</dt><dd className="num text-2xl">{strong.length}</dd></div>
+                    <div className="rounded-[10px] border-2 border-line bg-oops py-2 text-on-fill"><dt className="text-xs font-bold">Needs work</dt><dd className="num text-2xl">{weak.length}</dd></div>
+                    <div className="rounded-[10px] border-2 border-line bg-card py-2"><dt className="text-xs font-bold text-ink-2">Not started</dt><dd className="num text-2xl">{topics.length - tried.length}</dd></div>
                   </dl>
                   <ul className="space-y-3">
                     {tried.map((t) => (

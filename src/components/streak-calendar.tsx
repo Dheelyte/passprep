@@ -26,7 +26,7 @@ export function StreakCalendar({ from, today, active }: { from: Date; today: Dat
               aria-label={label}
               className={cn(
                 "grid aspect-square place-items-center rounded-[6px] border-2 text-[10px] font-extrabold",
-                n ? "border-line bg-physics text-on-fill" : "border-rule bg-card text-ink-2",
+                n ? "border-line bg-sun text-on-fill" : "border-rule bg-card text-ink-2",
                 isToday && "outline-2 outline-offset-1 outline-[var(--focus)]",
               )}
             >

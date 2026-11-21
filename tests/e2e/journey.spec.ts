@@ -81,7 +81,7 @@ test.describe.serial("student journey", () => {
   test("premium student practises without limit and can open videos", async ({ page }) => {
     await login(page);
     await page.goto("/dashboard");
-    await expect(page.getByText("Premium", { exact: true }).first()).toBeVisible(); // chip on today card
+    await expect(page.getByText("Premium · unlimited")).toBeVisible(); // chip in the Sunshine header
 
     await startTopic(page, "Logarithms");
     const seen: string[] = [];

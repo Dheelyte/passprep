@@ -42,7 +42,7 @@ async function Edit({ params }: { params: PageProps<"/admin/questions/[id]">["pa
         Status <strong className="text-ink">{q.status.replace("_", " ").toLowerCase()}</strong> · written by {q.author?.name ?? "—"} · reviewed by {q.reviewer?.name ?? "—"} ·{" "}
         answered {q._count.attempts}× ({q._count.attempts ? Math.round((wrong / q._count.attempts) * 100) : 0}% wrong)
       </p>
-      {q.reviewNote ? <p className="card bg-lime-soft text-sm"><strong>Review note:</strong> {q.reviewNote}</p> : null}
+      {q.reviewNote ? <p className="card bg-sun-soft text-sm"><strong>Review note:</strong> {q.reviewNote}</p> : null}
       {user.role !== "ADMIN" && q.status === "PUBLISHED" ? (
         <p className="card text-sm">Saving changes to a published question sends it back for review by another teacher.</p>
       ) : null}

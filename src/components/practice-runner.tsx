@@ -122,27 +122,27 @@ export function PracticeRunner(props: {
   return (
     <div>
       {/* Top bar: exit, set progress, streak + points */}
-      <header className="sticky top-0 z-20 -mx-4 mb-4 bg-paper/90 px-4 pb-3 pt-2 backdrop-blur-[2px]">
+      <header className="sticky top-0 z-20 -mx-4 mb-4 border-b-2 border-line bg-subj px-4 pb-3 pt-2 text-on-subj">
         <div className="flex items-center gap-3">
-          <Link href={`/subjects/${props.subjectSlug}`} className="btn-ghost min-h-10 shrink-0 px-2" aria-label={`Leave practice and go back to ${props.subject}`}>
+          <Link href={`/subjects/${props.subjectSlug}`} className="btn-ghost min-h-10 shrink-0 px-2 text-inherit hover:bg-black/10" aria-label={`Leave practice and go back to ${props.subject}`}>
             <X className="size-6" />
           </Link>
           <ProgressBar value={answeredCount} max={questions.length} label="Practice set progress" className="flex-1" />
-          <span className="flex shrink-0 items-center gap-1" aria-label={`${streak} day streak`}>
-            <Flame days={streak} size={22} />
-            <span className="num text-lg">{streak}</span>
+          <span className="flex shrink-0 items-center gap-0.5 rounded-full border-2 border-line bg-sun px-2 py-0.5 text-on-fill" aria-label={`${streak} day streak`}>
+            <Flame days={streak} size={18} />
+            <span className="num text-base">{streak}</span>
           </span>
-          <span className="relative flex shrink-0 items-center rounded-full border-2 border-line bg-lime px-2.5 py-0.5 text-on-fill" aria-label={`${points} points`}>
+          <span className="relative flex shrink-0 items-center rounded-full border-2 border-line bg-sun px-2.5 py-0.5 text-on-fill" aria-label={`${points} points`}>
             <span className="num text-base"><CountUp to={points} from={props.initialPoints} /></span>
             {floatPts ? (
-              <span key={floatPts.key} aria-hidden className="anim-float pointer-events-none absolute -top-2 right-0 font-display text-sm font-extrabold text-ok">
+              <span key={floatPts.key} aria-hidden className="anim-float pointer-events-none absolute -top-3 right-0 rounded-full border-2 border-line bg-ok px-1 font-display text-xs font-extrabold text-on-fill">
                 +{floatPts.n}
               </span>
             ) : null}
           </span>
         </div>
-        <p className="mt-1.5 truncate pl-12 text-xs font-semibold text-ink-2">
-          <span className="text-subj-ink">{props.subject}</span> · {props.title}
+        <p className="mt-1.5 truncate pl-12 text-xs font-bold">
+          {props.subject} · {props.title}
         </p>
       </header>
 
@@ -153,9 +153,9 @@ export function PracticeRunner(props: {
       ) : q ? (
         <article aria-labelledby="q-heading">
           <div className="sticker overflow-hidden p-0">
-            <div className="flex items-center justify-between gap-2 border-b-2 border-line bg-subj-soft px-4 py-2">
+            <div className="flex items-center justify-between gap-2 border-b-2 border-line bg-subj px-4 py-2 text-on-subj">
               <h1 id="q-heading" ref={headingRef} tabIndex={-1} className="font-display text-sm font-extrabold outline-none">
-                Question {index + 1} <span className="font-semibold text-ink-2">of {questions.length}</span>
+                Question {index + 1} <span className="font-semibold">of {questions.length}</span>
               </h1>
               <Chip tone="neutral">{DIFF[q.difficulty]}</Chip>
             </div>
@@ -189,7 +189,7 @@ export function PracticeRunner(props: {
           </ul>
 
           {error ? (
-            <p role="alert" className="mt-3 rounded-[var(--r-md)] border-2 border-line bg-oops-soft px-4 py-3 text-sm font-semibold text-oops">{error}</p>
+            <p role="alert" className="mt-3 rounded-[var(--r-md)] border-2 border-line bg-oops-soft px-4 py-3 text-sm font-semibold text-oops-ink">{error}</p>
           ) : null}
 
           {result ? (
@@ -197,14 +197,14 @@ export function PracticeRunner(props: {
           ) : remaining !== null && remaining <= 3 ? (
             <p className="mt-4 text-center text-sm text-ink-2">
               {remaining} free question{remaining === 1 ? "" : "s"} left today ·{" "}
-              <Link href="/premium" className="font-bold text-ink underline decoration-lime decoration-[3px] underline-offset-2">Go unlimited</Link>
+              <Link href="/premium" className="font-bold text-ink underline decoration-sun decoration-[3px] underline-offset-2">Go unlimited</Link>
             </p>
           ) : null}
         </article>
       ) : null}
 
       <UpgradeSheet open={paywallOpen} onClose={() => setPaywallOpen(false)} />
-      <Toast message={toast} onDone={() => setToast(null)} tone="lime" icon={<Flame days={7} size={20} animate={false} />} />
+      <Toast message={toast} onDone={() => setToast(null)} tone="sun" icon={<Flame days={7} size={20} animate={false} />} />
     </div>
   );
 }
@@ -214,18 +214,18 @@ type OptionState = "idle" | "pending" | "correct" | "answer" | "wrong" | "dim";
 function Option({ letter, html, state, disabled, onClick }: { letter: string; html: string; state: OptionState; disabled: boolean; onClick: () => void }) {
   const box = {
     idle: "bg-card shadow-sticker pressable",
-    pending: "bg-lime-soft translate-x-[3px] translate-y-[3px] shadow-none",
-    correct: "bg-ok-soft shadow-sticker anim-pop",
+    pending: "bg-sun-soft translate-x-[3px] translate-y-[3px] shadow-none",
+    correct: "bg-ok text-on-fill shadow-sticker anim-pop",
     answer: "bg-ok-soft border-dashed",
-    wrong: "bg-oops-soft anim-shake",
+    wrong: "bg-oops text-on-fill anim-shake",
     dim: "bg-card opacity-60",
   }[state];
   const tile = {
     idle: "bg-paper-2",
-    pending: "bg-lime text-on-fill",
-    correct: "bg-ok text-card",
-    answer: "bg-ok text-card",
-    wrong: "bg-oops text-card",
+    pending: "bg-sun text-on-fill",
+    correct: "bg-card text-ink",
+    answer: "bg-ok text-on-fill",
+    wrong: "bg-card text-ink",
     dim: "bg-paper-2",
   }[state];
   const label = { correct: "Correct", answer: "Right answer", wrong: "Your answer" }[state as "correct" | "answer" | "wrong"];
@@ -241,7 +241,7 @@ function Option({ letter, html, state, disabled, onClick }: { letter: string; ht
         {state === "correct" || state === "answer" ? <Check className="size-5" strokeWidth={3} /> : state === "wrong" ? <X className="size-5" strokeWidth={3} /> : letter}
       </span>
       <span className="prose-q min-w-0 flex-1 text-[1.0625rem]" dangerouslySetInnerHTML={{ __html: html }} />
-      {label ? <span className={cn("shrink-0 font-display text-xs font-extrabold uppercase tracking-wide", state === "wrong" ? "text-oops" : "text-ok")}>{label}</span> : null}
+      {label ? <span className={cn("shrink-0 font-display text-xs font-extrabold uppercase tracking-wide", state === "answer" ? "text-ok-ink" : "text-on-fill")}>{label}</span> : null}
       {state === "pending" ? <span className="shrink-0 text-xs font-bold text-ink-2">Checking…</span> : null}
     </button>
   );
@@ -256,16 +256,16 @@ function ResultPanel({ question, result, onNext, isLast, seed }: { question: Run
         role="status"
         className={cn(
           "anim-rise flex items-center gap-3 border-2 border-line px-4 py-3 [border-radius:var(--r-sticker)]",
-          result.isCorrect ? "bg-lime text-on-fill shadow-sticker" : "bg-oops-soft",
+          result.isCorrect ? "bg-ok text-on-fill shadow-sticker" : "bg-oops text-on-fill shadow-sticker",
         )}
       >
         <span aria-hidden className={cn("grid size-9 shrink-0 place-items-center rounded-full border-2 border-line", result.isCorrect ? "bg-card" : "bg-card")}>
-          {result.isCorrect ? <Check className="size-5 text-ok" strokeWidth={3} /> : <Sparkles className="size-5 text-oops" />}
+          {result.isCorrect ? <Check className="size-5 text-ok-ink" strokeWidth={3} /> : <Sparkles className="size-5 text-oops-ink" />}
         </span>
         <p className="font-display text-lg font-extrabold leading-tight">
           {result.isCorrect ? pick(PRAISE, seed) : `${pick(COMFORT, seed)} The answer is ${LETTERS[result.correctIndex]}.`}
           {result.pointsAwarded > 0 ? <span className="ml-2 font-sans text-sm font-bold">+{result.pointsAwarded} pts</span> : null}
-          {!result.isCorrect ? <span className="block font-sans text-sm font-semibold text-ink-2">Here&apos;s how to get it next time.</span> : null}
+          {!result.isCorrect ? <span className="block font-sans text-sm font-semibold">Here&apos;s how to get it next time.</span> : null}
         </p>
       </div>
 
@@ -332,7 +332,7 @@ function VideoSheet({ open, onClose, youtubeId, questionId, stemHtml, afterWrong
             {/* Small poster (~10 KB) only loads once the sheet is open */}
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src={`https://i.ytimg.com/vi/${youtubeId}/mqdefault.jpg`} alt="" loading="lazy" className="absolute inset-0 size-full object-cover opacity-80" />
-            <span className="relative grid size-16 place-items-center rounded-full border-2 border-line bg-lime text-on-fill shadow-sticker transition-transform group-active:translate-x-[3px] group-active:translate-y-[3px] group-active:shadow-none">
+            <span className="relative grid size-16 place-items-center rounded-full border-2 border-line bg-sun text-on-fill shadow-sticker transition-transform group-active:translate-x-[3px] group-active:translate-y-[3px] group-active:shadow-none">
               <Play className="size-7 translate-x-0.5" fill="currentColor" />
             </span>
           </button>
@@ -345,7 +345,7 @@ function VideoSheet({ open, onClose, youtubeId, questionId, stemHtml, afterWrong
 
 function UpgradeSheet({ open, onClose, reason = "limit" }: { open: boolean; onClose: () => void; reason?: "limit" | "video" }) {
   return (
-    <Sheet open={open} onClose={onClose} title={reason === "video" ? "Watch a teacher solve it" : "That's today's free questions"}>
+    <Sheet open={open} onClose={onClose} tone="grape" title={reason === "video" ? "Watch a teacher solve it" : "That's today's free questions"}>
       <p className="mb-4">
         {reason === "video"
           ? "Video solutions come with Premium. Your written workings are always free."
@@ -354,13 +354,13 @@ function UpgradeSheet({ open, onClose, reason = "limit" }: { open: boolean; onCl
       <ul className="mb-5 space-y-2">
         {["Unlimited practice questions", "Every video solution", "Detailed progress for each topic", "Past questions & mock exams (coming soon)"].map((t) => (
           <li key={t} className="flex items-center gap-2 font-semibold">
-            <span className="grid size-6 place-items-center rounded-full border-2 border-line bg-lime text-on-fill"><Check className="size-3.5" strokeWidth={3} /></span>
+            <span className="grid size-6 shrink-0 place-items-center rounded-full border-2 border-line bg-sun text-on-fill"><Check className="size-3.5" strokeWidth={3} /></span>
             {t}
           </li>
         ))}
       </ul>
       <div className="grid gap-2">
-        <ButtonLink href="/premium" block size="lg">See Premium plans</ButtonLink>
+        <ButtonLink href="/premium" variant="sun" block size="lg">See Premium plans</ButtonLink>
         <ButtonLink href="/premium#ask-parent" variant="secondary" block>Ask a parent to pay</ButtonLink>
         <Button variant="ghost" block onClick={onClose}>Not now</Button>
       </div>
@@ -370,12 +370,12 @@ function UpgradeSheet({ open, onClose, reason = "limit" }: { open: boolean; onCl
 
 function LimitReached({ onOpen }: { onOpen: () => void }) {
   return (
-    <section className="sticker anim-rise p-6 text-center">
-      <Stamp tone="ok" animate>Day done</Stamp>
+    <section className="sticker anim-rise bg-grape p-6 text-center text-on-grape">
+      <Stamp tone="sun" animate>Day done</Stamp>
       <h1 className="mt-4 text-2xl font-extrabold">You&apos;ve used today&apos;s free questions</h1>
-      <p className="muted mt-2">Your streak is safe. Free questions reset at midnight.</p>
+      <p className="mt-2 font-semibold">Your streak is safe. Free questions reset at midnight.</p>
       <div className="mt-5 grid gap-2">
-        <Button block onClick={onOpen}>What Premium unlocks</Button>
+        <Button variant="sun" block onClick={onOpen}>What Premium unlocks</Button>
         <ButtonLink href="/premium#ask-parent" variant="secondary" block>Ask a parent to pay</ButtonLink>
         <ButtonLink href="/dashboard" variant="ghost" block>Back home</ButtonLink>
       </div>
@@ -433,16 +433,16 @@ function Summary(p: {
   }, [pct]);
   return (
     <section className="space-y-5" aria-labelledby="score-heading">
-      <div className="sticker anim-rise relative overflow-hidden px-5 py-7 text-center">
+      <div className="sticker anim-rise relative overflow-hidden bg-subj px-5 py-7 text-center text-on-subj">
         <h1 id="score-heading" className="sr-only">Your score</h1>
-        <p className="font-display text-sm font-bold uppercase tracking-widest text-ink-2">Your score</p>
+        <p className="font-display text-sm font-bold uppercase tracking-widest">Your score</p>
         <p className="mt-1 flex items-baseline justify-center gap-1">
           <span className="num text-7xl"><CountUp to={p.correctCount} duration={900} /></span>
-          <span className="num text-3xl text-ink-2">/{p.answeredCount}</span>
+          <span className="num text-3xl">/{p.answeredCount}</span>
         </p>
         <div className="mt-3"><Stamp tone={verdict.tone} animate>{verdict.stamp}</Stamp></div>
         <p className="mt-4 font-semibold">{verdict.line}</p>
-        <p className="mt-2 inline-flex items-center gap-1 rounded-full border-2 border-line bg-lime px-3 py-1 font-display font-extrabold text-on-fill">+{p.points} points</p>
+        <p className="mt-2 inline-flex items-center gap-1 rounded-full border-2 border-line bg-sun px-3 py-1 font-display font-extrabold text-on-fill">+{p.points} points</p>
       </div>
 
       <div className="grid gap-2">
@@ -472,7 +472,7 @@ function Summary(p: {
                     </summary>
                     <div className="border-t-2 border-line px-4 py-3 text-sm">
                       <p className="mb-2 font-semibold">
-                        You picked {LETTERS[a.selectedIndex]} · answer is <span className="text-ok">{LETTERS[a.correctIndex]}</span>
+                        You picked {LETTERS[a.selectedIndex]} · answer is <span className="text-ok-ink">{LETTERS[a.correctIndex]}</span>
                       </p>
                       <div className="prose-q workings pl-10" dangerouslySetInnerHTML={{ __html: a.explanationHtml }} />
                     </div>

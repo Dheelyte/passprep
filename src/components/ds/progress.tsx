@@ -1,9 +1,9 @@
 import { cn } from "./cn";
 
 /** Thin bar. `value` 0..max. Uses transform so updates animate cheaply. */
-export function ProgressBar({ value, max = 100, label, tone = "lime", className, size = "md" }: { value: number; max?: number; label: string; tone?: "lime" | "subject" | "ok"; className?: string; size?: "sm" | "md" }) {
+export function ProgressBar({ value, max = 100, label, tone = "sun", className, size = "md" }: { value: number; max?: number; label: string; tone?: "sun" | "primary" | "subject" | "ok"; className?: string; size?: "sm" | "md" }) {
   const pct = Math.max(0, Math.min(1, max ? value / max : 0));
-  const fill = { lime: "bg-lime", subject: "bg-subj", ok: "bg-ok" }[tone];
+  const fill = { sun: "bg-sun", primary: "bg-primary", subject: "bg-subj", ok: "bg-ok" }[tone];
   return (
     <div
       role="progressbar"
@@ -19,15 +19,15 @@ export function ProgressBar({ value, max = 100, label, tone = "lime", className,
 }
 
 /** Ring for mastery/accuracy. Text in the middle is optional. */
-export function ProgressRing({ value, size = 56, stroke = 7, label, children, tone = "subject" }: { value: number; size?: number; stroke?: number; label: string; children?: React.ReactNode; tone?: "subject" | "lime" | "ok" }) {
+export function ProgressRing({ value, size = 56, stroke = 7, label, children, tone = "subject" }: { value: number; size?: number; stroke?: number; label: string; children?: React.ReactNode; tone?: "subject" | "sun" | "primary" | "ok" }) {
   const r = (size - stroke) / 2;
   const c = 2 * Math.PI * r;
   const pct = Math.max(0, Math.min(1, value));
-  const color = { subject: "var(--subj, var(--general))", lime: "var(--lime)", ok: "var(--ok)" }[tone];
+  const color = { subject: "var(--subj, var(--general))", sun: "var(--sun)", primary: "var(--primary)", ok: "var(--ok)" }[tone];
   return (
     <div className="relative inline-grid place-items-center" style={{ width: size, height: size }} role="img" aria-label={label}>
       <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} className="-rotate-90">
-        <circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke="var(--paper-2)" strokeWidth={stroke} />
+        <circle cx={size / 2} cy={size / 2} r={r} fill="var(--card)" stroke="color-mix(in oklab, var(--card) 70%, var(--ink) 12%)" strokeWidth={stroke} />
         <circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke={color} strokeWidth={stroke} strokeLinecap="round" strokeDasharray={c} strokeDashoffset={c * (1 - pct)} />
         <circle cx={size / 2} cy={size / 2} r={size / 2 - 1} fill="none" stroke="var(--line)" strokeWidth={1.5} />
       </svg>

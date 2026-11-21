@@ -55,14 +55,36 @@ async function Dashboard({ searchParams }: { searchParams: PageProps<"/dashboard
 
   return (
     <div className="space-y-5">
-      <div>
+      {/* Dominant colour: Sunshine — today, streak and goal */}
+      <header className="bleed -mt-5 border-b-2 border-line bg-sun pb-6 pt-5 text-on-fill">
         <h1 className="text-3xl font-extrabold">Hi {firstName}</h1>
-        <p className="muted mt-1">{greeting(day.streak, day.practisedToday)}</p>
-      </div>
+        <p className="mt-1 font-semibold">{greeting(day.streak, day.practisedToday)}</p>
+        <div className="mt-4 grid grid-cols-[0.85fr_1.15fr] gap-2.5">
+          <div className="flex items-center gap-2 border-2 border-line bg-card px-2.5 py-3 text-ink shadow-sticker [border-radius:var(--r-sticker)]">
+            <Flame days={day.streak} size={day.streak >= 7 ? 46 : day.streak >= 3 ? 40 : 34} />
+            <span>
+              <span className="num block text-4xl">{day.streak}</span>
+              <span className="text-xs font-bold text-ink-2">day streak</span>
+            </span>
+          </div>
+          <div className="flex items-center gap-2 border-2 border-line bg-card px-2.5 py-3 text-ink shadow-sticker [border-radius:var(--r-sticker)]">
+            <ProgressRing value={day.answeredToday / goal} size={52} stroke={7} tone="primary" label={`${day.answeredToday} of ${goal} questions today`}>
+              <span className="num text-sm">{Math.min(day.answeredToday, 99)}/{goal}</span>
+            </ProgressRing>
+            <span className="min-w-0">
+              <span className="block font-display font-extrabold leading-tight">{goalDone ? "Goal smashed!" : "Today's goal"}</span>
+              <span className="block text-xs font-bold text-ink-2">{goalDone ? "Extra = bonus" : `${goal - day.answeredToday} to go`}</span>
+            </span>
+          </div>
+        </div>
+        <p className="mt-3 text-sm font-bold">
+          {day.premium ? <Chip tone="primary">Premium · unlimited</Chip> : <>{day.remaining} free left today</>}
+        </p>
+      </header>
 
       {welcome ? (
-        <Card tone="lime" className="anim-rise relative overflow-hidden text-center">
-          <Stamp tone="ok" animate className="bg-card">You&apos;re in</Stamp>
+        <Card tone="grape" className="anim-rise relative overflow-hidden text-center">
+          <Stamp tone="sun" animate>You&apos;re in</Stamp>
           <div className="mt-3 flex justify-center"><Flame days={1} size={56} /></div>
           <p className="mt-2 font-display text-xl font-extrabold">Day 1 starts now.</p>
           <p className="text-sm font-semibold">Answer your first question to light your streak.</p>
@@ -71,7 +93,7 @@ async function Dashboard({ searchParams }: { searchParams: PageProps<"/dashboard
       ) : null}
 
       {day.daysLeft !== null && day.daysLeft <= 7 && !day.renewsAutomatically ? (
-        <CardLink href="/premium" tone="lime" className="flex items-center justify-between gap-3">
+        <CardLink href="/premium" tone="coral" className="flex items-center justify-between gap-3">
           <span className="flex items-center gap-2 text-sm font-bold">
             <Clock aria-hidden className="size-5 shrink-0" />
             Premium ends in {day.daysLeft} day{day.daysLeft === 1 ? "" : "s"}. Renew so unlimited practice doesn&apos;t stop.
@@ -80,43 +102,18 @@ async function Dashboard({ searchParams }: { searchParams: PageProps<"/dashboard
         </CardLink>
       ) : null}
 
-      {/* Today: streak + goal */}
-      <Card className="grid grid-cols-[auto_1fr] items-center gap-4" aria-label="Today">
-        <div className="flex flex-col items-center">
-          <Flame days={day.streak} size={day.streak >= 7 ? 64 : day.streak >= 3 ? 56 : 48} />
-          <span className="num mt-1 text-4xl">{day.streak}</span>
-          <span className="text-xs font-bold text-ink-2">day streak</span>
-        </div>
-        <div className="flex items-center gap-4 border-l-2 border-dashed border-rule pl-4">
-          <ProgressRing value={day.answeredToday / goal} size={72} stroke={8} tone="lime" label={`${day.answeredToday} of ${goal} questions today`}>
-            <span className="num text-lg">{Math.min(day.answeredToday, 99)}<span className="text-xs text-ink-2">/{goal}</span></span>
-          </ProgressRing>
-          <div className="min-w-0">
-            <p className="font-display font-extrabold leading-tight">{goalDone ? "Goal smashed!" : "Today's goal"}</p>
-            <p className="muted text-sm">{goalDone ? "Anything extra is bonus." : `${goal - day.answeredToday} more to hit ${goal}.`}</p>
-            {day.premium ? (
-              <Chip tone="lime" className="mt-1.5">Premium</Chip>
-            ) : (
-              <p className="mt-1 text-xs font-semibold text-ink-2">{day.remaining} free left today</p>
-            )}
-          </div>
-        </div>
-      </Card>
-
       {open ? (
-        <div data-subject={subjectScope(open.topic.subject.slug)}>
-          <CardLink href={`/practice/${open.id}`} tone="subject-soft" className="flex items-center gap-4 p-5">
-            <span className="grid size-12 shrink-0 place-items-center rounded-[10px] border-2 border-line bg-subj text-on-fill">
-              <SubjectIcon slug={open.topic.subject.slug} className="size-6" />
-            </span>
-            <span className="min-w-0 flex-1">
-              <span className="block text-sm font-bold text-ink-2">Continue where you stopped</span>
-              <span className="block truncate font-display text-lg font-extrabold">{open.topic.name}</span>
-              <ProgressBar value={open.answered} max={open.questionIds.length} label={`${open.answered} of ${open.questionIds.length} answered`} tone="subject" size="sm" className="mt-2" />
-            </span>
-            <ArrowRight aria-hidden className="size-6 shrink-0" />
-          </CardLink>
-        </div>
+        <CardLink href={`/practice/${open.id}`} tone="primary" className="flex items-center gap-4 p-5">
+          <span data-subject={subjectScope(open.topic.subject.slug)} className="grid size-12 shrink-0 place-items-center rounded-[10px] border-2 border-line bg-subj text-on-subj">
+            <SubjectIcon slug={open.topic.subject.slug} className="size-6" />
+          </span>
+          <span className="min-w-0 flex-1">
+            <span className="block text-sm font-bold">Continue where you stopped</span>
+            <span className="block truncate font-display text-xl font-extrabold">{open.topic.name}</span>
+            <ProgressBar value={open.answered} max={open.questionIds.length} label={`${open.answered} of ${open.questionIds.length} answered`} tone="sun" size="sm" className="mt-2" />
+          </span>
+          <ArrowRight aria-hidden className="size-6 shrink-0" />
+        </CardLink>
       ) : (
         <ButtonLink href="/subjects" block size="lg" iconRight={<ArrowRight className="size-5" />}>
           Start practising
@@ -126,7 +123,7 @@ async function Dashboard({ searchParams }: { searchParams: PageProps<"/dashboard
       <section aria-labelledby="subjects-h">
         <div className="mb-2 flex items-end justify-between">
           <h2 id="subjects-h" className="text-xl font-extrabold">Your subjects</h2>
-          <Link href="/onboarding" className="text-sm font-bold underline decoration-lime decoration-[3px] underline-offset-2">Edit</Link>
+          <Link href="/onboarding" className="text-sm font-bold underline decoration-primary decoration-[3px] underline-offset-2">Edit</Link>
         </div>
         {subjects.length === 0 ? (
           <EmptyState title="No subjects yet" body="Pick the subjects you're writing and we'll line up the topics." action={<ButtonLink href="/onboarding">Choose subjects</ButtonLink>} />
@@ -138,15 +135,17 @@ async function Dashboard({ searchParams }: { searchParams: PageProps<"/dashboard
               const tried = topics.filter((t) => t.attempts > 0).length;
               return (
                 <li key={s.id} data-subject={subjectScope(s.slug)}>
-                  <CardLink href={`/subjects/${s.slug}`} padded={false} className="h-full overflow-hidden">
-                    <span className="flex items-center justify-between border-b-2 border-line bg-subj px-3 py-2 text-on-fill">
-                      <SubjectIcon slug={s.slug} />
-                      {strong ? <span className="num flex items-center gap-0.5 text-sm" aria-label={`${strong} strong topics`}>{strong}<Star aria-hidden className="size-3.5" fill="currentColor" /></span> : null}
+                  <CardLink href={`/subjects/${s.slug}`} tone="subject" className="flex h-full min-h-36 flex-col justify-between">
+                    <span className="flex items-start justify-between">
+                      <span className="grid size-10 place-items-center rounded-full border-2 border-line bg-card text-ink">
+                        <SubjectIcon slug={s.slug} />
+                      </span>
+                      {strong ? <span className="num flex items-center gap-0.5 rounded-full border-2 border-line bg-sun px-2 py-0.5 text-sm text-on-fill" aria-label={`${strong} strong topics`}>{strong}<Star aria-hidden className="size-3.5" fill="currentColor" /></span> : null}
                     </span>
-                    <span className="block p-3">
-                      <span className="block font-display font-extrabold leading-tight">{s.name}</span>
-                      <span className="muted block text-xs">{s.questionCount ? `${tried}/${topics.length} topics started` : "Coming soon"}</span>
-                      {s.questionCount ? <ProgressBar value={tried} max={Math.max(1, topics.length)} label={`${s.name}: ${tried} of ${topics.length} topics started`} tone="subject" size="sm" className="mt-2" /> : null}
+                    <span className="mt-3 block">
+                      <span className="block font-display text-lg font-extrabold leading-tight">{s.name}</span>
+                      <span className="block text-xs font-bold">{s.questionCount ? `${tried}/${topics.length} topics started` : "Coming soon"}</span>
+                      {s.questionCount ? <ProgressBar value={tried} max={Math.max(1, topics.length)} label={`${s.name}: ${tried} of ${topics.length} topics started`} tone="sun" size="sm" className="mt-2" /> : null}
                     </span>
                   </CardLink>
                 </li>
@@ -157,11 +156,11 @@ async function Dashboard({ searchParams }: { searchParams: PageProps<"/dashboard
       </section>
 
       <CardLink href="/leaderboard" className="flex items-center gap-4" aria-label="This week's leaderboard">
-        <span className="flex flex-col items-center">
-          <span className="text-xs font-bold text-ink-2">Rank</span>
-          <span className="num text-4xl">{board.me ? `#${board.me.rank}` : "–"}</span>
+        <span className="flex flex-col items-center rounded-[10px] border-2 border-line bg-sun px-3 py-2 text-on-fill">
+          <span className="text-xs font-bold">Rank</span>
+          <span className="num text-3xl">{board.me ? `#${board.me.rank}` : "–"}</span>
         </span>
-        <span className="min-w-0 flex-1 border-l-2 border-dashed border-rule pl-4">
+        <span className="min-w-0 flex-1">
           <span className="block font-display font-extrabold">This week&apos;s leaderboard</span>
           {board.me ? (
             <RankChange now={board.me.rank} prev={prevRank} />

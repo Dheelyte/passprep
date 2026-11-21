@@ -1,112 +1,107 @@
 @import "tailwindcss";
 
 /* ==========================================================================
-   Design tokens — "the study desk, turned into a game"
-   Light = warm exercise-book paper + ink. Dark = deep ink navy + chalk.
-   Contrast is checked by scripts/check-contrast.mts (WCAG AA).
+   Design tokens — bold colour-blocking
+   Colour fills big areas (headers, sections, cards); paper is the resting background.
+   Bright fills carry ink text unless white passes AA (cobalt, grape). Checked by
+   scripts/check-contrast.mts.
    ========================================================================== */
 
 :root {
   color-scheme: light;
-  /* surfaces */
-  --paper: #fbf6ec;
-  --paper-2: #f2e9d6;
-  --card: #fffdf7;
-  --rule: #e5dac2; /* faint ruled / graph lines */
-  /* ink */
-  --ink: #1c1a16;
-  --ink-2: #555046; /* secondary text */
-  --line: #1c1a16; /* sticker borders */
-  --shadow-ink: #1c1a16;
-  /* signature accent: electric lime (always with ink text) */
-  --lime: #c8f53a;
-  --lime-2: #b2e01f;
-  --lime-soft: #eefbc6;
+  /* neutrals */
+  --paper: #fff8ec;          /* resting background between colour blocks */
+  --paper-2: #f6ecd9;        /* sunken / tinted neutral */
+  --card: #ffffff;           /* cards, options, inputs */
+  --rule: #eadfc9;           /* faint ruled / graph lines */
+  --ink: #16131f;
+  --ink-2: #4d4760;          /* secondary text */
+  --line: #16131f;           /* sticker borders */
+  --shadow-ink: #16131f;
+  /* brand */
+  --primary: #3355ff; --primary-soft: #e3e8ff; --primary-ink: #1a2c99; --on-primary: #ffffff;
+  --sun: #ffc933; --sun-soft: #fff1c4; --sun-ink: #6b4a00;
+  --coral: #ff5c5c; --coral-soft: #ffe2e0; --coral-ink: #9b1c1c;
+  --grape: #7448ff; --grape-soft: #ede4ff; --grape-ink: #4a2299; --on-grape: #ffffff;
+  --silver: #c9ced8; --bronze: #e08a4f;
   /* feedback */
-  --ok: #17713f;
-  --ok-soft: #d9f2e2;
-  --oops: #9a4416; /* calm clay, not alarm red */
-  --oops-soft: #fbe4d4;
-  --danger: #b3261e;
-  --danger-soft: #fbe0dd;
-  --info: #1f4fd1;
-  --info-soft: #dfe7fd;
-  --gold: #e8a317;
-  --focus: #1f4fd1;
-  /* subjects: fill (with ink text), soft background, text-safe shade */
-  --maths: #5b8cff; --maths-soft: #e1e9ff; --maths-ink: #1d47b8;
-  --physics: #ff8a3d; --physics-soft: #ffe7d6; --physics-ink: #a64400;
-  --chemistry: #22b8a6; --chemistry-soft: #d5f4ef; --chemistry-ink: #0b6f63;
-  --biology: #59b84a; --biology-soft: #e0f3dc; --biology-ink: #2f6b25;
-  --english: #d9659c; --english-soft: #fbe1ee; --english-ink: #9b2c60;
-  --general: #a99a7c; --general-soft: #efe8da; --general-ink: #5a4f3a;
-  /* contrast band (always dark) */
-  --band: #1c1a16; --band-ink: #f4efe3; --band-muted: #d9d3c4; --band-card: #2c2a25; --band-line: #8f8a7e;
+  --ok: #34c759; --ok-soft: #ddf7e3; --ok-ink: #146b2c;
+  --oops: #ff8a7a; --oops-soft: #ffe4df; --oops-ink: #8f2a1a;
+  --danger: #c42b2b; --danger-soft: #ffe1e1;
+  --focus: #3355ff;
+  /* subjects: bright fill · tint · deep text-on-tint · text-on-fill */
+  --maths: #3355ff; --maths-soft: #e3e8ff; --maths-ink: #1a2c99; --maths-on: #ffffff;
+  --physics: #ff7a1a; --physics-soft: #ffe9d6; --physics-ink: #8a3a00; --physics-on: #16131f;
+  --chemistry: #00b8a9; --chemistry-soft: #d6f7f4; --chemistry-ink: #005c55; --chemistry-on: #16131f;
+  --biology: #34c759; --biology-soft: #ddf7e3; --biology-ink: #146b2c; --biology-on: #16131f;
+  --english: #e83e8c; --english-soft: #fce1ee; --english-ink: #8a1650; --english-on: #16131f;
+  --economics: #7448ff; --economics-soft: #ede4ff; --economics-ink: #4a2299; --economics-on: #ffffff;
+  --government: #ff5c5c; --government-soft: #ffe2e0; --government-ink: #9b1c1c; --government-on: #16131f;
+  --literature: #c77dff; --literature-soft: #f4e6ff; --literature-ink: #5e1a99; --literature-on: #16131f;
+  --geography: #2bb3ff; --geography-soft: #dcf2ff; --geography-ink: #00527a; --geography-on: #16131f;
+  --general: #ffc933; --general-soft: #fff1c4; --general-ink: #6b4a00; --general-on: #16131f;
 }
 
-/* Dark: deep ink navy with chalk-like outlines */
 :root[data-theme="dark"] {
   color-scheme: dark;
-  --paper: #0e1524;
-  --paper-2: #151f33;
-  --card: #1a253b;
-  --rule: #223050;
-  --ink: #f4efe3;
-  --ink-2: #b8b2a4;
-  --line: #8f9ab3;
-  --shadow-ink: #04070e;
-  --lime: #c8f53a;
-  --lime-2: #d6ff57;
-  --lime-soft: #2a3512;
-  --ok: #5fd892;
-  --ok-soft: #12321f;
-  --oops: #ffb38a;
-  --oops-soft: #3a2316;
-  --danger: #ff8a80;
-  --danger-soft: #3d1b19;
-  --info: #8fb0ff;
-  --info-soft: #1b2950;
-  --gold: #ffc54d;
-  --focus: #8fb0ff;
-  --maths: #7aa2ff; --maths-soft: #1b2850; --maths-ink: #aac3ff;
-  --physics: #ff9a57; --physics-soft: #3b2414; --physics-ink: #ffbb8f;
-  --chemistry: #3fd1bf; --chemistry-soft: #113430; --chemistry-ink: #8de8dd;
-  --biology: #74cf64; --biology-soft: #18311a; --biology-ink: #a9e69d;
-  --english: #ef86b8; --english-soft: #3a1a2b; --english-ink: #f7b3d4;
-  --general: #c2b597; --general-soft: #2a2a2a; --general-ink: #ddd3bd;
-  --band: #060a13; --band-ink: #f4efe3; --band-muted: #d9d3c4; --band-card: #1a253b; --band-line: #8f9ab3;
+  /* dark: deep ink-navy surfaces; brights stay bright */
+  --paper: #121024;
+  --paper-2: #1a1730;
+  --card: #1e1b33;
+  --rule: #2c2848;
+  --ink: #f6f2ff;
+  --ink-2: #c4bdda;
+  --line: #05040c;
+  --shadow-ink: #05040c;
+  --primary-soft: #232a5c; --primary-ink: #a9b8ff;
+  --sun-soft: #3a2f12; --sun-ink: #ffd766;
+  --coral-soft: #3d1c22; --coral-ink: #ffa3a3;
+  --grape-soft: #2b2250; --grape-ink: #c8b3ff;
+  --ok-soft: #173a24; --ok-ink: #7be39a;
+  --oops-soft: #3d2420; --oops-ink: #ffb3a8;
+  --danger: #ff8a8a; --danger-soft: #3d1c1c;
+  --focus: #a9b8ff;
+  --maths-soft: #232a5c; --maths-ink: #a9b8ff;
+  --physics-soft: #3d2614; --physics-ink: #ffb27a;
+  --chemistry-soft: #0f3532; --chemistry-ink: #6fe3d8;
+  --biology-soft: #173a24; --biology-ink: #7be39a;
+  --english-soft: #3d1a2c; --english-ink: #ff9cc8;
+  --economics-soft: #2b2250; --economics-ink: #c8b3ff;
+  --government-soft: #3d1c22; --government-ink: #ffa3a3;
+  --literature-soft: #33204a; --literature-ink: #e2b8ff;
+  --geography-soft: #10324a; --geography-ink: #8fd6ff;
+  --general-soft: #3a2f12; --general-ink: #ffd766;
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
     color-scheme: dark;
-    --paper: #0e1524;
-    --paper-2: #151f33;
-    --card: #1a253b;
-    --rule: #223050;
-    --ink: #f4efe3;
-    --ink-2: #b8b2a4;
-    --line: #8f9ab3;
-    --shadow-ink: #04070e;
-    --lime: #c8f53a;
-    --lime-2: #d6ff57;
-    --lime-soft: #2a3512;
-    --ok: #5fd892;
-    --ok-soft: #12321f;
-    --oops: #ffb38a;
-    --oops-soft: #3a2316;
-    --danger: #ff8a80;
-    --danger-soft: #3d1b19;
-    --info: #8fb0ff;
-    --info-soft: #1b2950;
-    --gold: #ffc54d;
-    --focus: #8fb0ff;
-    --maths: #7aa2ff; --maths-soft: #1b2850; --maths-ink: #aac3ff;
-    --physics: #ff9a57; --physics-soft: #3b2414; --physics-ink: #ffbb8f;
-    --chemistry: #3fd1bf; --chemistry-soft: #113430; --chemistry-ink: #8de8dd;
-    --biology: #74cf64; --biology-soft: #18311a; --biology-ink: #a9e69d;
-    --english: #ef86b8; --english-soft: #3a1a2b; --english-ink: #f7b3d4;
-    --general: #c2b597; --general-soft: #2a2a2a; --general-ink: #ddd3bd;
-    --band: #060a13; --band-ink: #f4efe3; --band-muted: #d9d3c4; --band-card: #1a253b; --band-line: #8f9ab3;
+    /* dark: deep ink-navy surfaces; brights stay bright */
+    --paper: #121024;
+    --paper-2: #1a1730;
+    --card: #1e1b33;
+    --rule: #2c2848;
+    --ink: #f6f2ff;
+    --ink-2: #c4bdda;
+    --line: #05040c;
+    --shadow-ink: #05040c;
+    --primary-soft: #232a5c; --primary-ink: #a9b8ff;
+    --sun-soft: #3a2f12; --sun-ink: #ffd766;
+    --coral-soft: #3d1c22; --coral-ink: #ffa3a3;
+    --grape-soft: #2b2250; --grape-ink: #c8b3ff;
+    --ok-soft: #173a24; --ok-ink: #7be39a;
+    --oops-soft: #3d2420; --oops-ink: #ffb3a8;
+    --danger: #ff8a8a; --danger-soft: #3d1c1c;
+    --focus: #a9b8ff;
+    --maths-soft: #232a5c; --maths-ink: #a9b8ff;
+    --physics-soft: #3d2614; --physics-ink: #ffb27a;
+    --chemistry-soft: #0f3532; --chemistry-ink: #6fe3d8;
+    --biology-soft: #173a24; --biology-ink: #7be39a;
+    --english-soft: #3d1a2c; --english-ink: #ff9cc8;
+    --economics-soft: #2b2250; --economics-ink: #c8b3ff;
+    --government-soft: #3d1c22; --government-ink: #ffa3a3;
+    --literature-soft: #33204a; --literature-ink: #e2b8ff;
+    --geography-soft: #10324a; --geography-ink: #8fd6ff;
+    --general-soft: #3a2f12; --general-ink: #ffd766;
   }
 }
 
@@ -128,6 +123,8 @@
   --dur-celebrate: 600ms;
   --ease-out: cubic-bezier(0.2, 0.8, 0.2, 1);
   --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  /* skeleton tint (sections override, e.g. subject screens) */
+  --skel: var(--primary-soft);
 }
 
 @theme inline {
@@ -138,27 +135,38 @@
   --color-ink: var(--ink);
   --color-ink-2: var(--ink-2);
   --color-line: var(--line);
-  --color-lime: var(--lime);
-  --color-lime-2: var(--lime-2);
-  --color-lime-soft: var(--lime-soft);
+  --color-primary: var(--primary);
+  --color-primary-soft: var(--primary-soft);
+  --color-primary-ink: var(--primary-ink);
+  --color-on-primary: var(--on-primary);
+  --color-sun: var(--sun);
+  --color-sun-soft: var(--sun-soft);
+  --color-sun-ink: var(--sun-ink);
+  --color-coral: var(--coral);
+  --color-coral-soft: var(--coral-soft);
+  --color-coral-ink: var(--coral-ink);
+  --color-grape: var(--grape);
+  --color-grape-soft: var(--grape-soft);
+  --color-grape-ink: var(--grape-ink);
+  --color-on-grape: var(--on-grape);
+  --color-silver: var(--silver);
+  --color-bronze: var(--bronze);
   --color-ok: var(--ok);
   --color-ok-soft: var(--ok-soft);
+  --color-ok-ink: var(--ok-ink);
   --color-oops: var(--oops);
   --color-oops-soft: var(--oops-soft);
+  --color-oops-ink: var(--oops-ink);
   --color-danger: var(--danger);
   --color-danger-soft: var(--danger-soft);
-  --color-info: var(--info);
-  --color-info-soft: var(--info-soft);
-  --color-gold: var(--gold);
-  --color-on-fill: #1c1a16; /* ink text on bright fills (lime, gold, subject) in both themes */
-  --color-band: var(--band);
-  --color-band-ink: var(--band-ink);
-  --color-band-muted: var(--band-muted);
-  --color-band-card: var(--band-card);
-  --color-band-line: var(--band-line);
+  /* legacy aliases used by admin */
+  --color-info: var(--primary-ink);
+  --color-info-soft: var(--primary-soft);
+  --color-on-fill: #16131f; /* ink text on bright fills, same in both themes */
   --color-subj: var(--subj, var(--general));
   --color-subj-soft: var(--subj-soft, var(--general-soft));
   --color-subj-ink: var(--subj-ink, var(--general-ink));
+  --color-on-subj: var(--subj-on, var(--general-on));
   --font-display: var(--font-bricolage), ui-sans-serif, system-ui, sans-serif;
   --font-sans: var(--font-atkinson), ui-sans-serif, system-ui, sans-serif;
   --radius-sticker: var(--r-sticker);
@@ -169,17 +177,35 @@
   --ease-out-soft: var(--ease-out);
 }
 
-/* Subject scopes: set --subj* on any container with data-subject */
-[data-subject="mathematics"] { --subj: var(--maths); --subj-soft: var(--maths-soft); --subj-ink: var(--maths-ink); }
-[data-subject="physics"] { --subj: var(--physics); --subj-soft: var(--physics-soft); --subj-ink: var(--physics-ink); }
-[data-subject="chemistry"] { --subj: var(--chemistry); --subj-soft: var(--chemistry-soft); --subj-ink: var(--chemistry-ink); }
-[data-subject="biology"] { --subj: var(--biology); --subj-soft: var(--biology-soft); --subj-ink: var(--biology-ink); }
-[data-subject="english"] { --subj: var(--english); --subj-soft: var(--english-soft); --subj-ink: var(--english-ink); }
+/* Subject scopes: any container with data-subject takes on that subject's identity */
+[data-subject="mathematics"] { --subj: var(--maths); --subj-soft: var(--maths-soft); --subj-ink: var(--maths-ink); --subj-on: var(--maths-on); --skel: var(--maths-soft); }
+[data-subject="physics"] { --subj: var(--physics); --subj-soft: var(--physics-soft); --subj-ink: var(--physics-ink); --subj-on: var(--physics-on); --skel: var(--physics-soft); }
+[data-subject="chemistry"] { --subj: var(--chemistry); --subj-soft: var(--chemistry-soft); --subj-ink: var(--chemistry-ink); --subj-on: var(--chemistry-on); --skel: var(--chemistry-soft); }
+[data-subject="biology"] { --subj: var(--biology); --subj-soft: var(--biology-soft); --subj-ink: var(--biology-ink); --subj-on: var(--biology-on); --skel: var(--biology-soft); }
+[data-subject="english"] { --subj: var(--english); --subj-soft: var(--english-soft); --subj-ink: var(--english-ink); --subj-on: var(--english-on); --skel: var(--english-soft); }
+[data-subject="economics"] { --subj: var(--economics); --subj-soft: var(--economics-soft); --subj-ink: var(--economics-ink); --subj-on: var(--economics-on); --skel: var(--economics-soft); }
+[data-subject="government"] { --subj: var(--government); --subj-soft: var(--government-soft); --subj-ink: var(--government-ink); --subj-on: var(--government-on); --skel: var(--government-soft); }
+[data-subject="literature"] { --subj: var(--literature); --subj-soft: var(--literature-soft); --subj-ink: var(--literature-ink); --subj-on: var(--literature-on); --skel: var(--literature-soft); }
+[data-subject="geography"] { --subj: var(--geography); --subj-soft: var(--geography-soft); --subj-ink: var(--geography-ink); --subj-on: var(--geography-on); --skel: var(--geography-soft); }
+[data-subject="general"] { --subj: var(--general); --subj-soft: var(--general-soft); --subj-ink: var(--general-ink); --subj-on: var(--general-on); --skel: var(--general-soft); }
+
+/* Whole-screen subject identity: a page marks itself with data-screen="<subject>" and the body takes the tint */
+body:has([data-screen="mathematics"]) { --subj: var(--maths); --subj-soft: var(--maths-soft); --subj-ink: var(--maths-ink); --subj-on: var(--maths-on); --skel: var(--maths); background: var(--maths-soft); }
+body:has([data-screen="physics"]) { --subj: var(--physics); --subj-soft: var(--physics-soft); --subj-ink: var(--physics-ink); --subj-on: var(--physics-on); --skel: var(--physics); background: var(--physics-soft); }
+body:has([data-screen="chemistry"]) { --subj: var(--chemistry); --subj-soft: var(--chemistry-soft); --subj-ink: var(--chemistry-ink); --subj-on: var(--chemistry-on); --skel: var(--chemistry); background: var(--chemistry-soft); }
+body:has([data-screen="biology"]) { --subj: var(--biology); --subj-soft: var(--biology-soft); --subj-ink: var(--biology-ink); --subj-on: var(--biology-on); --skel: var(--biology); background: var(--biology-soft); }
+body:has([data-screen="english"]) { --subj: var(--english); --subj-soft: var(--english-soft); --subj-ink: var(--english-ink); --subj-on: var(--english-on); --skel: var(--english); background: var(--english-soft); }
+body:has([data-screen="economics"]) { --subj: var(--economics); --subj-soft: var(--economics-soft); --subj-ink: var(--economics-ink); --subj-on: var(--economics-on); --skel: var(--economics); background: var(--economics-soft); }
+body:has([data-screen="government"]) { --subj: var(--government); --subj-soft: var(--government-soft); --subj-ink: var(--government-ink); --subj-on: var(--government-on); --skel: var(--government); background: var(--government-soft); }
+body:has([data-screen="literature"]) { --subj: var(--literature); --subj-soft: var(--literature-soft); --subj-ink: var(--literature-ink); --subj-on: var(--literature-on); --skel: var(--literature); background: var(--literature-soft); }
+body:has([data-screen="geography"]) { --subj: var(--geography); --subj-soft: var(--geography-soft); --subj-ink: var(--geography-ink); --subj-on: var(--geography-on); --skel: var(--geography); background: var(--geography-soft); }
+body:has([data-screen="general"]) { --subj: var(--general); --subj-soft: var(--general-soft); --subj-ink: var(--general-ink); --subj-on: var(--general-on); --skel: var(--general); background: var(--general-soft); }
 
 /* ==========================================================================
    Base
    ========================================================================== */
 html { -webkit-text-size-adjust: 100%; -webkit-tap-highlight-color: transparent; }
+body { overflow-x: clip; }
 body {
   background: var(--paper);
   color: var(--ink);
@@ -189,7 +215,7 @@ body {
 }
 h1, h2, h3, .font-display { font-family: var(--font-display); letter-spacing: -0.02em; line-height: 1.1; }
 :focus-visible { outline: 3px solid var(--focus); outline-offset: 3px; border-radius: 6px; }
-::selection { background: var(--lime); color: #1c1a16; }
+::selection { background: var(--sun); color: #16131f; }
 
 /* ==========================================================================
    Component utilities (Tailwind v4 @utility so they compose with @apply).
@@ -229,12 +255,14 @@ h1, h2, h3, .font-display { font-family: var(--font-display); letter-spacing: -0
   @apply pressable;
   &:disabled, &[aria-disabled="true"] { cursor: not-allowed; opacity: 0.55; box-shadow: none; }
 }
-@utility btn-primary { @apply btn; background: var(--lime); color: #1c1a16; &:hover:not(:disabled) { background: var(--lime-2); } }
+@utility btn-primary { @apply btn; background: var(--primary); color: var(--on-primary); &:hover:not(:disabled) { background: color-mix(in oklab, var(--primary) 88%, #000); } }
+/* reward / celebration button (ink on sunshine) */
+@utility btn-sun { @apply btn; background: var(--sun); color: #16131f; &:hover:not(:disabled) { background: color-mix(in oklab, var(--sun) 90%, #000); } }
 @utility btn-secondary { @apply btn; background: var(--card); color: var(--ink); }
 @utility btn-ghost {
   @apply btn;
-  background: transparent; color: var(--ink); border-color: transparent; box-shadow: none;
-  &:hover:not(:disabled) { background: var(--paper-2); transform: none; box-shadow: none; }
+  background: transparent; color: inherit; border-color: transparent; box-shadow: none;
+  &:hover:not(:disabled) { background: color-mix(in oklab, currentColor 12%, transparent); transform: none; box-shadow: none; }
   &:active:not(:disabled) { transform: translateY(1px); }
 }
 @utility btn-danger { @apply btn; background: var(--danger-soft); color: var(--danger); }
@@ -266,16 +294,17 @@ h1, h2, h3, .font-display { font-family: var(--font-display); letter-spacing: -0
 @utility muted { color: var(--ink-2); }
 @utility skeleton {
   border-radius: var(--r-md);
-  background: linear-gradient(90deg, var(--paper-2) 0%, var(--rule) 50%, var(--paper-2) 100%);
+  /* tinted in the section's colour (set --skel), never plain grey */
+  background: linear-gradient(90deg, var(--skel) 0%, color-mix(in oklab, var(--skel) 70%, var(--card)) 50%, var(--skel) 100%);
   background-size: 200% 100%;
   animation: shimmer 1.2s linear infinite;
 }
 /* Faint graph paper for practice areas (pure CSS, no image) */
 @utility graph-paper {
-  background-color: var(--paper);
+  background-color: var(--subj-soft, var(--paper));
   background-image:
-    linear-gradient(var(--rule) 1px, transparent 1px),
-    linear-gradient(90deg, var(--rule) 1px, transparent 1px);
+    linear-gradient(color-mix(in oklab, var(--subj, var(--ink)) 12%, transparent) 1px, transparent 1px),
+    linear-gradient(90deg, color-mix(in oklab, var(--subj, var(--ink)) 12%, transparent) 1px, transparent 1px);
   background-size: 22px 22px;
   background-position: -1px -1px;
 }
@@ -349,10 +378,12 @@ h1, h2, h3, .font-display { font-family: var(--font-display); letter-spacing: -0
   position: absolute; left: 0.25rem; top: 0.05rem;
   width: 1.5rem; height: 1.5rem; display: grid; place-items: center;
   font-family: var(--font-display); font-weight: 800; font-size: 0.8rem;
-  border: 1.5px solid var(--line); border-radius: 999px; background: var(--lime);
-  color: #1c1a16;
+  border: 1.5px solid var(--line); border-radius: 999px; background: var(--subj, var(--primary));
+  color: var(--subj-on, #fff);
 }
-.workings strong { background: linear-gradient(transparent 60%, color-mix(in oklab, var(--lime) 70%, transparent) 60%); }
+/* marker-pen highlight in Sunshine for key steps; key terms (*italic* in content) underlined in the subject colour */
+.workings strong, .prose-q mark { background: linear-gradient(100deg, transparent 2%, var(--sun) 3%, var(--sun) 97%, transparent 98%) 0 62% / 100% 52% no-repeat; padding: 0 0.15em; color: inherit; }
+.workings em, .prose-q em { font-style: normal; font-weight: 700; text-decoration: underline wavy var(--subj, var(--primary)); text-decoration-thickness: 2px; text-underline-offset: 4px; }
 
 /* Explanation steps slide in one after another */
 .steps-reveal > * { animation: rise-in var(--dur-slow) var(--ease-out) both; }
@@ -380,3 +411,9 @@ h1, h2, h3, .font-display { font-family: var(--font-display); letter-spacing: -0
 .calm .btn, .calm [class*="btn-"] { box-shadow: none; border-width: 1.5px; min-height: 2.5rem; font-size: 0.9375rem; }
 .calm .btn:hover, .calm .btn:active, .calm [class*="btn-"]:hover, .calm [class*="btn-"]:active { transform: none; box-shadow: none; }
 .calm .input { min-height: 2.5rem; border-width: 1.5px; }
+
+/* Full-bleed colour block (screen headers, landing sections) that escapes the centred column */
+@utility bleed {
+  margin-inline: calc(50% - 50vw);
+  padding-inline: calc(50vw - 50%); /* content stays aligned with the column */
+}

@@ -78,3 +78,31 @@
 - **Bundle:** JS on the subject page went from about 214 to about 224 KB gzipped (+10 KB, ~5%), from Lucide icons and the small client helpers. Fonts add about 75 KB of preloaded woff2 (I cut this from 111 KB by dropping Bricolage's optical-size axis). CSS is 15 KB gzipped.
 - **Day 1 of the streak** still starts on the first answer (the logic is unchanged). The "You're in" moment invites that first answer instead of faking it.
 - **Rank arrows** compare with last week's final rank. There's no within-week history to show day-to-day movement.
+
+---
+
+## Colour pass: bold colour-blocking (after feedback that the redesign felt muted)
+
+Layout, components, typography and the sticker style are unchanged. Colour now fills large areas.
+
+- **Tokens replaced:**
+  - Ink `#16131F` and paper `#FFF8EC` as the resting background, white cards.
+  - Cobalt as primary, Sunshine as reward, Hot Coral as pop.
+  - Leaf / Soft Coral for correct and wrong.
+  - Ten subject sets (fill, tint, deep shade, text-on-fill).
+  - Dark mode on `#121024` with `#1E1B33` cards.
+- **Contrast:** every text-on-fill and text-on-tint pair is checked by `scripts/check-contrast.mts` in both themes, and all pass AA. That decided the text colours: **white only on Cobalt and Grape**, ink everywhere else. The spec's Grape `#8E5CFF` fails with both ink and white, so it's deepened to `#7448FF`.
+- **Screens:**
+  - **Landing:** Cobalt hero with floating multi-colour stickers, filled subject tiles, a Sunshine streak/leaderboard band, a Grape parents/pricing band and a Coral final CTA.
+  - **Home:** Sunshine header with streak and goal, a Cobalt "Continue" card, subject cards fully filled.
+  - **Subjects:** Cobalt header and filled cards.
+  - **Subject path:** the whole screen tinted by `data-screen`, a subject header, and nodes that are filled, half-filled or outlined.
+  - **Practice:** subject-tint page and subject top bar, white options, Leaf/Soft Coral fills, Sunshine counters; Sunshine marker and subject-colour underlines in the workings.
+  - **Leaderboard:** Cobalt header with a gold/silver/bronze podium, own row in Cobalt, Leaf/Soft Coral movement pills.
+  - **Progress:** Coral header.
+  - **Profile:** Cobalt identity card, colour stat tiles, Sunshine streak calendar, a colourful badge sheet with grey locked silhouettes.
+  - **Premium / paywall:** Grape header and upgrade sheet with Sunshine buttons.
+  - **Auth / onboarding:** Cobalt screen with white cards.
+  - **States:** colourful doodles, tinted empty and error cards, skeletons tinted per section.
+- **360px:** each colour block was worked out by hand and adjusted: full-bleed headers keep their content aligned with the column, and the dashboard header tiles were tightened. Small pills on coloured fills use a fixed white background, so they read the same in dark mode. A source scan confirmed that every bright fill sets an AA-safe text colour.
+- **Still not done:** real screenshots at 360px in both themes. Chromium can't run on this machine. Please run the Playwright suite or check on a device.

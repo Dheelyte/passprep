@@ -3,7 +3,7 @@ import { ThemeToggle } from "@/components/ds/theme-toggle";
 
 export default function AuthLayout({ children }: LayoutProps<"/">) {
   return (
-    <div className="graph-paper flex flex-1 flex-col">
+    <div className="flex flex-1 flex-col bg-primary text-on-primary">
       <div className="mx-auto flex w-full max-w-md flex-1 flex-col px-4 py-4">
         <div className="mb-8 flex items-center justify-between">
           <Logo />

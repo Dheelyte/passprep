@@ -31,9 +31,11 @@ async function Detail({ params }: { params: PageProps<"/progress/[slug]">["param
   const detail = premium ? await subjectDetail(user.id, subject.id) : null;
 
   return (
-    <div className="space-y-5" data-subject={subjectScope(subject.slug)}>
-      <Link href="/progress" className="inline-flex min-h-10 items-center gap-1 text-sm font-bold"><ArrowLeft aria-hidden className="size-4" /> Progress</Link>
-      <h1 className="text-3xl font-extrabold">{subject.name}</h1>
+    <div className="space-y-5" data-screen={subjectScope(subject.slug)} data-subject={subjectScope(subject.slug)}>
+      <header className="bleed -mt-5 border-b-2 border-line bg-subj pb-5 pt-3 text-on-subj">
+        <Link href="/progress" className="inline-flex min-h-10 items-center gap-1 text-sm font-bold"><ArrowLeft aria-hidden className="size-4" /> Progress</Link>
+        <h1 className="text-3xl font-extrabold">{subject.name}</h1>
+      </header>
 
       <Card as="section" aria-labelledby="topics-h">
         <h2 id="topics-h" className="mb-3 text-lg font-extrabold">Every topic</h2>
@@ -91,8 +93,8 @@ async function Detail({ params }: { params: PageProps<"/progress/[slug]">["param
               <h2 id="missed-h" className="mb-3 text-lg font-extrabold">Questions you miss most</h2>
               <ul className="space-y-2 text-sm">
                 {detail.missed.map((m) => (
-                  <li key={m.questionId} className="rounded-[10px] border-2 border-line bg-oops-soft p-3">
-                    <span className="block text-xs font-bold text-oops">{m.topic} · missed {m.wrong}×</span>
+                  <li key={m.questionId} className="rounded-[10px] border-2 border-line bg-oops-soft p-3 text-ink">
+                    <span className="block text-xs font-bold text-oops-ink">{m.topic} · missed {m.wrong}×</span>
                     <span className="prose-q line-clamp-3" dangerouslySetInnerHTML={{ __html: renderInline(m.stem) }} />
                   </li>
                 ))}
@@ -101,7 +103,7 @@ async function Detail({ params }: { params: PageProps<"/progress/[slug]">["param
           ) : null}
         </>
       ) : (
-        <CardLink href="/premium" tone="paper" className="flex items-start gap-3 border-dashed">
+        <CardLink href="/premium" tone="grape" className="flex items-start gap-3">
           <Lock aria-hidden className="mt-0.5 size-5 shrink-0" />
           <span>
             <span className="block font-display font-extrabold">See the full picture with Premium</span>

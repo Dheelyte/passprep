@@ -8,7 +8,7 @@ export default function LoginPage({ searchParams }: PageProps<"/login">) {
   return (
     <>
       <h1 className="text-4xl font-extrabold">Welcome back</h1>
-      <p className="muted mb-6 mt-2">Your streak is waiting.</p>
+      <p className="mb-6 mt-2 font-semibold">Your streak is waiting.</p>
       <Suspense fallback={<LoginForm />}>
         <LoginWithNext searchParams={searchParams} />
       </Suspense>

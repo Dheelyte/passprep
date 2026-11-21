@@ -54,9 +54,9 @@ await check("/signup?utm_source=whatsapp", { expect: ["exam-ready", 'value="what
 await check("/dashboard", { status: 307, expect: [] }); // signed out → proxy redirect
 await check("/dashboard", { cookie: s, expect: ["Hi Tobi", "day streak", "Today", "Your subjects", "This week"] });
 await check("/subjects", { cookie: s, expect: ["Mathematics", "Physics", "Yours"] });
-await check("/subjects/mathematics", { cookie: s, expect: ["Number and Numeration", "Logarithms", "Mastered", "data-subject=\"mathematics\""] });
+await check("/subjects/mathematics", { cookie: s, expect: ["Number and Numeration", "Logarithms", "Mastered", "data-screen=\"mathematics\""] });
 await check(`/practice/${session.id}`, { cookie: s, expect: [/Question 1 <span[^>]*>of 3/, "katex", "Practice set progress"] });
-await check("/leaderboard", { cookie: s, expect: ["This week", "Chidinma O.", "Resets Monday", "Top three"] });
+await check("/leaderboard", { cookie: s, expect: ["This week", "Chidinma O.", "Resets in", "Top three", "bg-silver"] });
 await check("/progress", { cookie: s, expect: ["Your progress", "Mathematics"] });
 await check("/progress/mathematics", { cookie: s, expect: ["Every topic", "See the full picture"] });
 await check("/premium", { cookie: s, expect: ["without limits", "Ask a parent to pay", "Per term", "Popular with parents"] });

@@ -36,15 +36,15 @@ export async function userStats(userId: string) {
 /** Badge catalogue, computed from stats. Earned = true when the condition is met. */
 export function badgesFor(s: Awaited<ReturnType<typeof userStats>>, streak: { current: number; longest: number }): BadgeDef[] {
   return [
-    { id: "first", name: "First step", hint: "Answer 1 question", earned: s.answered >= 1, shape: "circle", color: "var(--lime)", glyph: "1" },
+    { id: "first", name: "First step", hint: "Answer 1 question", earned: s.answered >= 1, shape: "circle", color: "var(--sun)", glyph: "1" },
     { id: "fifty", name: "Half-century", hint: "Answer 50", earned: s.answered >= 50, shape: "shield", color: "var(--maths)", glyph: "50" },
-    { id: "ton", name: "Century", hint: "Answer 100", earned: s.answered >= 100, shape: "burst", color: "var(--gold)", glyph: "100" },
+    { id: "ton", name: "Century", hint: "Answer 100", earned: s.answered >= 100, shape: "burst", color: "var(--coral)", glyph: "100" },
     { id: "streak3", name: "On fire", hint: "3-day streak", earned: streak.longest >= 3, shape: "star", color: "var(--physics)", glyph: "3" },
-    { id: "streak7", name: "Week warrior", hint: "7-day streak", earned: streak.longest >= 7, shape: "star", color: "var(--physics)", glyph: "7" },
+    { id: "streak7", name: "Week warrior", hint: "7-day streak", earned: streak.longest >= 7, shape: "star", color: "var(--grape)", glyph: "7" },
     { id: "streak30", name: "Unstoppable", hint: "30-day streak", earned: streak.longest >= 30, shape: "burst", color: "var(--english)", glyph: "30" },
     { id: "perfect", name: "Clean sheet", hint: "Perfect set (5+)", earned: s.perfectSets >= 1, shape: "shield", color: "var(--chemistry)", glyph: "A1" },
     { id: "explorer", name: "Explorer", hint: "Try 5 topics", earned: s.topicsTried >= 5, shape: "circle", color: "var(--biology)", glyph: "5" },
-    { id: "watcher", name: "Replay king", hint: "Watch a solution", earned: s.videos >= 1, shape: "circle", color: "var(--info-soft)", glyph: "↺" },
+    { id: "watcher", name: "Replay king", hint: "Watch a solution", earned: s.videos >= 1, shape: "circle", color: "var(--geography)", glyph: "↺" },
   ];
 }
 

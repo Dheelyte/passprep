@@ -2,7 +2,7 @@ import type { ReactNode } from "react";
 import { cn } from "./cn";
 
 /** Hand-drawn marker underline under key words. */
-export function Underline({ children, color = "var(--lime)" }: { children: ReactNode; color?: string }) {
+export function Underline({ children, color = "var(--sun)" }: { children: ReactNode; color?: string }) {
   return (
     <span className="relative inline-block whitespace-nowrap">
       <span className="relative z-10">{children}</span>

@@ -1,4 +1,4 @@
-// WCAG AA contrast check for the design tokens in src/app/globals.css (light + dark).
+// WCAG AA contrast check for the colour tokens in src/app/globals.css (light + dark).
 // Run: npx tsx scripts/check-contrast.mts
 import { readFileSync } from "node:fs";
 
@@ -6,7 +6,7 @@ const css = readFileSync("src/app/globals.css", "utf8");
 function block(selector: string) {
   const i = css.indexOf(selector);
   const body = css.slice(css.indexOf("{", i) + 1, css.indexOf("}", i));
-  return Object.fromEntries([...body.matchAll(/--([\w-]+):\s*(#[0-9a-f]{6})/gi)].map((m) => [m[1], m[2]]));
+  return Object.fromEntries([...body.matchAll(/--([\w-]+):\s*(#[0-9a-f]{6})/gi)].map((m) => [m[1], m[2].toLowerCase()]));
 }
 const light = block(":root {");
 const dark = { ...light, ...block(':root[data-theme="dark"]') };
@@ -17,32 +17,34 @@ const lum = (hex: string) => {
 };
 const ratio = (a: string, b: string) => { const [x, y] = [lum(a), lum(b)].sort((p, q) => q - p); return (x + 0.05) / (y + 0.05); };
 
-// [foreground, background, minimum] — 4.5 text, 3 large text / UI components
-const INK_ON_FILL = "#1c1a16";
-const subjects = ["maths", "physics", "chemistry", "biology", "english", "general"];
-const pairs: [string, string, number][] = [
-  ["ink", "paper", 4.5], ["ink", "card", 4.5], ["ink-2", "paper", 4.5], ["ink-2", "card", 4.5], ["ink-2", "paper-2", 4.5],
-  ["ok", "ok-soft", 4.5], ["ok", "card", 4.5], ["oops", "oops-soft", 4.5], ["oops", "card", 4.5],
-  ["danger", "danger-soft", 4.5], ["info", "info-soft", 4.5], ["info", "card", 4.5],
-  ["line", "paper", 3], ["focus", "paper", 3], ["band-ink", "band", 4.5], ["band-muted", "band", 4.5], ["band-ink", "band-card", 4.5], ["band-line", "band", 3], ["lime", "band", 4.5],
-  ...subjects.flatMap((s) => [[`${s}-ink`, `${s}-soft`, 4.5], [`${s}-ink`, "card", 4.5], [`${s}-ink`, "paper", 4.5]] as [string, string, number][]),
+const INK = "#16131f";
+const subjects = ["maths", "physics", "chemistry", "biology", "english", "economics", "government", "literature", "geography", "general"];
+type Pair = [fg: string, bg: string, min: number];
+const pairs = (t: Record<string, string>): Pair[] => [
+  // text on surfaces
+  [t.ink, t.paper, 4.5], [t.ink, t.card, 4.5], [t["ink-2"], t.paper, 4.5], [t["ink-2"], t.card, 4.5],
+  [t["primary-ink"], t.paper, 4.5], [t["primary-ink"], t.card, 4.5], [t["primary-ink"], t["primary-soft"], 4.5],
+  [t["sun-ink"], t["sun-soft"], 4.5], [t["coral-ink"], t["coral-soft"], 4.5], [t["grape-ink"], t["grape-soft"], 4.5],
+  [t["ok-ink"], t["ok-soft"], 4.5], [t["ok-ink"], t.card, 4.5], [t["oops-ink"], t["oops-soft"], 4.5], [t.danger, t["danger-soft"], 4.5],
+  [t.ink, t["sun-soft"], 4.5], [t.ink, t["coral-soft"], 4.5], [t.ink, t["oops-soft"], 4.5], [t.ink, t["primary-soft"], 4.5],
+  // text on bright fills (the fill's designated text colour)
+  [t["on-primary"], t.primary, 4.5], [t["on-grape"], t.grape, 4.5],
+  [INK, t.sun, 4.5], [INK, t.coral, 4.5], [INK, t.ok, 4.5], [INK, t.oops, 4.5], [INK, t.silver, 4.5], [INK, t.bronze, 4.5],
+  ...subjects.flatMap((s): Pair[] => [[t[`${s}-on`], t[s], 4.5], [t[`${s}-ink`], t[`${s}-soft`], 4.5], [t.ink, t[`${s}-soft`], 4.5], [t["ink-2"], t[`${s}-soft`], 4.5]]),
+  // non-text UI
+  [t.focus, t.paper, 3], [t.primary, t.paper, 3],
 ];
+const names = (t: Record<string, string>) => Object.fromEntries(Object.entries(t).map(([k, v]) => [v, k]));
 
 let fails = 0;
-for (const [name, t] of [["light", light], ["dark", dark]] as const) {
-  const rows: string[] = [];
-  for (const [fg, bg, min] of pairs) {
-    const r = ratio(t[fg], t[bg]);
+for (const [label, t] of [["light", light], ["dark", dark]] as const) {
+  const n: Record<string, string> = { ...names(t), [INK]: "ink-on-fill" };
+  const rows = pairs(t).map(([fg, bg, min]) => {
+    const r = ratio(fg, bg);
     if (r < min) fails++;
-    rows.push(`${r >= min ? "ok  " : "FAIL"} ${r.toFixed(2).padStart(5)}  ${fg} on ${bg}`);
-  }
-  // ink text on bright fills (lime buttons, subject fills, gold)
-  for (const fill of ["lime", "lime-2", "gold", ...subjects]) {
-    const r = ratio(INK_ON_FILL, t[fill]);
-    if (r < 4.5) fails++;
-    rows.push(`${r >= 4.5 ? "ok  " : "FAIL"} ${r.toFixed(2).padStart(5)}  ink(#1c1a16) on ${fill}`);
-  }
-  console.log(`\n== ${name}\n${rows.join("\n")}`);
+    return `${r >= min ? "ok  " : "FAIL"} ${r.toFixed(2).padStart(5)}  ${n[fg] ?? fg} on ${n[bg] ?? bg}`;
+  });
+  console.log(`\n== ${label}\n${rows.join("\n")}`);
 }
 console.log(fails ? `\n${fails} pairs below AA` : "\nall pairs meet WCAG AA");
 process.exit(fails ? 1 : 0);

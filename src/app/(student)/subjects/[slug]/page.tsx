@@ -7,7 +7,7 @@ import { requireUser } from "@/lib/auth";
 import { subjectProgress, type Mastery } from "@/lib/progress";
 import { startPractice } from "@/app/actions/practice";
 import { CLASS_LABEL, subjectScope } from "@/lib/subjects";
-import { Chip, ProgressRing, SkeletonPath, cn } from "@/components/ds";
+import { Chip, SkeletonPath, cn } from "@/components/ds";
 import { SubmitButton } from "@/components/ds/submit-button";
 import { SubjectIcon } from "@/components/subject-icon";
 
@@ -51,25 +51,25 @@ async function Subject({ params }: { params: PageProps<"/subjects/[slug]">["para
   const started = progress.filter((p) => p.attempts > 0).length;
 
   return (
-    <div data-subject={subjectScope(subject.slug)}>
-      <Link href="/subjects" className="mb-3 inline-flex min-h-10 items-center gap-1 text-sm font-bold">
-        <ArrowLeft aria-hidden className="size-4" /> All subjects
-      </Link>
-
-      <header className="sticker mb-6 overflow-hidden p-0">
-        <div className="flex items-center gap-3 bg-subj px-4 py-4 text-on-fill">
-          <span className="grid size-12 place-items-center rounded-[10px] border-2 border-on-fill bg-card text-ink">
-            <SubjectIcon slug={subject.slug} className="size-6" />
+    <div data-screen={subjectScope(subject.slug)} data-subject={subjectScope(subject.slug)}>
+      {/* The whole screen takes the subject's identity: coloured header, tinted page */}
+      <header className="bleed -mt-5 mb-6 border-b-2 border-line bg-subj pb-5 pt-3 text-on-subj">
+        <Link href="/subjects" className="mb-2 inline-flex min-h-10 items-center gap-1 text-sm font-bold">
+          <ArrowLeft aria-hidden className="size-4" /> All subjects
+        </Link>
+        <div className="flex items-center gap-3">
+          <span className="grid size-14 place-items-center rounded-full border-2 border-line bg-card text-ink shadow-sticker-sm">
+            <SubjectIcon slug={subject.slug} className="size-7" />
           </span>
           <div>
-            <h1 className="text-2xl font-extrabold">{subject.name}</h1>
-            <p className="text-sm font-semibold">WAEC · NECO · JAMB syllabus order</p>
+            <h1 className="text-3xl font-extrabold">{subject.name}</h1>
+            <p className="text-sm font-bold">WAEC · NECO · JAMB syllabus order</p>
           </div>
         </div>
-        <dl className="grid grid-cols-3 divide-x-2 divide-dashed divide-rule border-t-2 border-line text-center">
-          <div className="py-2"><dt className="text-xs font-bold text-ink-2">Topics</dt><dd className="num text-2xl">{roots.length}</dd></div>
-          <div className="py-2"><dt className="text-xs font-bold text-ink-2">Started</dt><dd className="num text-2xl">{started}</dd></div>
-          <div className="py-2"><dt className="text-xs font-bold text-ink-2">Mastered</dt><dd className="num text-2xl">{mastered}</dd></div>
+        <dl className="mt-4 grid grid-cols-3 gap-2 text-center text-ink">
+          <div className="rounded-[10px] border-2 border-line bg-card py-2"><dt className="text-xs font-bold text-ink-2">Topics</dt><dd className="num text-2xl">{roots.length}</dd></div>
+          <div className="rounded-[10px] border-2 border-line bg-card py-2"><dt className="text-xs font-bold text-ink-2">Started</dt><dd className="num text-2xl">{started}</dd></div>
+          <div className="rounded-[10px] border-2 border-line bg-sun py-2 text-on-fill"><dt className="text-xs font-bold">Mastered</dt><dd className="num text-2xl">{mastered}</dd></div>
         </dl>
       </header>
 
@@ -86,7 +86,7 @@ async function Subject({ params }: { params: PageProps<"/subjects/[slug]">["para
             <li key={t.id} className="relative pb-6">
               {i > 0 ? (
                 <svg aria-hidden className="absolute -top-6 left-0 h-7 w-40 overflow-visible" viewBox="0 0 160 28">
-                  <path d={`M ${prevX + NODE / 2} 0 C ${prevX + NODE / 2} 16, ${x + NODE / 2} 12, ${x + NODE / 2} 28`} fill="none" stroke="var(--line)" strokeWidth="2.5" strokeDasharray="2 7" strokeLinecap="round" />
+                  <path d={`M ${prevX + NODE / 2} 0 C ${prevX + NODE / 2} 16, ${x + NODE / 2} 12, ${x + NODE / 2} 28`} fill="none" stroke="var(--subj-ink)" strokeWidth="3" strokeDasharray="2 7" strokeLinecap="round" />
                 </svg>
               ) : null}
               <div className="flex items-start gap-3" style={{ paddingLeft: x }}>
@@ -94,10 +94,10 @@ async function Subject({ params }: { params: PageProps<"/subjects/[slug]">["para
                 <div className={cn("min-w-0 flex-1 border-2 border-line bg-card px-3 py-2.5 [border-radius:var(--r-sticker)]", state !== "locked" && "shadow-sticker-sm")}>
                   <h2 className="font-display font-extrabold leading-tight">{t.name}</h2>
                   <p className="mt-1 flex flex-wrap items-center gap-1.5 text-xs">
-                    <Chip tone={state === "mastered" ? "ok" : state === "progress" ? "subject" : "neutral"} icon={state === "mastered" ? <Check aria-hidden className="size-3" strokeWidth={3} /> : state === "locked" ? <Lock aria-hidden className="size-3" /> : undefined}>
+                    <Chip tone={state === "mastered" ? "subject-fill" : state === "progress" ? "subject" : "neutral"} icon={state === "mastered" ? <Check aria-hidden className="size-3" strokeWidth={3} /> : state === "locked" ? <Lock aria-hidden className="size-3" /> : undefined}>
                       {STATE_LABEL[state]}
                     </Chip>
-                    {forClass ? <Chip tone="lime">Your class</Chip> : t.classLevels.length ? <span className="text-ink-2">{t.classLevels.map((c) => CLASS_LABEL[c]).join(", ")}</span> : null}
+                    {forClass ? <Chip tone="sun">Your class</Chip> : t.classLevels.length ? <span className="text-ink-2">{t.classLevels.map((c) => CLASS_LABEL[c]).join(", ")}</span> : null}
                   </p>
                   {n > 0 ? (
                     <form action={startPractice} className="mt-2.5">
@@ -116,7 +116,7 @@ async function Subject({ params }: { params: PageProps<"/subjects/[slug]">["para
                             {sn > 0 ? (
                               <form action={startPractice}>
                                 <input type="hidden" name="topicId" value={s.id} />
-                                <button className="pressable inline-flex min-h-10 items-center rounded-full border-2 border-line bg-subj-soft px-3 text-sm font-bold shadow-sticker-sm" aria-label={`Practise ${s.name}`}>
+                                <button className="pressable inline-flex min-h-10 items-center rounded-full border-2 border-line bg-subj px-3 text-sm font-bold text-on-subj shadow-sticker-sm" aria-label={`Practise ${s.name}`}>
                                   {s.name}
                                 </button>
                               </form>
@@ -141,23 +141,24 @@ async function Subject({ params }: { params: PageProps<"/subjects/[slug]">["para
 }
 
 function PathNode({ state, index, accuracy }: { state: NodeState; index: number; accuracy: number | null }) {
+  const label = `Topic ${index}: ${STATE_LABEL[state]}${state === "progress" && accuracy !== null ? `, ${Math.round(accuracy * 100)}% recent accuracy` : ""}`;
   if (state === "progress") {
+    // half-filled node: bottom half in the subject colour
     return (
-      <span className="shrink-0 rounded-full bg-card shadow-sticker-sm">
-        <ProgressRing value={accuracy ?? 0} size={NODE} stroke={6} label={`Topic ${index}: ${Math.round((accuracy ?? 0) * 100)}% recent accuracy`}>
-          <span className="num text-sm">{Math.round((accuracy ?? 0) * 100)}%</span>
-        </ProgressRing>
+      <span role="img" aria-label={label} className="relative grid shrink-0 place-items-center overflow-hidden rounded-full border-[3px] border-line bg-card shadow-sticker-sm" style={{ width: NODE, height: NODE }}>
+        <span aria-hidden className="absolute inset-x-0 bottom-0 h-1/2 border-t-2 border-line bg-subj" />
+        <span aria-hidden className="relative -mt-5 font-display text-base font-extrabold">{index}</span>
       </span>
     );
   }
   const cls = {
-    mastered: "bg-subj text-on-fill shadow-sticker-sm",
-    new: "bg-card shadow-sticker-sm",
-    locked: "border-dashed bg-paper-2 text-ink-2",
+    mastered: "border-line bg-subj text-on-subj shadow-sticker-sm",
+    new: "border-subj bg-card text-subj-ink border-[3px] [box-shadow:0_0_0_2px_var(--line)]",
+    locked: "border-dashed border-ink-2 bg-paper-2 text-ink-2",
   }[state];
   return (
-    <span aria-hidden className={cn("grid shrink-0 place-items-center rounded-full border-2 border-line font-display text-lg font-extrabold", cls)} style={{ width: NODE, height: NODE }}>
-      {state === "mastered" ? <Check className="size-6" strokeWidth={3} /> : state === "locked" ? <Lock className="size-5" /> : index}
+    <span role="img" aria-label={label} className={cn("grid shrink-0 place-items-center rounded-full border-2 font-display text-lg font-extrabold", cls)} style={{ width: NODE, height: NODE }}>
+      {state === "mastered" ? <Check aria-hidden className="size-6" strokeWidth={3} /> : state === "locked" ? <Lock aria-hidden className="size-5" /> : <span aria-hidden>{index}</span>}
     </span>
   );
 }

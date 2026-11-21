@@ -44,28 +44,28 @@ async function Account() {
 
   return (
     <div className="space-y-5">
-      <Card className="flex items-center gap-4">
+      <Card tone="primary" className="flex items-center gap-4">
         <Avatar name={user.name} size="lg" />
         <div className="min-w-0">
           <h1 className="truncate text-2xl font-extrabold">{user.name}</h1>
-          <p className="muted truncate text-sm">{user.phone ?? user.email}</p>
+          <p className="truncate text-sm font-semibold">{user.phone ?? user.email}</p>
           <p className="mt-1 flex flex-wrap gap-1.5">
-            {user.classLevel ? <Chip tone="lime">{CLASS_LABEL[user.classLevel]}</Chip> : null}
-            {user.exams.map((e) => <Chip key={e}>{e}</Chip>)}
-            {premium ? <Chip tone="gold">Premium</Chip> : null}
+            {user.classLevel ? <Chip tone="sun">{CLASS_LABEL[user.classLevel]}</Chip> : null}
+            {user.exams.map((e) => <Chip key={e} className="text-ink">{e}</Chip>)}
+            {premium ? <Chip tone="grape">Premium</Chip> : null}
           </p>
         </div>
       </Card>
 
       <dl className="grid grid-cols-2 gap-3 sm:grid-cols-4">
         {[
-          { k: "Points", v: user.totalPoints.toLocaleString("en-NG") },
-          { k: "Answered", v: stats.answered.toLocaleString("en-NG") },
-          { k: "Accuracy", v: accuracy === null ? "–" : `${accuracy}%` },
-          { k: "Best streak", v: `${user.longestStreak}d` },
+          { k: "Points", v: user.totalPoints.toLocaleString("en-NG"), c: "bg-sun text-on-fill" },
+          { k: "Answered", v: stats.answered.toLocaleString("en-NG"), c: "bg-card" },
+          { k: "Accuracy", v: accuracy === null ? "–" : `${accuracy}%`, c: "bg-ok text-on-fill" },
+          { k: "Best streak", v: `${user.longestStreak}d`, c: "bg-coral text-on-fill" },
         ].map((s) => (
-          <div key={s.k} className="sticker px-3 py-3 text-center">
-            <dt className="text-xs font-bold text-ink-2">{s.k}</dt>
+          <div key={s.k} className={`sticker px-3 py-3 text-center ${s.c}`}>
+            <dt className="text-xs font-bold">{s.k}</dt>
             <dd className="num mt-1 text-3xl">{s.v}</dd>
           </div>
         ))}
@@ -96,7 +96,7 @@ async function Account() {
         </div>
         <ul className="flex flex-wrap gap-2">
           {subjects.map(({ subject: s }) => (
-            <li key={s.id} data-subject={subjectScope(s.slug)} className="flex items-center gap-1.5 rounded-full border-2 border-line bg-subj px-3 py-1 font-bold text-on-fill">
+            <li key={s.id} data-subject={subjectScope(s.slug)} className="flex items-center gap-1.5 rounded-full border-2 border-line bg-subj px-3 py-1 font-bold text-on-subj">
               <SubjectIcon slug={s.slug} className="size-4" /> {s.name}
             </li>
           ))}

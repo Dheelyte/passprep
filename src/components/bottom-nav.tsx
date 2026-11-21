@@ -32,7 +32,7 @@ export function NavBar({ path = "" }: { path?: string }) {
                 <span
                   className={cn(
                     "grid h-8 w-12 place-items-center rounded-full border-2 transition-[transform,background-color] duration-200 group-active:scale-95",
-                    active ? "border-line bg-lime text-on-fill" : "border-transparent text-ink-2 group-hover:bg-paper-2",
+                    active ? "border-line bg-primary text-on-primary" : "border-transparent text-ink-2 group-hover:bg-paper-2",
                   )}
                 >
                   <Icon aria-hidden className="size-5" strokeWidth={active ? 2.6 : 2} />

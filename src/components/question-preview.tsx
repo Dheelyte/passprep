@@ -12,7 +12,7 @@ export function QuestionPreview({ q }: { q: { stem: string; options: string[]; c
           <li key={i} className={`flex gap-2 rounded-lg px-3 py-2 ${i === q.correctIndex ? "bg-ok-soft font-semibold" : "bg-paper-2"}`}>
             <span>{LETTERS[i]}.</span>
             <span className="prose-q" dangerouslySetInnerHTML={{ __html: renderInline(o) }} />
-            {i === q.correctIndex ? <span className="ml-auto text-ok">✓ correct</span> : null}
+            {i === q.correctIndex ? <span className="ml-auto text-ok-ink">✓ correct</span> : null}
           </li>
         ))}
       </ol>

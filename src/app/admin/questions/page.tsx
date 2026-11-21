@@ -7,8 +7,8 @@ import { PageHeader, SkeletonList } from "@/components/admin-ui";
 
 const STATUSES: QuestionStatus[] = ["PUBLISHED", "IN_REVIEW", "REJECTED", "DRAFT"];
 const tone: Record<QuestionStatus, string> = {
-  PUBLISHED: "bg-ok-soft text-ok",
-  IN_REVIEW: "bg-lime-soft",
+  PUBLISHED: "bg-ok-soft text-ok-ink",
+  IN_REVIEW: "bg-sun-soft",
   REJECTED: "bg-danger-soft text-danger",
   DRAFT: "bg-paper-2 text-ink-2",
 };

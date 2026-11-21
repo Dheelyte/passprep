@@ -18,7 +18,7 @@ export function Flame({ days, size = 32, animate = true, className }: { days: nu
           strokeLinejoin="round"
         />
         {lit ? (
-          <path d="M24 26 C 28 32, 33 36, 33 42 C 33 48, 29 51, 24 51 C 19 51, 15 48, 15 42 C 15 37, 19 33, 24 26 Z" fill="var(--gold)" stroke="var(--line)" strokeWidth="2" strokeLinejoin="round" />
+          <path d="M24 26 C 28 32, 33 36, 33 42 C 33 48, 29 51, 24 51 C 19 51, 15 48, 15 42 C 15 37, 19 33, 24 26 Z" fill="var(--sun)" stroke="var(--line)" strokeWidth="2" strokeLinejoin="round" />
         ) : null}
         {days >= 30 ? <path d="M24 36 C 26 40, 28 42, 28 45 C 28 48, 26 49, 24 49 C 22 49, 20 48, 20 45 C 20 42, 22 40, 24 36 Z" fill="#fffdf7" /> : null}
       </g>
@@ -27,13 +27,13 @@ export function Flame({ days, size = 32, animate = true, className }: { days: nu
 }
 
 export function TrophyIcon({ size = 40, place = 1 }: { size?: number; place?: 1 | 2 | 3 }) {
-  const fill = { 1: "var(--gold)", 2: "#c9ccd6", 3: "#d08a4f" }[place];
+  const fill = { 1: "var(--sun)", 2: "var(--silver)", 3: "var(--bronze)" }[place];
   return (
     <svg aria-hidden viewBox="0 0 48 48" width={size} height={size}>
       <path d="M14 6 H34 V18 C34 25, 30 30, 24 30 C18 30, 14 25, 14 18 Z" fill={fill} stroke="var(--line)" strokeWidth="2.5" strokeLinejoin="round" />
       <path d="M14 10 H7 C7 18, 10 21, 15 22 M34 10 H41 C41 18, 38 21, 33 22" fill="none" stroke="var(--line)" strokeWidth="2.5" strokeLinecap="round" />
       <path d="M20 30 V36 H28 V30 M15 42 H33 V36 H15 Z" fill={fill} stroke="var(--line)" strokeWidth="2.5" strokeLinejoin="round" />
-      <text x="24" y="22" textAnchor="middle" fontSize="11" fontWeight="800" fill="#1c1a16" fontFamily="var(--font-bricolage), sans-serif">{place}</text>
+      <text x="24" y="22" textAnchor="middle" fontSize="11" fontWeight="800" fill="#16131f" fontFamily="var(--font-bricolage), sans-serif">{place}</text>
     </svg>
   );
 }
@@ -53,13 +53,13 @@ export function StickerBadge({ badge, size = 76 }: { badge: BadgeDef; size?: num
       <svg viewBox="0 0 80 80" width={size} height={size} role="img" aria-label={`${badge.name}${badge.earned ? " (earned)" : " (locked)"}`} className={badge.earned ? "drop-shadow-[3px_3px_0_var(--shadow-ink)]" : ""}>
         <path
           d={paths[badge.shape]}
-          fill={badge.earned ? badge.color : "transparent"}
-          stroke={badge.earned ? "var(--line)" : "var(--ink-2)"}
+          fill={badge.earned ? badge.color : "var(--silver)"}
+          fillOpacity={badge.earned ? 1 : 0.55}
+          stroke={badge.earned ? "var(--line)" : "var(--silver)"}
           strokeWidth={badge.earned ? 3 : 2}
-          strokeDasharray={badge.earned ? undefined : "5 5"}
           strokeLinejoin="round"
         />
-        <text x="40" y="48" textAnchor="middle" fontSize="22" fontWeight="800" fill={badge.earned ? "#1c1a16" : "var(--ink-2)"} fontFamily="var(--font-bricolage), sans-serif">
+        <text x="40" y="48" textAnchor="middle" fontSize="22" fontWeight="800" fill={badge.earned ? (["var(--maths)", "var(--grape)"].includes(badge.color) ? "#ffffff" : "#16131f") : "var(--card)"} fontFamily="var(--font-bricolage), sans-serif">
           {badge.earned ? badge.glyph : "?"}
         </text>
       </svg>

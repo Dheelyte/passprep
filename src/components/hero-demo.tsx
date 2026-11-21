@@ -43,13 +43,13 @@ export function HeroDemo({ stemHtml, optionsHtml, workingsHtml }: { stemHtml: st
         <span key={streak} className="num anim-bump text-base">{streak}</span>
         <span className="text-xs font-bold">day streak</span>
       </div>
-      <div className="absolute -top-4 right-3 z-10 rotate-3 rounded-full border-2 border-line bg-lime px-3 py-1 text-on-fill shadow-sticker-sm">
+      <div className="absolute -top-4 right-3 z-10 rotate-3 rounded-full border-2 border-line bg-sun px-3 py-1 text-on-fill shadow-sticker-sm">
         <span key={points} className="num anim-bump text-base">{points.toLocaleString("en-NG")}</span> <span className="text-xs font-bold">pts</span>
-        {correct ? <span className="anim-float absolute -top-3 right-2 font-display text-sm font-extrabold text-ok">+10</span> : null}
+        {correct ? <span className="anim-float absolute -top-3 right-2 font-display text-sm font-extrabold text-ok-ink">+10</span> : null}
       </div>
 
       <div className="sticker graph-paper overflow-hidden p-0 shadow-sticker-lg" data-subject="mathematics">
-        <div className="flex items-center justify-between border-b-2 border-line bg-subj-soft px-4 py-2 text-sm">
+        <div className="flex items-center justify-between border-b-2 border-line bg-subj px-4 py-2 text-sm text-on-subj">
           <span className="font-display font-extrabold">Indices · Q{step >= 4 ? 4 : 3} of 10</span>
           <span className="chip bg-card text-ink-2">Medium</span>
         </div>
@@ -64,13 +64,13 @@ export function HeroDemo({ stemHtml, optionsHtml, workingsHtml }: { stemHtml: st
                 className={cn(
                   "flex min-h-11 items-center gap-2.5 border-2 border-line px-2.5 py-1.5 text-sm transition-[transform,box-shadow,background-color] duration-200 [border-radius:var(--r-sticker)]",
                   state === "idle" && "bg-card shadow-sticker-sm",
-                  state === "pending" && "translate-x-[2px] translate-y-[2px] bg-lime-soft",
+                  state === "pending" && "translate-x-[2px] translate-y-[2px] bg-sun-soft",
                   state === "correct" && "anim-pop bg-ok-soft shadow-sticker-sm",
                   state === "wrong" && "anim-shake bg-oops-soft",
                   state === "answer" && "border-dashed bg-ok-soft",
                 )}
               >
-                <span className={cn("grid size-7 shrink-0 place-items-center rounded-[6px] border-2 border-line font-display text-xs font-extrabold", state === "correct" || state === "answer" ? "bg-ok text-card" : state === "wrong" ? "bg-oops text-card" : "bg-paper-2")}>
+                <span className={cn("grid size-7 shrink-0 place-items-center rounded-[6px] border-2 border-line font-display text-xs font-extrabold", state === "correct" || state === "answer" ? "bg-ok text-on-fill" : state === "wrong" ? "bg-oops text-on-fill" : "bg-paper-2")}>
                   {state === "correct" || state === "answer" ? <Check className="size-4" strokeWidth={3} /> : state === "wrong" ? <X className="size-4" strokeWidth={3} /> : "ABCD"[i]}
                 </span>
                 <span className="prose-q" dangerouslySetInnerHTML={{ __html: html }} />
@@ -83,7 +83,7 @@ export function HeroDemo({ stemHtml, optionsHtml, workingsHtml }: { stemHtml: st
             </div>
           ) : null}
           {correct ? (
-            <p className="anim-rise flex items-center gap-2 rounded-[10px] border-2 border-line bg-lime px-3 py-2 font-display font-extrabold text-on-fill">
+            <p className="anim-rise flex items-center gap-2 rounded-[10px] border-2 border-line bg-sun px-3 py-2 font-display font-extrabold text-on-fill">
               <Check className="size-5" strokeWidth={3} /> Sharp! +10 pts
             </p>
           ) : null}

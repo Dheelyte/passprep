@@ -2,16 +2,19 @@ import Link from "next/link";
 import type { ComponentProps, ReactNode } from "react";
 import { cn } from "./cn";
 
-type Tone = "card" | "paper" | "lime" | "subject" | "subject-soft" | "ok" | "oops" | "info";
+type Tone = "card" | "paper" | "primary" | "sun" | "coral" | "grape" | "subject" | "subject-soft" | "ok" | "oops" | "info";
 const tones: Record<Tone, string> = {
   card: "bg-card",
   paper: "bg-paper-2",
-  lime: "bg-lime text-on-fill",
-  subject: "bg-subj text-on-fill",
+  primary: "bg-primary text-on-primary",
+  sun: "bg-sun text-on-fill",
+  coral: "bg-coral text-on-fill",
+  grape: "bg-grape text-on-grape",
+  subject: "bg-subj text-on-subj",
   "subject-soft": "bg-subj-soft",
   ok: "bg-ok-soft",
   oops: "bg-oops-soft",
-  info: "bg-info-soft",
+  info: "bg-primary-soft",
 };
 
 type CardProps = { tone?: Tone; flat?: boolean; padded?: boolean; className?: string; children?: ReactNode };

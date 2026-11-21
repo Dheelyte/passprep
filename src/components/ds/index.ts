@@ -10,3 +10,4 @@ export { EmptyState, ErrorState } from "./states";
 export { Tabs } from "./tabs";
 export { Underline, Circled, MarginNote, DoodleArrow } from "./doodles";
 export { Flame, TrophyIcon, StickerBadge, type BadgeDef } from "./rewards";
+export { ScreenHeader, blockTones, type BlockTone } from "./screen-header";

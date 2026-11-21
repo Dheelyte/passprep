@@ -23,9 +23,9 @@ const EXAMS = [
 
 // Big tappable choice: a real radio/checkbox under a sticker label (works with keyboard + screen readers).
 const choice =
-  "pressable flex min-h-16 cursor-pointer items-center gap-3 border-2 border-line bg-card px-4 py-3 shadow-sticker [border-radius:var(--r-sticker)] " +
-  "has-[:checked]:bg-lime has-[:checked]:text-on-fill has-[:focus-visible]:outline-3 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-[var(--focus)]";
-const tick = "ml-auto grid size-7 shrink-0 place-items-center rounded-full border-2 border-line bg-card text-transparent peer-checked:text-on-fill";
+  "pressable flex min-h-16 cursor-pointer items-center gap-3 border-2 border-line bg-card px-4 py-3 text-ink shadow-sticker [border-radius:var(--r-sticker)] " +
+  "has-[:checked]:bg-sun has-[:checked]:text-on-fill has-[:focus-visible]:outline-3 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-[var(--focus)]";
+const tick = "ml-auto grid size-7 shrink-0 place-items-center rounded-full border-2 border-line bg-white text-transparent peer-checked:text-on-fill";
 
 export function OnboardingForm({
   firstName,
@@ -49,7 +49,7 @@ export function OnboardingForm({
   return (
     <form action={action} className="space-y-6">
       <div>
-        <p className="mb-2 flex justify-between text-sm font-bold text-ink-2">
+        <p className="mb-2 flex justify-between text-sm font-bold">
           <span>Step {step + 1} of 3</span>
           {step > 0 ? (
             <button type="button" onClick={() => setStep(step - 1)} className="inline-flex items-center gap-1 underline underline-offset-2">
@@ -62,7 +62,7 @@ export function OnboardingForm({
 
       <div key={step} className="anim-rise">
         <h1 className="text-3xl font-extrabold">{titles[step]}</h1>
-        <p className="muted mt-1">{hints[step]}</p>
+        <p className="mt-1 font-semibold">{hints[step]}</p>
       </div>
       <FormError message={state?.error} />
 
@@ -94,7 +94,7 @@ export function OnboardingForm({
       <fieldset hidden={step !== 2} className="grid grid-cols-2 gap-3">
         <legend className="sr-only">Subjects</legend>
         {subjects.map((s) => (
-          <label key={s.id} data-subject={s.slug} className={cn(choice, "min-h-24 flex-col items-start has-[:checked]:bg-subj")}>
+          <label key={s.id} data-subject={s.slug} className={cn(choice, "min-h-24 flex-col items-start has-[:checked]:bg-subj has-[:checked]:text-on-subj")}>
             <input className="peer sr-only" type="checkbox" name="subjects" value={s.id} checked={chosen.includes(s.id)} onChange={() => setChosen(toggle(chosen, s.id))} />
             <span className="flex w-full items-center justify-between">
               <SubjectIcon slug={s.slug} className="size-6" />
@@ -106,11 +106,11 @@ export function OnboardingForm({
       </fieldset>
 
       {step < 2 ? (
-        <Button type="button" block size="lg" disabled={!canNext} onClick={() => setStep(step + 1)} iconRight={<ArrowRight className="size-5" />}>
+        <Button type="button" variant="sun" block size="lg" disabled={!canNext} onClick={() => setStep(step + 1)} iconRight={<ArrowRight className="size-5" />}>
           Next
         </Button>
       ) : (
-        <Button type="submit" block size="lg" disabled={!canNext} loading={pending}>
+        <Button type="submit" variant="sun" block size="lg" disabled={!canNext} loading={pending}>
           {pending ? "Setting up…" : "I'm ready"}
         </Button>
       )}

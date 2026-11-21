@@ -7,7 +7,7 @@ import { planViews } from "@/lib/plans";
 import { checkout } from "@/app/actions/billing";
 import { PlanPicker } from "@/components/plan-picker";
 import { AskParent } from "@/components/ask-parent";
-import { ButtonLink, Card, SkeletonList, Underline } from "@/components/ds";
+import { ButtonLink, Card, ScreenHeader, SkeletonList, Underline } from "@/components/ds";
 
 export const metadata: Metadata = { title: "Premium" };
 
@@ -21,7 +21,7 @@ const rows: [string, string | boolean, string | boolean][] = [
 ];
 
 function Cell({ v, strong }: { v: string | boolean; strong?: boolean }) {
-  if (v === true) return <span className="inline-flex items-center gap-1"><Check aria-hidden className="size-4 text-ok" strokeWidth={3} /><span className="sr-only">Included</span></span>;
+  if (v === true) return <span className="inline-flex items-center gap-1"><Check aria-hidden className="size-4 text-ok-ink" strokeWidth={3} /><span className="sr-only">Included</span></span>;
   if (v === false) return <span className="inline-flex items-center text-ink-2"><Minus aria-hidden className="size-4" /><span className="sr-only">Not included</span></span>;
   return <span className={strong ? "font-bold" : "text-ink-2"}>{v}</span>;
 }
@@ -29,10 +29,13 @@ function Cell({ v, strong }: { v: string | boolean; strong?: boolean }) {
 export default function PremiumPage() {
   return (
     <div className="space-y-6">
-      <header>
-        <h1 className="text-3xl font-extrabold">Practise <Underline>without limits</Underline></h1>
-        <p className="muted mt-2">Unlimited questions and every video solution — so you&apos;re never stuck the night before the paper.</p>
-      </header>
+      <ScreenHeader
+        tone="grape"
+        className="mb-0"
+        eyebrow={<span className="inline-block rounded-full border-2 border-line bg-sun px-3 py-0.5 font-display text-sm font-extrabold uppercase tracking-widest text-on-fill">Premium</span>}
+        title={<>Practise <Underline>without limits</Underline></>}
+        subtitle="Unlimited questions and every video solution — so you're never stuck the night before the paper."
+      />
 
       <div className="sticker overflow-hidden p-0">
         <table className="w-full text-sm">
@@ -41,7 +44,7 @@ export default function PremiumPage() {
             <tr className="border-b-2 border-line">
               <th scope="col" className="px-3 py-2.5 text-left"><span className="sr-only">Feature</span></th>
               <th scope="col" className="px-3 py-2.5 text-left font-display font-extrabold">Free</th>
-              <th scope="col" className="bg-lime px-3 py-2.5 text-left font-display font-extrabold text-on-fill">Premium</th>
+              <th scope="col" className="bg-grape px-3 py-2.5 text-left font-display font-extrabold text-on-grape">Premium</th>
             </tr>
           </thead>
           <tbody className="divide-y-2 divide-dashed divide-rule">
@@ -49,7 +52,7 @@ export default function PremiumPage() {
               <tr key={f}>
                 <th scope="row" className="px-3 py-2.5 text-left font-semibold">{f}</th>
                 <td className="px-3 py-2.5"><Cell v={a} /></td>
-                <td className="bg-lime-soft px-3 py-2.5"><Cell v={b} strong /></td>
+                <td className="bg-grape-soft px-3 py-2.5"><Cell v={b} strong /></td>
               </tr>
             ))}
           </tbody>
@@ -73,7 +76,7 @@ async function Plans() {
     <>
       {premium && user.subscription ? (
         <Card tone="ok" className="flex items-start gap-3 text-sm">
-          <Check aria-hidden className="mt-0.5 size-5 shrink-0 text-ok" strokeWidth={3} />
+          <Check aria-hidden className="mt-0.5 size-5 shrink-0 text-ok-ink" strokeWidth={3} />
           <p>
             You have Premium until <strong>{user.subscription.currentPeriodEnd.toLocaleDateString("en-NG", { day: "numeric", month: "long", year: "numeric" })}</strong>.
             {user.subscription.mode === "FIXED_PERIOD" ? " Paying again adds more time on top." : ""}

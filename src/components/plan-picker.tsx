@@ -25,7 +25,7 @@ const blurb: Record<PlanView["code"], string> = {
 
 const radioCard =
   "pressable flex cursor-pointer items-center gap-3 border-2 border-line bg-card px-4 py-3 shadow-sticker-sm [border-radius:var(--r-sticker)] " +
-  "has-[:checked]:bg-lime has-[:checked]:text-on-fill has-[:focus-visible]:outline-3 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-[var(--focus)]";
+  "has-[:checked]:bg-sun has-[:checked]:text-on-fill has-[:focus-visible]:outline-3 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-[var(--focus)]";
 
 export function PlanPicker({
   plans,
@@ -58,13 +58,13 @@ export function PlanPicker({
           {plans.map((p) => (
             <label key={p.code} className={cn(radioCard, "min-h-16 px-3 sm:px-4")}>
               <input type="radio" name="plan" value={p.code} checked={plan === p.code} onChange={() => setPlan(p.code)} className="peer sr-only" />
-              <span aria-hidden className="grid size-6 shrink-0 place-items-center rounded-full border-2 border-line bg-card text-transparent peer-checked:text-on-fill">
+              <span aria-hidden className="grid size-6 shrink-0 place-items-center rounded-full border-2 border-line bg-white text-transparent peer-checked:text-on-fill">
                 <Check className="size-3.5" strokeWidth={3.5} />
               </span>
               <span className="min-w-0 flex-1">
                 <span className="block font-display text-lg font-extrabold leading-tight">{p.name}</span>
                 <span className="block text-sm">{blurb[p.code]} · {p.periodDays} days</span>
-                {p.code === "TERMLY" ? <span className="mt-1 inline-block rounded-full border-2 border-line bg-gold px-2 text-xs font-extrabold text-on-fill">Popular with parents</span> : null}
+                {p.code === "TERMLY" ? <span className="mt-1 inline-block rounded-full border-2 border-line bg-sun px-2 text-xs font-extrabold text-on-fill">Popular with parents</span> : null}
               </span>
               <span className="num shrink-0 text-xl sm:text-2xl">{naira(p.amountKobo)}</span>
             </label>
@@ -101,7 +101,7 @@ export function PlanPicker({
         <Input id="email" name="email" type="email" required autoComplete="email" defaultValue={defaultEmail ?? ""} placeholder="parent@example.com" aria-describedby="email-hint" />
       </Field>
 
-      <Button type="submit" block size="lg" loading={pending} icon={<Lock className="size-5" />}>
+      <Button type="submit" variant="sun" block size="lg" loading={pending} icon={<Lock className="size-5" />}>
         {pending ? "Opening secure payment…" : `${submitLabel} · ${selected ? naira(selected.amountKobo) : ""}`}
       </Button>
       <p className="muted text-center text-xs">Secure payment by Paystack. Premium unlocks as soon as payment is confirmed.</p>

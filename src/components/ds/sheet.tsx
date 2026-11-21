@@ -8,7 +8,7 @@ import { cn } from "./cn";
  * Bottom sheet on phones, centred modal from `sm` up. Built on <dialog> so focus trapping,
  * Escape-to-close and the backdrop come from the browser.
  */
-export function Sheet({ open, onClose, title, children, className }: { open: boolean; onClose: () => void; title: string; children: ReactNode; className?: string }) {
+export function Sheet({ open, onClose, title, children, className, tone = "card" }: { open: boolean; onClose: () => void; title: string; children: ReactNode; className?: string; tone?: "card" | "grape" | "primary" }) {
   const ref = useRef<HTMLDialogElement>(null);
   useEffect(() => {
     const d = ref.current;
@@ -23,13 +23,14 @@ export function Sheet({ open, onClose, title, children, className }: { open: boo
       onClick={(e) => e.target === ref.current && onClose()}
       aria-label={title}
       className={cn(
-        "m-0 mt-auto w-full max-w-none border-2 border-line bg-card p-0 text-ink backdrop:bg-[#0e1524]/60",
+        "m-0 mt-auto w-full max-w-none border-2 border-line p-0 backdrop:bg-[#121024]/70",
+        { card: "bg-card text-ink", grape: "bg-grape text-on-grape", primary: "bg-primary text-on-primary" }[tone],
         "rounded-t-[22px] [animation:sheet-up_var(--dur-slow)_var(--ease-out)]",
         "sm:m-auto sm:max-w-lg sm:rounded-[var(--r-sticker)] sm:shadow-sticker-lg sm:[animation:rise-in_var(--dur)_var(--ease-out)]",
         className,
       )}
     >
-      <div className="mx-auto mt-2 h-1.5 w-12 rounded-full bg-rule sm:hidden" aria-hidden />
+      <div className="mx-auto mt-2 h-1.5 w-12 rounded-full bg-current opacity-30 sm:hidden" aria-hidden />
       <div className="flex items-center justify-between gap-3 px-5 pt-3">
         <h2 className="text-xl font-extrabold">{title}</h2>
         <button type="button" onClick={onClose} className="btn-ghost min-h-10 px-2" aria-label="Close">

@@ -89,12 +89,12 @@ export function ImportForm({ canEditSyllabus }: { canEditSyllabus: boolean }) {
         ) : (
           <div className="space-y-4 text-sm">
             {state?.committed ? (
-              <p className="rounded-xl bg-ok-soft px-4 py-3 font-semibold text-ok">
+              <p className="rounded-xl bg-ok-soft px-4 py-3 font-semibold text-ok-ink">
                 Imported {report.created} {state.kind === "syllabus" ? "rows" : "questions (now waiting for review)"}.
               </p>
             ) : null}
             <p>
-              <strong>{report.total}</strong> rows · <strong className="text-ok">{report.valid} ready</strong> ·{" "}
+              <strong>{report.total}</strong> rows · <strong className="text-ok-ink">{report.valid} ready</strong> ·{" "}
               <strong className={report.invalid.length ? "text-danger" : ""}>{report.invalid.length} with problems</strong>
             </p>
             {report.invalid.length ? (
