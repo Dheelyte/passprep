@@ -32,7 +32,7 @@ async function Detail({ params }: { params: PageProps<"/progress/[slug]">["param
 
   return (
     <div className="space-y-5" data-screen={subjectScope(subject.slug)} data-subject={subjectScope(subject.slug)}>
-      <header className="bleed -mt-5 lg:-mt-8 border-b-2 border-line bg-subj pb-5 pt-3 text-on-subj">
+      <header className="bleed -mt-5 md:-mt-8 border-b-2 border-line bg-subj pb-5 pt-3 text-on-subj">
         <Link href="/progress" className="inline-flex min-h-10 items-center gap-1 text-sm font-bold"><ArrowLeft aria-hidden className="size-4" /> Progress</Link>
         <h1 className="text-3xl font-extrabold">{subject.name}</h1>
       </header>

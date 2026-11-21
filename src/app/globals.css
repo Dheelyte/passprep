@@ -415,10 +415,14 @@ h1, h2, h3, .font-display { font-family: var(--font-display); letter-spacing: -0
 .calm .input { min-height: 2.5rem; border-width: 1.5px; }
 
 /* Full-bleed colour block (screen headers, landing sections) that escapes the centred column */
-/* --bleed-w = width of the area the block should fill: the viewport, or the area beside the desktop sidebar */
-:root { --bleed-w: 100vw; --sidebar-w: 16rem; }
-@media (min-width: 1024px) { .with-sidebar { --bleed-w: calc(100vw - var(--sidebar-w)); } }
+/* App column: the content column beside the sidebar is a size container, so full-bleed
+   blocks fill exactly that column (never the viewport, never under the sidebar). */
+:root { --sidebar-w: 16rem; --rail-w: 5.5rem; }
+.app-column { container-type: inline-size; container-name: app; }
 @utility bleed {
-  margin-inline: calc(50% - var(--bleed-w) / 2);
-  padding-inline: calc(var(--bleed-w) / 2 - 50%); /* content stays aligned with the column */
+  /* vw fallback for browsers without container queries; cqw = the app column's width */
+  margin-inline: calc(50% - 50vw);
+  padding-inline: calc(50vw - 50%);
+  margin-inline: calc(50% - 50cqw);
+  padding-inline: calc(50cqw - 50%); /* content stays aligned with the column */
 }

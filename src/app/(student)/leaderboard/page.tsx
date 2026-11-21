@@ -122,7 +122,7 @@ async function Board() {
       ) : null}
 
       {/* Your row, always visible above the bottom nav */}
-      <div className="sticky bottom-20 z-20 lg:bottom-6">
+      <div className="sticky bottom-20 z-20 md:bottom-6">
         {me ? (
           <div className="overflow-hidden border-2 border-line shadow-sticker [border-radius:var(--r-sticker)]" aria-label="Your position">
             <Row r={me} mine prev={myPrev} />

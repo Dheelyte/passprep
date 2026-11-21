@@ -151,11 +151,14 @@ Icons come from **Lucide** only (`lucide-react`, tree-shaken), at stroke 2–2.5
 
 ## Layout and breakpoints
 
+The student shell is a **two-column CSS grid**. The sidebar lives in its own column (sticky, full height), so it can never overlap content.
+
 | Width | Student layout |
 |---|---|
-| < 1024px | Sticky top bar, content column `max-w-xl` (phones) / `max-w-2xl` (tablets), bottom tab bar |
-| ≥ 1024px | Fixed left **sidebar** (`--sidebar-w: 16rem`: logo, nav, Go Premium card, theme), no top or bottom bar, content up to `max-w-6xl` with `px-10` |
+| < 768px | Sticky top bar, content `max-w-xl`, bottom tab bar |
+| 768–1023px | **Icon rail** (`--rail-w: 5.5rem`: logo mark, icon-only nav with tooltips and aria-labels, Premium and theme icons), content `max-w-3xl` |
+| ≥ 1024px | **Full sidebar** (`--sidebar-w: 16rem`: logo, labelled nav, Go Premium card, theme), content up to `max-w-6xl` |
 
+- The content column is a size container (`.app-column`). Full-bleed colour blocks (`bleed`, `ScreenHeader`) use `cqw` units, so they fill exactly the content column at every width.
 - Pages spread out on desktop: dashboard "Continue" and rank sit side by side with four subject columns; subjects and progress use two columns; the profile pairs calendar with badges and subjects with plan; Premium shows the comparison table beside the plans.
 - The leaderboard and topic path keep a readable `max-w-3xl`.
-- `.with-sidebar` sets `--bleed-w`, so full-bleed colour blocks (`bleed`, `ScreenHeader`) fill the area beside the sidebar instead of the whole viewport.

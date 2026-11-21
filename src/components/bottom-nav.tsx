@@ -18,7 +18,7 @@ export function BottomNav() {
 
 export function NavBar({ path = "" }: { path?: string }) {
   return (
-    <nav aria-label="Main" className="fixed inset-x-0 bottom-0 z-30 border-t-2 border-line bg-card pb-[env(safe-area-inset-bottom)] lg:hidden">
+    <nav aria-label="Main" className="fixed inset-x-0 bottom-0 z-30 border-t-2 border-line bg-card pb-[env(safe-area-inset-bottom)] md:hidden">
       <ul className="mx-auto grid max-w-xl grid-cols-4">
         {items.map(({ href, label, Icon }) => {
           const active = path === href || path.startsWith(`${href}/`);

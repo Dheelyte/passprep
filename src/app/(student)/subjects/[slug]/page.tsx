@@ -53,7 +53,7 @@ async function Subject({ params }: { params: PageProps<"/subjects/[slug]">["para
   return (
     <div data-screen={subjectScope(subject.slug)} data-subject={subjectScope(subject.slug)}>
       {/* The whole screen takes the subject's identity: coloured header, tinted page */}
-      <header className="bleed -mt-5 lg:-mt-8 mb-6 border-b-2 border-line bg-subj pb-5 pt-3 text-on-subj">
+      <header className="bleed -mt-5 md:-mt-8 mb-6 border-b-2 border-line bg-subj pb-5 pt-3 text-on-subj">
         <Link href="/subjects" className="mb-2 inline-flex min-h-10 items-center gap-1 text-sm font-bold">
           <ArrowLeft aria-hidden className="size-4" /> All subjects
         </Link>

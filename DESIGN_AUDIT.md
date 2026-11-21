@@ -118,3 +118,9 @@ Layout, components, typography and the sticker style are unchanged. Colour now f
 - **Root cause:** dark-mode outlines and hard shadows used a near-black `--line` on the navy background, so buttons, inputs, cards, options and progress tracks lost their edges. The dark `--line` is now chalk `#9B93C9`, the shadows are black, and the dividers are stronger. `check-contrast.mts` now also checks outline against background, card and paper-2 (all ≥ 3:1).
 - Sunshine marker highlights in explanations now force ink text. It previously inherited the light dark-mode text and was unreadable.
 - **Landing:** removed the hero's "No payment…" line. The hero CTA is a full-width (on phones) Sunshine button. The final CTA on Coral uses the new high-contrast **Ink** button.
+
+## Sidebar overlap fix
+
+- The sidebar was `position: fixed` with the content offset by padding, and the full-bleed headers were sized with `100vw` (which includes the scrollbar), so content could slide under the sidebar.
+- The shell is now a two-column grid with a sticky sidebar column, and full-bleed blocks use container-query units on the content column.
+- It's responsive in three steps: phones (top and bottom bars), tablets 768–1023px (icon rail), desktop ≥1024px (full sidebar).
