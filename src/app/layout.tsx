@@ -9,8 +9,8 @@ const display = Bricolage_Grotesque({ subsets: ["latin"], display: "swap", varia
 const body = Atkinson_Hyperlegible_Next({ subsets: ["latin"], display: "swap", variable: "--font-atkinson" });
 
 export const metadata: Metadata = {
-  title: { default: `${BRAND.name} — WAEC, NECO & JAMB practice`, template: `%s · ${BRAND.name}` },
-  description: BRAND.tagline,
+  title: { default: `${BRAND.name}: WAEC, NECO & JAMB practice with every answer explained`, template: `%s · ${BRAND.name}` },
+  description: "Practise WAEC, NECO and JAMB questions topic by topic. Every answer explained step by step, with video solutions. Start free on any phone.",
   applicationName: BRAND.name,
   manifest: "/manifest.webmanifest",
 };

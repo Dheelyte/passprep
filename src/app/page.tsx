@@ -35,18 +35,18 @@ const demo = {
 };
 
 const subjects = [
-  { slug: "mathematics", name: "Mathematics", live: true },
-  { slug: "physics", name: "Physics", live: true },
-  { slug: "chemistry", name: "Chemistry", live: false },
-  { slug: "biology", name: "Biology", live: false },
-  { slug: "english", name: "English", live: false },
+  { slug: "mathematics", name: "Mathematics", status: "Ready now" },
+  { slug: "physics", name: "Physics", status: "Starting now" },
+  { slug: "chemistry", name: "Chemistry", status: "Coming soon" },
+  { slug: "biology", name: "Biology", status: "Coming soon" },
+  { slug: "english", name: "English", status: "Coming soon" },
 ];
 
 const faqs = [
   { q: "Is it really free?", a: `Yes. Every subject, every topic, the written workings, streaks and the leaderboard are free. Free accounts get ${FREE_DAILY_LIMIT} questions a day. Premium removes the limit and unlocks every video solution.` },
-  { q: "Will it chop my data?", a: "No app to download. It's a light website built for budget Android phones and slow networks. Videos only load when you tap play." },
+  { q: "Will it chop my data?", a: "No app to download. It's a light website built for budget Android phones and slow networks. Videos only load when you tap play. Works on any phone with a browser." },
   { q: "Who writes the questions?", a: "Teachers write original questions in WAEC, NECO and JAMB style. A second teacher checks every question and its workings before it goes live, and you can report anything that looks off." },
-  { q: "Which subjects are ready?", a: "Mathematics and Physics now. Chemistry, Biology and English are next." },
+  { q: "Which subjects are ready?", a: "Mathematics is ready now, and Physics is starting with its first topics. Chemistry, Biology and English are next." },
   { q: "How do parents pay?", a: "Monthly, per term or yearly — by bank transfer, USSD or card through Paystack. You can send your parent a payment link on WhatsApp. Transfer plans never renew on their own." },
 ];
 
@@ -73,11 +73,11 @@ export default async function Home() {
               <Chip tone="neutral" className="text-ink">JSS 3 – SS 3</Chip>
               <Chip tone="sun">WAEC · NECO · JAMB</Chip>
             </p>
-            <h1 className="text-[2.6rem] font-extrabold leading-[1.02] sm:text-6xl">
-              Ten questions. Every answer <Underline>explained</Underline>.
+            <h1 className="text-[2.25rem] font-extrabold leading-[1.05] sm:text-5xl lg:text-6xl">
+              Stop the WAEC fear: 10 questions, every answer <Underline>explained</Underline> step by step.
             </h1>
             <p className="mt-5 max-w-md text-lg font-semibold">
-              Practise one topic at a time. Get the workings for every answer, a teacher&apos;s video when you&apos;re stuck, and a streak that keeps you coming back.
+              Pick a topic from your syllabus and answer 10 questions. Every answer shows the working, so you learn the method, not just the letter. Stuck? Watch a teacher solve that exact question.
             </p>
             <div className="mt-8">
               <ButtonLink href="/signup" variant="sun" size="lg" className="w-full sm:w-auto" iconRight={<ArrowRight className="size-5" />}>Start practising free</ButtonLink>
@@ -101,9 +101,9 @@ export default async function Home() {
             <div className="mt-8 grid gap-8 md:grid-cols-[1fr_1.2fr]">
               <ol className="ruled border-2 border-line py-4 pl-14 pr-4 shadow-sticker [border-radius:var(--r-sticker)]" data-reveal>
                 {[
-                  { icon: BookOpen, t: "Pick a topic", d: "Topics follow the syllabus — Number Bases, Motion, all the way through.", c: "bg-primary text-on-primary" },
-                  { icon: Target, t: "Answer ten questions", d: "Tap your answer. You know right away if you got it.", c: "bg-coral text-on-fill" },
-                  { icon: Lightbulb, t: "Read the workings", d: "Every answer comes with clear, step-by-step workings — not just the option.", c: "bg-sun text-on-fill" },
+                  { icon: BookOpen, t: "Pick a topic", d: "Number Bases, Motion, Indices: topics follow the syllabus, so you study what's on the exam.", c: "bg-primary text-on-primary" },
+                  { icon: Target, t: "Answer 10 questions", d: "Tap an answer and know at once if you got it. No waiting for a teacher to mark it.", c: "bg-coral text-on-fill" },
+                  { icon: Lightbulb, t: "Read the workings", d: "Every answer is explained step by step, so next time you can solve it yourself.", c: "bg-sun text-on-fill" },
                   { icon: Play, t: "Still stuck? Watch it", d: "A short video of a teacher solving that exact question.", c: "bg-ok text-on-fill" },
                 ].map(({ icon: Icon, t, d, c }, i) => (
                   <li key={t} className="relative py-2.5">
@@ -129,8 +129,8 @@ export default async function Home() {
 
         {/* SUBJECTS — each in its own colour */}
         <section className="mx-auto max-w-6xl px-4 py-16" aria-labelledby="subj-h">
-          <h2 id="subj-h" className="text-3xl font-extrabold sm:text-4xl" data-reveal>Your subjects, your colours</h2>
-          <p className="muted mt-2 max-w-lg" data-reveal>Starting with the big ones. Each subject is a path of topics you unlock and master.</p>
+          <h2 id="subj-h" className="text-3xl font-extrabold sm:text-4xl" data-reveal>Start with Maths. More subjects are on the way.</h2>
+          <p className="muted mt-2 max-w-lg" data-reveal>Each subject is a path of syllabus topics. Clear one, unlock the next.</p>
           <ul className="mt-8 grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-5" data-reveal>
             {subjects.map((s, i) => (
               <li key={s.slug} data-subject={s.slug} style={{ rotate: `${[-2, 1.5, -1, 2, -1.5][i]}deg` }}>
@@ -138,7 +138,7 @@ export default async function Home() {
                   <span className="grid size-11 place-items-center rounded-full border-2 border-line bg-card text-ink"><SubjectIcon slug={s.slug} className="size-6" /></span>
                   <span>
                     <span className="block font-display text-xl font-extrabold">{s.name}</span>
-                    <span className="text-sm font-bold">{s.live ? "Ready now" : "Coming soon"}</span>
+                    <span className="text-sm font-bold">{s.status}</span>
                   </span>
                 </span>
               </li>
@@ -151,7 +151,7 @@ export default async function Home() {
           <div className="mx-auto grid max-w-6xl gap-6 px-4 md:grid-cols-2">
             <div className="sticker p-6 text-ink" data-reveal>
               <h2 id="habit-h" className="text-3xl font-extrabold">Keep the flame alive</h2>
-              <p className="muted mt-2">Answer one question a day and your streak grows. Miss a day and it starts again. Simple, and it works.</p>
+              <p className="muted mt-2">Answer one question a day and your streak grows. Miss a day and it starts again from zero.</p>
               <div className="mt-5 flex items-end gap-2" aria-label="Example: a 7-day streak">
                 {[1, 2, 3, 4, 5, 6, 7].map((d) => (
                   <div key={d} className="flex flex-1 flex-col items-center gap-1">
@@ -163,7 +163,7 @@ export default async function Home() {
             </div>
             <div className="sticker p-6 text-ink" data-reveal>
               <h2 className="text-3xl font-extrabold">Climb the weekly board</h2>
-              <p className="muted mt-2">Points for every question. Fresh leaderboard every Monday, so anyone can top it.</p>
+              <p className="muted mt-2">Every question earns points. The board resets every Monday, so a new student can be top by Friday.</p>
               <ol className="mt-5 space-y-2" aria-label="Example leaderboard">
                 {[
                   { n: "Chidinma O.", p: 320, place: 1 as const, c: "bg-sun" },
@@ -188,13 +188,13 @@ export default async function Home() {
             <div data-reveal>
               <p className="inline-block rounded-full border-2 border-line bg-sun px-3 py-0.5 font-display text-sm font-extrabold uppercase tracking-widest text-on-fill">For parents</p>
               <h2 id="parents-h" className="mt-3 text-3xl font-extrabold sm:text-4xl">Proof they&apos;re studying. A price that makes sense.</h2>
-              <p className="mt-4 font-semibold">Your child starts free. When they want unlimited practice and every video solution, choose a plan that fits — monthly, per term or for the whole year.</p>
+              <p className="mt-4 font-semibold">Your child starts free. When they&apos;re ready for unlimited practice and every video solution, pick monthly, per term or yearly. Pay by transfer, USSD or card.</p>
               <ul className="mt-6 space-y-3 font-semibold">
                 {[
-                  "See strong and weak topics at a glance",
-                  "Pay by bank transfer, USSD or card (secured by Paystack)",
-                  "Your child can send you a payment link — no account needed",
-                  "Transfer plans never renew without you",
+                  "See their strong and weak topics at a glance",
+                  "Pay by bank transfer, USSD or card, secured by Paystack",
+                  "Your child can send you a payment link on WhatsApp. You don't need an account.",
+                  "Transfer plans never renew on their own",
                 ].map((t) => (
                   <li key={t} className="flex items-start gap-3">
                     <span className="mt-0.5 grid size-6 shrink-0 place-items-center rounded-full border-2 border-line bg-sun text-on-fill"><Check aria-hidden className="size-4" strokeWidth={3} /></span>
@@ -246,8 +246,8 @@ export default async function Home() {
 
         {/* FINAL CTA — Coral block */}
         <section className="border-t-2 border-line bg-coral px-4 py-16 text-center text-on-fill" data-reveal>
-          <h2 className="text-3xl font-extrabold sm:text-5xl">Your exam no go wait for you.</h2>
-          <p className="mx-auto mt-3 max-w-md text-lg font-semibold">Start with one topic today. Ten questions. Ten minutes. Free.</p>
+          <h2 className="text-3xl font-extrabold sm:text-5xl">WAEC is coming. Start your first topic tonight.</h2>
+          <p className="mx-auto mt-3 max-w-md text-lg font-semibold">One topic. 10 questions. Free, and you don&apos;t need a card.</p>
           <ButtonLink href="/signup" variant="ink" size="lg" className="mt-6 w-full sm:w-auto" iconRight={<ArrowRight className="size-5" />}>Start practising free</ButtonLink>
         </section>
       </main>
