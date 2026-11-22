@@ -81,9 +81,10 @@ The seed's YouTube links (`PLACEHOLD0x`) are placeholders. Replace them with rea
 2. In Vercel → Project → Settings → Environment Variables, set `DATABASE_URL`, `SESSION_SECRET` (32+ random characters), `APP_URL` (e.g. `https://yourapp.vercel.app`, no trailing slash), `PAYSTACK_SECRET_KEY`, `PAYSTACK_PUBLIC_KEY`, `FREE_DAILY_LIMIT`, and optionally `GOOGLE_CLIENT_ID` / `GOOGLE_CLIENT_SECRET`.
 3. Deploy. `npm run build` runs `prisma migrate deploy` first, so tables and default plan prices are created on the first deploy.
 4. Create your admin account once, from your own machine: `DATABASE_URL="<production url>" npm run db:create-admin -- you@example.com "a-long-password" "Your Name"`.
-5. Sign in, open `/admin/import`, and upload the syllabus, then the questions (templates are in `public/templates`).
+5. Load the starter syllabus and sample questions: `DATABASE_URL="<production url>" npm run db:seed:content`. It is safe to run again: it skips questions that already exist, creates no accounts and leaves prices alone.
+6. Add your own content at `/admin/import` (templates are in `public/templates`).
 
-Don't run `npm run db:seed` on production: it creates demo accounts with a known password.
+Don't run plain `npm run db:seed` on production: it creates demo staff accounts with the password `password123`.
 
 ## Google sign-in
 

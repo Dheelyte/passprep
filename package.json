@@ -13,6 +13,7 @@
     "db:up": "docker compose up -d",
     "db:migrate": "prisma migrate dev",
     "db:seed": "tsx --conditions=react-server prisma/seed.ts",
+    "db:seed:content": "SEED_CONTENT_ONLY=1 tsx --conditions=react-server prisma/seed.ts",
     "db:reset": "prisma migrate reset --force",
     "db:create-admin": "tsx --conditions=react-server scripts/create-admin.mts",
     "test:integration": "vitest run -c vitest.integration.mts"
