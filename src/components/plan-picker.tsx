@@ -1,7 +1,7 @@
 "use client";
 
 import { useActionState, useState } from "react";
-import { Check, CreditCard, Landmark, Lock, RotateCcw, Smartphone } from "lucide-react";
+import { CalendarCheck, Check, CreditCard, Landmark, Lock, RotateCcw, Smartphone } from "lucide-react";
 import type { CheckoutState } from "@/app/actions/billing";
 import { Button } from "./ds/button";
 import { Field, FormError, Input } from "./ds/field";
@@ -72,39 +72,45 @@ export function PlanPicker({
         </div>
       </fieldset>
 
-      <fieldset>
-        <legend className="mb-2 font-display text-lg font-extrabold">2. How do you want to pay?</legend>
-        <input type="hidden" name="mode" value={effectiveMode} />
-        <div className="grid gap-2.5">
-          <label className={radioCard}>
-            <input type="radio" name="_mode" checked={effectiveMode === "FIXED_PERIOD"} onChange={() => setMode("FIXED_PERIOD")} className="peer sr-only" />
-            <span className="flex shrink-0 gap-1" aria-hidden><Landmark className="size-5" /><Smartphone className="size-5" /><CreditCard className="size-5" /></span>
-            <span className="min-w-0">
-              <span className="block font-bold">Bank transfer, USSD or card — pay once</span>
-              <span className="block text-sm">Access for {selected?.periodDays} days. We remind you before it ends. Nothing renews by itself.</span>
-            </span>
-          </label>
-          {canAuto ? (
+      <input type="hidden" name="mode" value={effectiveMode} />
+      {/* The payment method (transfer, USSD or card) is chosen on Paystack's page. The only thing to decide
+          here is renewal, and only when a Paystack plan exists: Paystack subscriptions are card-only. */}
+      {canAuto ? (
+        <fieldset>
+          <legend className="mb-2 font-display text-lg font-extrabold">2. Renew automatically?</legend>
+          <div className="grid gap-2.5">
             <label className={radioCard}>
-              <input type="radio" name="_mode" checked={effectiveMode === "AUTO_RENEW"} onChange={() => setMode("AUTO_RENEW")} className="peer sr-only" />
-              <span className="flex shrink-0 gap-1" aria-hidden><CreditCard className="size-5" /><RotateCcw className="size-5" /></span>
+              <input type="radio" name="_mode" checked={effectiveMode === "FIXED_PERIOD"} onChange={() => setMode("FIXED_PERIOD")} className="peer sr-only" />
+              <CalendarCheck aria-hidden className="size-5 shrink-0" />
               <span className="min-w-0">
-                <span className="block font-bold">Card — renew automatically</span>
-                <span className="block text-sm">Never lose access. Cancel any time from your profile.</span>
+                <span className="block font-bold">No, pay once</span>
+                <span className="block text-sm">Access for {selected?.periodDays} days. We remind you before it ends.</span>
               </span>
             </label>
-          ) : null}
-        </div>
-      </fieldset>
+            <label className={radioCard}>
+              <input type="radio" name="_mode" checked={effectiveMode === "AUTO_RENEW"} onChange={() => setMode("AUTO_RENEW")} className="peer sr-only" />
+              <RotateCcw aria-hidden className="size-5 shrink-0" />
+              <span className="min-w-0">
+                <span className="block font-bold">Yes, renew with my card</span>
+                <span className="block text-sm">Never lose access. Cancel any time from your profile. Card only.</span>
+              </span>
+            </label>
+          </div>
+        </fieldset>
+      ) : null}
 
-      <Field id="email" label={<span className="font-display text-lg font-extrabold">3. Email for the receipt</span>} hint="Paystack sends the receipt here. A parent's email is fine.">
+      <Field id="email" label={<span className="font-display text-lg font-extrabold">{canAuto ? 3 : 2}. Email for the receipt</span>} hint="Paystack sends the receipt here. A parent's email is fine.">
         <Input id="email" name="email" type="email" required autoComplete="email" defaultValue={defaultEmail ?? ""} placeholder="parent@example.com" aria-describedby="email-hint" />
       </Field>
 
       <Button type="submit" variant="sun" block size="lg" loading={pending} icon={<Lock className="size-5" />}>
         {pending ? "Opening secure payment…" : `${submitLabel} · ${selected ? naira(selected.amountKobo) : ""}`}
       </Button>
-      <p className="muted text-center text-xs">Secure payment by Paystack. Premium unlocks as soon as payment is confirmed.</p>
+      <p className="flex items-center justify-center gap-1.5 text-center text-xs font-semibold">
+        <span className="flex gap-1" aria-hidden><Landmark className="size-4" /><Smartphone className="size-4" /><CreditCard className="size-4" /></span>
+        {effectiveMode === "AUTO_RENEW" ? "Pay by card on Paystack's secure page." : "Choose bank transfer, USSD or card on Paystack's secure page."}
+      </p>
+      <p className="muted text-center text-xs">Premium unlocks as soon as payment is confirmed.</p>
     </form>
   );
 }

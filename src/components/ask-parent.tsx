@@ -12,7 +12,7 @@ export function AskParent({ firstName }: { firstName: string }) {
   const [copied, setCopied] = useState(false);
   const [pending, start] = useTransition();
   const message = (u: string) =>
-    `Hi! I'm using ${BRAND.name} to practise for my exams. Premium gives me unlimited questions and video solutions. You can pay by bank transfer, USSD or card here: ${u} — ${firstName}`;
+    `Hi! I'm using ${BRAND.name} to practise for my exams. Premium gives me unlimited questions and video solutions. You can pay by bank transfer, USSD or card here: ${u} - ${firstName}`;
 
   if (!url) {
     return (

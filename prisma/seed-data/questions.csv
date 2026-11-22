@@ -29,7 +29,7 @@ Now convert 69 to base four: $69 = 1\times64 + 0\times16 + 1\times4 + 1$, so $69
 
 **Answer: $1011_4$**
 
-Tip: option B ($345_4$) is a trap — the digit 5 cannot appear in base four.",https://youtu.be/PLACEHOLD02,
+Tip: option B ($345_4$) is a trap: the digit 5 cannot appear in base four.",https://youtu.be/PLACEHOLD02,
 Mathematics,Number and Numeration,Indices,easy,Simplify $\dfrac{2^5 \times 2^3}{2^4}$.,8,16,32,4,,B,"Use the laws of indices:
 
 1. Multiplying: add the powers. $2^5 \times 2^3 = 2^{5+3} = 2^8$
@@ -52,7 +52,7 @@ Mathematics,Number and Numeration,Indices,medium,Evaluate $27^{-\frac{2}{3}}$.,$
 
 So $27^{-\frac{2}{3}} = \dfrac{1}{9}$.
 
-A negative power never makes the answer negative — it flips it.",,
+A negative power never makes the answer negative. It flips it.",,
 Mathematics,Number and Numeration,Logarithms,easy,Evaluate $\log_2 32$.,4,5,6,16,,B,"$\log_2 32$ asks: *2 to what power gives 32?*
 
 $2^5 = 32$, so $\log_2 32 = 5$.
@@ -164,7 +164,7 @@ Mathematics,Sets and Venn Diagrams,,easy,"If $n(A) = 12$, $n(B) = 9$ and $n(A \c
 
 $n(A \cup B) = 12 + 9 - 4 = 17$
 
-We subtract $n(A \cap B)$ because those 4 elements were counted twice — once in $A$ and once in $B$.",,
+We subtract $n(A \cap B)$ because those 4 elements were counted twice, once in $A$ and once in $B$.",,
 Mathematics,Sets and Venn Diagrams,,medium,"In a class of 40 students, 25 offer Physics, 20 offer Chemistry and 8 offer neither. How many offer both subjects?",5,13,12,17,,B,"1. Students who offer at least one subject: $40 - 8 = 32$
 2. Use $n(P \cup C) = n(P) + n(C) - n(P \cap C)$:
 
@@ -194,7 +194,7 @@ Mathematics,Statistics,,medium,"Find the median of 3, 7, 2, 9, 5, 8.",5,6,7,5.5,
 2. There are 6 values (even), so the median is the average of the two middle values (3rd and 4th):
 
 Median $= \dfrac{5 + 7}{2} = 6$",,
-Mathematics,Probability,,easy,A fair die is thrown once. What is the probability of getting a number greater than 4?,$\dfrac{1}{6}$,$\dfrac{1}{3}$,$\dfrac{1}{2}$,$\dfrac{2}{3}$,,B,"Numbers greater than 4 on a die: 5 and 6 — that is **2** outcomes.
+Mathematics,Probability,,easy,A fair die is thrown once. What is the probability of getting a number greater than 4?,$\dfrac{1}{6}$,$\dfrac{1}{3}$,$\dfrac{1}{2}$,$\dfrac{2}{3}$,,B,"Numbers greater than 4 on a die: 5 and 6, that is **2** outcomes.
 
 Total outcomes: 6
 
@@ -206,7 +206,7 @@ Mathematics,Probability,,hard,"A bag contains 5 red and 3 blue balls. Two balls 
 
 $P(\text{both red}) = \dfrac{5}{8} \times \dfrac{4}{7} = \dfrac{20}{56} = \dfrac{5}{14}$
 
-Option A ($\frac{25}{64}$) is the answer **with** replacement. Option D is correct but not in its lowest terms — always simplify.",,
+Option A ($\frac{25}{64}$) is the answer **with** replacement. Option D is correct but not in its lowest terms. Always simplify.",,
 Physics,Motion,Speed and velocity,easy,Which of these quantities is a vector?,Speed,Distance,Velocity,Time,,C,"A **vector** has both magnitude (size) and direction. A **scalar** has magnitude only.
 
 - Speed, distance and time are scalars.

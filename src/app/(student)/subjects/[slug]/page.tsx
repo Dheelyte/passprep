@@ -19,7 +19,7 @@ export default function SubjectPage({ params }: PageProps<"/subjects/[slug]">) {
   );
 }
 
-const OFFSETS = [0, 28, 56, 28]; // zig-zag x positions (px) — keeps cards ≥ 200px wide at 360px
+const OFFSETS = [0, 28, 56, 28]; // zig-zag x positions (px), keeps cards ≥ 200px wide at 360px
 const NODE = 56;
 
 type NodeState = "mastered" | "progress" | "new" | "locked";

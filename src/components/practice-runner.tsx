@@ -274,7 +274,7 @@ function ResultPanel({ question, result, onNext, isLast, seed }: { question: Run
         <div className="prose-q workings steps-reveal py-3 pl-12 pr-4" dangerouslySetInnerHTML={{ __html: result.explanationHtml }} />
       </div>
 
-      {!result.isCorrect ? <MarginNote>Read each step, then try a similar one. This kind of question comes back — you&apos;ll be ready.</MarginNote> : null}
+      {!result.isCorrect ? <MarginNote>Read each step, then try a similar one. This kind of question comes back, and you&apos;ll be ready.</MarginNote> : null}
 
       {result.video.kind !== "none" ? (
         <Button

@@ -15,7 +15,7 @@ const CLASSES = [
   { v: "JSS3", l: "JSS 3", d: "Getting a head start" },
   { v: "SS1", l: "SS 1", d: "Building the basics" },
   { v: "SS2", l: "SS 2", d: "WAEC is coming" },
-  { v: "SS3", l: "SS 3", d: "Exam year — let's go" },
+  { v: "SS3", l: "SS 3", d: "Exam year, let's go" },
 ];
 const EXAMS = [
   { v: "WAEC", d: "West African Senior School Certificate" },

@@ -46,7 +46,7 @@ async function List({ searchParams }: { searchParams: PageProps<"/admin/question
     }),
   ]);
 
-  // "Most missed" uses attempt stats — the plan's keep-improving loop.
+  // "Most missed" uses attempt stats, the plan's keep-improving loop.
   let stats = new Map<string, { total: number; wrong: number }>();
   if (questions.length) {
     const rows = await db.attempt.groupBy({ by: ["questionId", "isCorrect"], where: { questionId: { in: questions.map((x) => x.id) } }, _count: true });

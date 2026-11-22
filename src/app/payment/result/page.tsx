@@ -48,7 +48,7 @@ async function Result({ searchParams }: { searchParams: PageProps<"/payment/resu
       <Card tone="info" className="space-y-4 px-5 py-8 text-center" aria-live="polite">
         <Hourglass aria-hidden className="mx-auto size-10" />
         <h1 className="text-2xl font-extrabold">Waiting for your bank…</h1>
-        <p>Bank transfers can take a few minutes. Premium unlocks by itself once Paystack confirms — please don&apos;t pay twice.</p>
+        <p>Bank transfers can take a few minutes. Premium unlocks by itself once Paystack confirms. Please don&apos;t pay twice.</p>
         <ButtonLink href={`/payment/result?ref=${encodeURIComponent(payment.reference)}`} variant="secondary" block icon={<RotateCcw className="size-5" />}>Check again</ButtonLink>
       </Card>
     );

@@ -1,4 +1,4 @@
-# Design system — "the study desk, turned into a game"
+# Design system: "the study desk, turned into a game"
 
 **Bold colour-blocking.** Colour fills big areas: screen headers, full-width sections and whole cards. Cream paper is the *resting* background between the blocks. The shapes are "sticker" style: 2px ink borders and hard offset shadows, with no blurred shadows, glassmorphism, glows or gradient backgrounds. Admin screens use the same tokens without the game styling (`.calm`).
 
@@ -12,7 +12,7 @@ Tailwind classes come from `@theme`, e.g. `bg-primary`, `text-on-subj`, `bg-sun-
 
 | Role | Token | Light | Text on it |
 |---|---|---|---|
-| Ink | `ink` / `line` / shadow | `#16131F` | — |
+| Ink | `ink` / `line` / shadow | `#16131F` | - |
 | Paper (resting bg) | `paper` | `#FFF8EC` | ink |
 | White (cards) | `card` | `#FFFFFF` | ink |
 | **Primary**: Electric Cobalt | `primary` · `primary-soft` · `primary-ink` | `#3355FF` · `#E3E8FF` · `#1A2C99` | **white** (`on-primary`, 5.4:1) |

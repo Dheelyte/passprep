@@ -34,7 +34,7 @@ async function Queue({ searchParams }: { searchParams: PageProps<"/admin/review"
 
   return (
     <div className="space-y-4">
-      <FormError message={error === "own" ? "You can't approve a question you wrote — another teacher must review it." : error === "note" ? "Add a note explaining why you're rejecting the question." : null} />
+      <FormError message={error === "own" ? "You can't approve a question you wrote. Another teacher must review it." : error === "note" ? "Add a note explaining why you're rejecting the question." : null} />
       <p className="muted text-sm">
         {total} waiting{mine && user.role !== "ADMIN" ? ` · ${mine} of your own questions are waiting for another teacher` : ""}
       </p>

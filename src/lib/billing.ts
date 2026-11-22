@@ -1,4 +1,5 @@
 import "server-only";
+import { appUrl } from "./app-url";
 import { randomBytes } from "node:crypto";
 import type { BillingMode, PlanCode, Prisma } from "@prisma/client";
 import { db } from "./db";
@@ -48,12 +49,12 @@ export async function startCheckout(opts: {
     },
   });
 
-  const appUrl = process.env.APP_URL ?? "http://localhost:3100";
+  const base = await appUrl();
   const init = await initializeTransaction({
     email: opts.payerEmail,
     amountKobo: price.amountKobo,
     reference,
-    callbackUrl: `${appUrl}/api/paystack/verify`,
+    callbackUrl: `${base}/api/paystack/verify`,
     plan: autoRenew ? price.paystackPlan! : undefined,
     channels: autoRenew ? ["card"] : ["card", "bank_transfer", "ussd", "bank"],
     metadata: { userId: opts.userId, plan: price.code, mode },

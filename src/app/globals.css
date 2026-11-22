@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 /* ==========================================================================
-   Design tokens — bold colour-blocking
+   Design tokens: bold colour-blocking
    Colour fills big areas (headers, sections, cards); paper is the resting background.
    Bright fills carry ink text unless white passes AA (cobalt, grape). Checked by
    scripts/check-contrast.mts.
@@ -219,7 +219,7 @@ h1, h2, h3, .font-display { font-family: var(--font-display); letter-spacing: -0
 
 /* ==========================================================================
    Component utilities (Tailwind v4 @utility so they compose with @apply).
-   React components in src/components/ds wrap these — prefer the components.
+   React components in src/components/ds wrap these. Prefer the components.
    ========================================================================== */
 
 /* Sticker surface: ink border + hard offset shadow */
@@ -401,7 +401,7 @@ h1, h2, h3, .font-display { font-family: var(--font-display); letter-spacing: -0
 .steps-reveal ol > li:nth-child(n + 5) { animation-delay: 460ms; }
 
 /* ==========================================================================
-   Admin: same tokens, calm and dense — no offset shadows or press motion.
+   Admin: same tokens, calm and dense, no offset shadows or press motion.
    ========================================================================== */
 @utility card {
   display: block;

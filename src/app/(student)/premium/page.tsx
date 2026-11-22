@@ -34,7 +34,7 @@ export default function PremiumPage() {
         className="mb-0"
         eyebrow={<span className="inline-block rounded-full border-2 border-line bg-sun px-3 py-0.5 font-display text-sm font-extrabold uppercase tracking-widest text-on-fill">Premium</span>}
         title={<>Practise <Underline>without limits</Underline></>}
-        subtitle="Unlimited questions and every video solution — so you're never stuck the night before the paper."
+        subtitle="Unlimited questions and every video solution, so you're never stuck the night before the paper."
       />
 
       <div className="grid gap-6 lg:grid-cols-[1fr_1.15fr] lg:items-start">
@@ -65,7 +65,7 @@ export default function PremiumPage() {
       </Suspense>
       </div>
 
-      <ButtonLink href="/dashboard" variant="ghost" block>Not now — keep practising free</ButtonLink>
+      <ButtonLink href="/dashboard" variant="ghost" block>Not now, keep practising free</ButtonLink>
     </div>
   );
 }

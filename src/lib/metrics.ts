@@ -95,7 +95,7 @@ export async function mostMissed(limit = 10) {
 
 /**
  * Are videos useful? Of wrong answers in the last 30 days, how often a video was opened,
- * and whether the student's *next* answer was correct — with vs without watching.
+ * and whether the student's *next* answer was correct, with vs without watching.
  */
 export async function videoEffect() {
   const [r] = await db.$queryRaw<{ wrong_with_video: bigint; wrong_total: bigint; next_ok_video: bigint; next_n_video: bigint; next_ok_none: bigint; next_n_none: bigint }[]>`

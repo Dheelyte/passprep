@@ -13,7 +13,7 @@ export async function activeDays(userId: string, days = 35, now = new Date()) {
   return { from, today, active: new Map(rows.map((r) => [r.lagosDate.toISOString().slice(0, 10), r._count])) };
 }
 
-/** Last week's rank (by points) — powers the rank-change arrow. null if they didn't score last week. */
+/** Last week's rank (by points), used for the rank-change arrow. null if they didn't score last week. */
 export async function lastWeekRank(userId: string, now = new Date()) {
   const prev = addDays(lagosWeekStart(now), -7);
   const mine = await db.weeklyScore.findUnique({ where: { userId_weekStart: { userId, weekStart: prev } } });

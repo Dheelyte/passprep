@@ -18,7 +18,9 @@ export function googleEnabled() {
 }
 
 export function redirectUri(origin: string) {
-  return `${process.env.APP_URL ?? origin}/api/auth/google/callback`;
+  // Must match the redirect URI registered in Google Cloud exactly.
+  const base = process.env.APP_URL?.trim() ? process.env.APP_URL.trim().replace(/\/+$/, "") : origin;
+  return `${base}/api/auth/google/callback`;
 }
 
 const b64url = (bytes: Uint8Array) => Buffer.from(bytes).toString("base64url");

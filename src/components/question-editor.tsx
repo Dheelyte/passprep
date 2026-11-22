@@ -24,7 +24,7 @@ export function QuestionEditor({ q, topics }: { q: Q; topics: { id: string; labe
         <textarea id="stem" name="stem" defaultValue={q.stem} className="input min-h-24 py-2 font-mono text-sm" required />
       </div>
       <fieldset className="space-y-2">
-        <legend className="label">Options — tick the correct one</legend>
+        <legend className="label">Options (tick the correct one)</legend>
         {[0, 1, 2, 3, 4].map((i) => (
           <div key={i} className="flex items-center gap-2">
             <input type="radio" name="correctIndex" value={i} defaultChecked={q.correctIndex === i} aria-label={`Option ${"ABCDE"[i]} is correct`} className="size-5 accent-[var(--brand)]" />

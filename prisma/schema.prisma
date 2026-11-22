@@ -1,4 +1,4 @@
-// Exam practice app — PostgreSQL schema.
+// Exam practice app: PostgreSQL schema.
 // Conventions: cuid ids, camelCase in Prisma mapped to snake_case tables/columns,
 // all calendar dates are Africa/Lagos dates stored as DATE.
 

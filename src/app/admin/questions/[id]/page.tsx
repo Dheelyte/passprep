@@ -39,7 +39,7 @@ async function Edit({ params }: { params: PageProps<"/admin/questions/[id]">["pa
     <div className="space-y-4">
       <Link href="/admin/questions" className="text-sm text-info">← Question bank</Link>
       <p className="muted text-sm">
-        Status <strong className="text-ink">{q.status.replace("_", " ").toLowerCase()}</strong> · written by {q.author?.name ?? "—"} · reviewed by {q.reviewer?.name ?? "—"} ·{" "}
+        Status <strong className="text-ink">{q.status.replace("_", " ").toLowerCase()}</strong> · written by {q.author?.name ?? "-"} · reviewed by {q.reviewer?.name ?? "-"} ·{" "}
         answered {q._count.attempts}× ({q._count.attempts ? Math.round((wrong / q._count.attempts) * 100) : 0}% wrong)
       </p>
       {q.reviewNote ? <p className="card bg-sun-soft text-sm"><strong>Review note:</strong> {q.reviewNote}</p> : null}

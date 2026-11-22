@@ -55,7 +55,7 @@ async function Dashboard({ searchParams }: { searchParams: PageProps<"/dashboard
 
   return (
     <div className="space-y-5">
-      {/* Dominant colour: Sunshine — today, streak and goal */}
+      {/* Dominant colour: Sunshine: today, streak and goal */}
       <header className="bleed -mt-5 md:-mt-8 border-b-2 border-line bg-sun pb-6 pt-5 text-on-fill">
         <h1 className="text-3xl font-extrabold">Hi {firstName}</h1>
         <p className="mt-1 font-semibold">{greeting(day.streak, day.practisedToday)}</p>

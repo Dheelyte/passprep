@@ -13,7 +13,7 @@ export function CancelRenewal() {
     <>
       <Button variant="secondary" block onClick={() => setOpen(true)}>Cancel automatic renewal</Button>
       <Sheet open={open} onClose={() => setOpen(false)} title="Cancel renewal?">
-        <p className="mb-4">You keep Premium until the end of the period you&apos;ve paid for. After that you go back to the free plan — your streak, points and progress stay.</p>
+        <p className="mb-4">You keep Premium until the end of the period you&apos;ve paid for. After that you go back to the free plan, and your streak, points and progress stay.</p>
         <div className="grid gap-2">
           <Button variant="secondary" block onClick={() => setOpen(false)}>Keep Premium</Button>
           <Button

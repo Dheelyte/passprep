@@ -9,7 +9,7 @@ export default function NotFound() {
         <EmptyState
           kind="lost"
           title="This page don waka"
-          body="We searched every exercise book. This page isn't here — maybe the link is old."
+          body="We searched every exercise book. This page isn't here. Maybe the link is old."
           action={<ButtonLink href="/dashboard">Back to practice</ButtonLink>}
         />
       </div>

@@ -3,7 +3,7 @@ import { BRAND } from "@/lib/brand";
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: `${BRAND.name} — exam practice`,
+    name: `${BRAND.name}: exam practice`,
     short_name: BRAND.name,
     description: BRAND.tagline,
     start_url: "/dashboard",

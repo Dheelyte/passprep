@@ -76,7 +76,7 @@ export function ImportForm({ canEditSyllabus }: { canEditSyllabus: boolean }) {
             <ul className="muted mt-2 list-disc space-y-1 pl-5">
               <li>One row per topic, plus one row per subtopic (repeat the topic name).</li>
               <li><b>order</b>: position within its subject/topic. <b>class_levels</b>: e.g. <code>SS1, SS2</code>. <b>exams</b>: e.g. <code>WAEC, NECO, JAMB</code>.</li>
-              <li>Re-importing updates names, order and tags — it never deletes topics.</li>
+              <li>Re-importing updates names, order and tags. It never deletes topics.</li>
             </ul>
           )}
         </details>

@@ -5,7 +5,7 @@ import { displayStreak } from "./streaks";
 
 export type LeaderRow = { rank: number; userId: string; name: string; points: number; streak: number; classLevel: string | null };
 
-/** Show first name + last initial only — students are minors. */
+/** Show first name + last initial only, since students are minors. */
 export function publicName(name: string): string {
   const parts = name.trim().split(/\s+/);
   if (parts.length === 1) return parts[0];

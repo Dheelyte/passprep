@@ -110,7 +110,7 @@ export async function importQuestions(rows: RawRow[], opts: { commit: boolean; u
         line: r.line,
         ok: false,
         raw: {},
-        errors: [`topic "${[r.data.subject, r.data.topic, r.data.subtopic].filter(Boolean).join(" › ")}" not found — import the syllabus first`],
+        errors: [`topic "${[r.data.subject, r.data.topic, r.data.subtopic].filter(Boolean).join(" › ")}" not found. Import the syllabus first`],
       };
     if (existingKeys.has(`${topicId}/${r.data.stemHash}`))
       return { line: r.line, ok: false, raw: {}, errors: ["this question is already in the question bank"] };

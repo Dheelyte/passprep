@@ -1,7 +1,7 @@
 import { ChevronDown, ChevronUp, Minus } from "lucide-react";
 import { cn } from "./ds/cn";
 
-/** Rank movement pill: Leaf for up, Soft Coral for down — always with an arrow and words. */
+/** Rank movement pill: Leaf for up, Soft Coral for down, always with an arrow and words. */
 export function MovePill({ diff, compact }: { diff: number | null; compact?: boolean }) {
   if (diff === null) return <span className="rounded-full border-2 border-line bg-card px-1.5 text-[10px] font-extrabold uppercase">new</span>;
   if (diff === 0) return <span className="inline-flex items-center rounded-full border-2 border-line bg-card px-1" aria-label="no change"><Minus aria-hidden className="size-3.5" /></span>;

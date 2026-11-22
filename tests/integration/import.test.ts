@@ -28,7 +28,7 @@ describe("question import against the real syllabus", () => {
     const preview = await importQuestions(rows, opts);
     expect(preview).toMatchObject({ total: 3, valid: 1 });
     expect(preview.invalid.map((i) => i.errors.join())).toEqual([
-      expect.stringMatching(/not found — import the syllabus first/),
+      expect.stringMatching(/not found. Import the syllabus first/),
       expect.stringMatching(/already in the question bank/),
     ]);
     expect(await db.question.count({ where: { authorId: teacher.id } })).toBe(0);

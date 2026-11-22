@@ -1,4 +1,4 @@
-# Design audit — before the redesign
+# Design audit: before the redesign
 
 ## Stack and styling
 - Next.js 16 App Router (Cache Components: each page has a static shell, and per-user data streams in behind `<Suspense>`), React 19, Tailwind CSS v4.
@@ -12,7 +12,7 @@
 | Onboarding | `/onboarding` (one long form) | validation error |
 | Student | Dashboard, Subjects, Subject topics, Practice runner, Leaderboard, Progress, Subject progress, Premium, Account | skeleton lists, "no scores yet", "no practice yet", "coming soon" topics, renewal banner, practice summary, daily-limit paywall, locked video, report form |
 | Admin | Overview, Import, Review queue, Question bank, Question editor, Flags, Metrics | empty queue, no flags, import errors, no data yet |
-| System | 404 (Next.js default), errors (Next.js default) | — |
+| System | 404 (Next.js default), errors (Next.js default) | - |
 
 ## What looks generic
 - System font everywhere and an all-green, flat SaaS palette: nothing says "students" or "Nigeria".

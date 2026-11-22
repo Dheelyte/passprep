@@ -6,7 +6,7 @@ import { PageHeader, SkeletonList } from "@/components/admin-ui";
 export default function MetricsPage() {
   return (
     <>
-      <PageHeader title="Success metrics" subtitle="Are students signing up, coming back, learning — and are parents paying? Targets are set after the pilot." />
+      <PageHeader title="Success metrics" subtitle="Are students signing up, coming back, learning, and are parents paying? Targets are set after the pilot." />
       <Suspense fallback={<SkeletonList rows={6} />}>
         <Metrics />
       </Suspense>
@@ -88,7 +88,7 @@ async function Metrics() {
         </p>
       </Kpi>
 
-      <Kpi title="Questions answered per student per week" question="Are they practising?" rule="If per-student volume falls while active students hold steady, content depth may be the limit — add questions to the most-practised topics.">
+      <Kpi title="Questions answered per student per week" question="Are they practising?" rule="If per-student volume falls while active students hold steady, content depth may be the limit, so add questions to the most-practised topics.">
         <Bars data={volume.map((v) => ({ label: wk(v.week), value: v.perStudent, display: v.perStudent.toFixed(0) }))} />
         <p className="muted text-xs">Total answers last week: {volume.at(-1)?.answers ?? 0} by {volume.at(-1)?.students ?? 0} students</p>
       </Kpi>
@@ -112,7 +112,7 @@ async function Metrics() {
 
       <Kpi title="Video solutions after a wrong answer" question="Are the videos useful?" rule="If students who watch don't do better on the next question than those who don't, review video choice/length before adding more.">
         <p className="text-sm">Watched after a wrong answer: <strong>{pct(video.watchRate)}</strong> <span className="muted">of {video.wrongWithVideoAvailable} wrong answers that had a video</span></p>
-        <p className="text-sm">Next question correct — after video <strong>{pct(video.nextCorrectAfterVideo)}</strong> vs without <strong>{pct(video.nextCorrectWithoutVideo)}</strong></p>
+        <p className="text-sm">Next question correct: after video <strong>{pct(video.nextCorrectAfterVideo)}</strong> vs without <strong>{pct(video.nextCorrectWithoutVideo)}</strong></p>
       </Kpi>
 
       <Kpi title="Free → Premium" question="Will parents pay?" rule="If paywall viewers rarely pay, test price/plan framing; if few students reach the paywall, the free limit may be too generous.">

@@ -1,4 +1,4 @@
-# PassPrep — WAEC, NECO & JAMB practice
+# PassPrep: WAEC, NECO & JAMB practice
 
 A mobile-first web app where Nigerian secondary school students practise topic by topic, get a step-by-step explanation for every answer, watch video solutions (Premium), and keep up daily streaks and a weekly leaderboard. Parents pay for Premium with Paystack: card (auto-renew) or bank transfer/USSD (fixed period).
 

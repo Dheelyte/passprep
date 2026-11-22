@@ -9,6 +9,7 @@ import { disableSubscription } from "@/lib/paystack";
 import { normalizeEmail } from "@/lib/identity";
 import { rateLimit } from "@/lib/rate-limit";
 import { track } from "@/lib/events";
+import { appUrl } from "@/lib/app-url";
 
 export type CheckoutState = { error?: string } | undefined;
 
@@ -42,7 +43,7 @@ export async function checkout(_: CheckoutState, form: FormData): Promise<Checko
   return go(s.uid, form);
 }
 
-/** Parent pays via a shared link — no account needed. */
+/** Parent pays via a shared link, no account needed. */
 export async function checkoutViaPayLink(_: CheckoutState, form: FormData): Promise<CheckoutState> {
   const token = String(form.get("token") ?? "");
   const link = await db.payLink.findUnique({ where: { token } });
@@ -55,7 +56,7 @@ export async function getParentLink(): Promise<{ url: string }> {
   if (!s) redirect("/login");
   const link = await createPayLink(s.uid);
   track("paylink_created", s.uid);
-  return { url: `${process.env.APP_URL ?? "http://localhost:3100"}/pay/${link.token}` };
+  return { url: `${await appUrl()}/pay/${link.token}` };
 }
 
 export async function cancelAutoRenew(): Promise<{ ok: boolean; message: string }> {

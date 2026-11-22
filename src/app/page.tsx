@@ -47,7 +47,7 @@ const faqs = [
   { q: "Will it chop my data?", a: "No app to download. It's a light website built for budget Android phones and slow networks. Videos only load when you tap play. Works on any phone with a browser." },
   { q: "Who writes the questions?", a: "Teachers write original questions in WAEC, NECO and JAMB style. A second teacher checks every question and its workings before it goes live, and you can report anything that looks off." },
   { q: "Which subjects are ready?", a: "Mathematics is ready now, and Physics is starting with its first topics. Chemistry, Biology and English are next." },
-  { q: "How do parents pay?", a: "Monthly, per term or yearly — by bank transfer, USSD or card through Paystack. You can send your parent a payment link on WhatsApp. Transfer plans never renew on their own." },
+  { q: "How do parents pay?", a: "Monthly, per term or yearly, by bank transfer, USSD or card through Paystack. You can send your parent a payment link on WhatsApp. Transfer plans never renew on their own." },
 ];
 
 const naira = (kobo: number) => `₦${(kobo / 100).toLocaleString("en-NG")}`;
@@ -57,7 +57,7 @@ export default async function Home() {
   return (
     <>
       <RevealOnScroll />
-      {/* HERO — Cobalt block */}
+      {/* HERO: Cobalt block */}
       <div className="bg-primary text-on-primary">
         <header className="mx-auto flex w-full max-w-6xl items-center justify-between gap-2 px-4 py-3">
           <Logo />
@@ -94,7 +94,7 @@ export default async function Home() {
       </div>
 
       <main className="flex-1">
-        {/* HOW IT WORKS — paper rest + exercise book */}
+        {/* HOW IT WORKS: paper rest + exercise book */}
         <section className="border-y-2 border-line py-16" aria-labelledby="how-h">
           <div className="mx-auto max-w-6xl px-4">
             <h2 id="how-h" className="text-3xl font-extrabold sm:text-4xl" data-reveal>How a study session goes</h2>
@@ -127,7 +127,7 @@ export default async function Home() {
           </div>
         </section>
 
-        {/* SUBJECTS — each in its own colour */}
+        {/* SUBJECTS: each in its own colour */}
         <section className="mx-auto max-w-6xl px-4 py-16" aria-labelledby="subj-h">
           <h2 id="subj-h" className="text-3xl font-extrabold sm:text-4xl" data-reveal>Start with Maths. More subjects are on the way.</h2>
           <p className="muted mt-2 max-w-lg" data-reveal>Each subject is a path of syllabus topics. Clear one, unlock the next.</p>
@@ -146,7 +146,7 @@ export default async function Home() {
           </ul>
         </section>
 
-        {/* STREAK + LEADERBOARD — Sunshine block */}
+        {/* STREAK + LEADERBOARD: Sunshine block */}
         <section className="border-y-2 border-line bg-sun py-16 text-on-fill" aria-labelledby="habit-h">
           <div className="mx-auto grid max-w-6xl gap-6 px-4 md:grid-cols-2">
             <div className="sticker p-6 text-ink" data-reveal>
@@ -182,7 +182,7 @@ export default async function Home() {
           </div>
         </section>
 
-        {/* PARENTS + PRICING — Grape block with Sunshine highlights */}
+        {/* PARENTS + PRICING: Grape block with Sunshine highlights */}
         <section className="bg-grape py-16 text-on-grape" aria-labelledby="parents-h">
           <div className="mx-auto grid max-w-6xl gap-10 px-4 md:grid-cols-2">
             <div data-reveal>
@@ -223,12 +223,12 @@ export default async function Home() {
                   </li>
                 ))}
               </ul>
-              <p className="mt-3 text-sm font-semibold">Free plan: {FREE_DAILY_LIMIT} questions a day, written workings, streaks and the leaderboard — forever.</p>
+              <p className="mt-3 text-sm font-semibold">Free plan: {FREE_DAILY_LIMIT} questions a day, written workings, streaks and the leaderboard, forever.</p>
             </div>
           </div>
         </section>
 
-        {/* FAQ — paper rest */}
+        {/* FAQ: paper rest */}
         <section className="mx-auto max-w-3xl px-4 py-16" aria-labelledby="faq-h">
           <h2 id="faq-h" className="text-3xl font-extrabold" data-reveal>Questions people ask</h2>
           <div className="mt-6 space-y-3" data-reveal>
@@ -244,7 +244,7 @@ export default async function Home() {
           </div>
         </section>
 
-        {/* FINAL CTA — Coral block */}
+        {/* FINAL CTA: Coral block */}
         <section className="border-t-2 border-line bg-coral px-4 py-16 text-center text-on-fill" data-reveal>
           <h2 className="text-3xl font-extrabold sm:text-5xl">WAEC is coming. Start your first topic tonight.</h2>
           <p className="mx-auto mt-3 max-w-md text-lg font-semibold">One topic. 10 questions. Free, and you don&apos;t need a card.</p>

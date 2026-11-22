@@ -111,7 +111,7 @@ async function Account() {
         {premium && sub ? (
           <>
             <p className="text-sm">
-              <strong>Premium · {PLAN[sub.plan]}</strong> — {sub.mode === "AUTO_RENEW" && sub.status === "ACTIVE" ? `renews on ${fmt(sub.currentPeriodEnd)}` : `ends on ${fmt(sub.currentPeriodEnd)}`}
+              <strong>Premium · {PLAN[sub.plan]}</strong>, {sub.mode === "AUTO_RENEW" && sub.status === "ACTIVE" ? `renews on ${fmt(sub.currentPeriodEnd)}` : `ends on ${fmt(sub.currentPeriodEnd)}`}
             </p>
             {sub.mode === "AUTO_RENEW" && sub.status === "ACTIVE" ? <CancelRenewal /> : <ButtonLink href="/premium" variant="secondary" block>Add more time</ButtonLink>}
           </>
