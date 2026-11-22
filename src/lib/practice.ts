@@ -3,9 +3,11 @@ import { db } from "./db";
 import { lagosDate, lagosWeekStart } from "./time";
 import { applyActivity } from "./streaks";
 import { pointsForAnswer } from "./points";
-import { FREE_DAILY_LIMIT, canAnswer, canWatchVideo, isPremium } from "./entitlements";
+import { FREE_DAILY_LIMIT, canAnswer, isPremium } from "./entitlements";
 import { renderMarkdown } from "./markdown";
-import { youtubeId } from "./youtube";
+import { videoAccessFor, type VideoAccess } from "./solution-video";
+
+export type { VideoAccess };
 
 export const SET_SIZE = 10;
 
@@ -67,8 +69,6 @@ export async function answeredToday(userId: string, today = lagosDate()) {
   return db.attempt.count({ where: { userId, lagosDate: today } });
 }
 
-export type VideoAccess = { kind: "none" } | { kind: "locked" } | { kind: "open"; youtubeId: string };
-
 export type AnswerResult =
   | {
       status: "ok";
@@ -110,11 +110,7 @@ export async function submitAnswer(input: {
     return { status: "error", message: "Invalid option." };
 
   const premium = isPremium(user.subscription, now);
-  const video: VideoAccess = (() => {
-    const id = question.videoUrl ? youtubeId(question.videoUrl) : null;
-    if (!id) return { kind: "none" };
-    return canWatchVideo({ premium, videoFree: question.videoFree }) ? { kind: "open", youtubeId: id } : { kind: "locked" };
-  })();
+  const video: VideoAccess = videoAccessFor(question, premium);
   const explanationHtml = renderMarkdown(question.explanation);
 
   // Idempotent: answering the same question twice in one set returns the first result.

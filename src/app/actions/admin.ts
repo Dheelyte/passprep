@@ -79,6 +79,8 @@ const editSchema = z.object({
   difficulty: z.enum(["EASY", "MEDIUM", "HARD"]),
   videoUrl: z.string().trim(),
   videoFree: z.boolean(),
+  autoVideoBlocked: z.boolean(),
+  autoVideoReset: z.boolean(),
 });
 
 export type EditState = { error?: string; saved?: boolean } | undefined;
@@ -95,6 +97,8 @@ export async function saveQuestion(_: EditState, form: FormData): Promise<EditSt
     difficulty: form.get("difficulty"),
     videoUrl: form.get("videoUrl") ?? "",
     videoFree: form.get("videoFree") === "on",
+    autoVideoBlocked: form.get("autoVideoBlocked") === "on",
+    autoVideoReset: form.get("autoVideoReset") === "on",
   });
   if (!parsed.success) return { error: parsed.error.issues[0].message };
   const d = parsed.data;
@@ -105,6 +109,8 @@ export async function saveQuestion(_: EditState, form: FormData): Promise<EditSt
   if (!existing) return { error: "Question not found." };
   // Teachers' edits to live content go back through review; admins can hot-fix.
   const status = user.role === "ADMIN" ? existing.status : existing.status === "DRAFT" ? "DRAFT" : "IN_REVIEW";
+  // A new question text or topic (or a teacher asking) means the saved YouTube match may be wrong: search again next time.
+  const researchVideo = d.autoVideoReset || d.stem !== existing.stem || d.topicId !== existing.topicId;
   try {
     await db.question.update({
       where: { id: d.id },
@@ -118,6 +124,8 @@ export async function saveQuestion(_: EditState, form: FormData): Promise<EditSt
         difficulty: d.difficulty,
         videoUrl: d.videoUrl || null,
         videoFree: d.videoFree,
+        autoVideoBlocked: d.autoVideoBlocked,
+        ...(researchVideo ? { autoVideoId: null, autoVideoTitle: null, autoVideoChannel: null, autoVideoAt: null } : {}),
         status,
         ...(status === "IN_REVIEW" && existing.status !== "IN_REVIEW" ? { authorId: user.id, reviewerId: null } : {}),
       },

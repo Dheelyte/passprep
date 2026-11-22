@@ -170,6 +170,12 @@ model Question {
   difficulty    Difficulty     @default(MEDIUM)
   videoUrl      String?        @map("video_url") // YouTube
   videoFree     Boolean        @default(false) @map("video_free") // sample video for free users
+  // Found automatically on YouTube when no teacher video is set (cached; searched at most once).
+  autoVideoId      String?   @map("auto_video_id")
+  autoVideoTitle   String?   @map("auto_video_title")
+  autoVideoChannel String?   @map("auto_video_channel")
+  autoVideoAt      DateTime? @map("auto_video_at") // when searched; set with a null id = nothing suitable found
+  autoVideoBlocked Boolean   @default(false) @map("auto_video_blocked") // a teacher switched auto-search off
   status        QuestionStatus @default(DRAFT)
   reviewNote    String?        @map("review_note")
   stemHash      String         @map("stem_hash") // for duplicate detection

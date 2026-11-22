@@ -10,7 +10,7 @@ export default function SignupPage({ searchParams }: PageProps<"/signup">) {
     <>
       <h1 className="text-4xl font-extrabold">Let&apos;s get you exam-ready</h1>
       <p className="mb-6 mt-2 font-semibold">Two minutes to sign up. Free to start. No card needed.</p>
-      <Suspense fallback={<SignupForm />}>
+      <Suspense fallback={<SignupForm google={googleEnabled()} />}>
         <SignupWithSource searchParams={searchParams} />
       </Suspense>
     </>

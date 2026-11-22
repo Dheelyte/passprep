@@ -32,6 +32,10 @@ async function main() {
     const admin = await db.user.findFirst({ where: { role: "ADMIN" }, orderBy: { createdAt: "asc" } });
     if (!admin) throw new Error('No admin yet. Run: npm run db:create-admin -- you@example.com "a-long-password"');
     await loadContent(admin.id, admin.id);
+    // The sample CSV's video links are placeholders for development; drop them so real
+    // (or automatically found) videos are used instead. Also cleans up earlier loads.
+    const cleared = await db.question.updateMany({ where: { videoUrl: { contains: "PLACEHOLD" } }, data: { videoUrl: null, videoFree: false } });
+    if (cleared.count) console.log(`removed ${cleared.count} placeholder video links`);
     console.log(`content loaded as ${admin.email}. No demo accounts were created.`);
     return;
   }

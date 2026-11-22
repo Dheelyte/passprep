@@ -5,8 +5,8 @@ import { db } from "@/lib/db";
 import { requireUser } from "@/lib/auth";
 import { renderInline, renderMarkdown } from "@/lib/markdown";
 import { studentToday } from "@/lib/student";
-import { isPremium, canWatchVideo } from "@/lib/entitlements";
-import { youtubeId } from "@/lib/youtube";
+import { isPremium } from "@/lib/entitlements";
+import { videoAccessFor } from "@/lib/solution-video";
 import { subjectScope } from "@/lib/subjects";
 import { PracticeRunner, type RunnerQuestion } from "@/components/practice-runner";
 import { SkeletonQuestion } from "@/components/ds";
@@ -43,13 +43,13 @@ async function Practice({ params }: { params: PageProps<"/practice/[id]">["param
     .filter((q) => !!q)
     .map((q) => {
       const a = attempts.get(q.id);
-      const vid = q.videoUrl ? youtubeId(q.videoUrl) : null;
+      const video = videoAccessFor(q, premium);
       return {
         id: q.id,
         difficulty: q.difficulty,
         stemHtml: renderMarkdown(q.stem),
         optionsHtml: q.options.map((o) => renderInline(o)),
-        hasVideo: !!vid,
+        hasVideo: video.kind !== "none",
         // Only reveal answers for questions already answered in this set.
         answered: a
           ? {
@@ -58,11 +58,7 @@ async function Practice({ params }: { params: PageProps<"/practice/[id]">["param
               correctIndex: q.correctIndex,
               explanationHtml: renderMarkdown(q.explanation),
               pointsAwarded: a.pointsAwarded,
-              video: !vid
-                ? { kind: "none" as const }
-                : canWatchVideo({ premium, videoFree: q.videoFree })
-                  ? { kind: "open" as const, youtubeId: vid }
-                  : { kind: "locked" as const },
+              video,
             }
           : null,
       };

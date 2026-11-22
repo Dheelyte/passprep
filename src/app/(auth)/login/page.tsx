@@ -19,7 +19,7 @@ export default function LoginPage({ searchParams }: PageProps<"/login">) {
     <>
       <h1 className="text-4xl font-extrabold">Welcome back</h1>
       <p className="mb-6 mt-2 font-semibold">Your streak is waiting.</p>
-      <Suspense fallback={<LoginForm />}>
+      <Suspense fallback={<LoginForm google={googleEnabled()} />}>
         <LoginWithNext searchParams={searchParams} />
       </Suspense>
     </>

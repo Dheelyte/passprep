@@ -4,7 +4,10 @@ import { useActionState } from "react";
 import { saveQuestion } from "@/app/actions/admin";
 import { FormError } from "./admin-ui";
 
-type Q = { id: string; topicId: string; stem: string; options: string[]; correctIndex: number; explanation: string; difficulty: string; videoUrl: string; videoFree: boolean };
+type Q = {
+  id: string; topicId: string; stem: string; options: string[]; correctIndex: number; explanation: string; difficulty: string; videoUrl: string; videoFree: boolean;
+  autoVideo: { id: string | null; title: string | null; channel: string | null; searchedAt: Date | null; blocked: boolean };
+};
 
 export function QuestionEditor({ q, topics }: { q: Q; topics: { id: string; label: string }[] }) {
   const [state, action, pending] = useActionState(saveQuestion, undefined);
@@ -53,6 +56,28 @@ export function QuestionEditor({ q, topics }: { q: Q; topics: { id: string; labe
         <input type="checkbox" name="videoFree" defaultChecked={q.videoFree} className="size-5 accent-[var(--brand)]" />
         Free sample video (free students can watch it)
       </label>
+      <fieldset className="space-y-2 rounded border border-rule p-3 text-sm">
+        <legend className="px-1 font-semibold">YouTube video found automatically</legend>
+        <p className="muted text-xs">Used for Premium students only when the YouTube link above is empty.</p>
+        {q.autoVideo.id ? (
+          <p>
+            <a className="text-info underline" href={`https://www.youtube.com/watch?v=${q.autoVideo.id}`} target="_blank" rel="noopener noreferrer">{q.autoVideo.title ?? q.autoVideo.id}</a>
+            {q.autoVideo.channel ? <span className="muted"> · {q.autoVideo.channel}</span> : null}
+          </p>
+        ) : (
+          <p className="muted">{q.autoVideo.searchedAt ? "Searched: nothing suitable found." : "Not searched yet. It searches the first time a Premium student opens the video."}</p>
+        )}
+        {q.autoVideo.id || q.autoVideo.searchedAt ? (
+          <label className="flex items-center gap-2">
+            <input type="checkbox" name="autoVideoReset" className="size-5 accent-[var(--brand)]" />
+            Search YouTube again (changing the question text does this too)
+          </label>
+        ) : null}
+        <label className="flex items-center gap-2">
+          <input type="checkbox" name="autoVideoBlocked" defaultChecked={q.autoVideo.blocked} className="size-5 accent-[var(--brand)]" />
+          Don&apos;t use a YouTube video for this question
+        </label>
+      </fieldset>
       <button className="btn-primary w-full" disabled={pending}>{pending ? "Saving…" : "Save changes"}</button>
     </form>
   );

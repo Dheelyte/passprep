@@ -168,3 +168,32 @@ export async function renewalRate() {
     FROM periods pe WHERE pe.period_end BETWEEN now() - interval '90 days' AND now()`;
   return { ended: n(r?.ended), renewed: n(r?.renewed), rate: n(r?.ended) ? n(r?.renewed) / n(r?.ended) : null };
 }
+
+/** Money received (successful payments only), with periods on Lagos calendar days. */
+export async function earnings(months = 6) {
+  const [t] = await db.$queryRaw<{ total: bigint; total_c: bigint; today: bigint; week: bigint; month: bigint; month_c: bigint; last_month: bigint; d30: bigint; year: bigint }[]>`
+    WITH p AS (
+      SELECT amount_kobo AS k, ((paid_at AT TIME ZONE 'UTC') AT TIME ZONE 'Africa/Lagos') AS at, (now() AT TIME ZONE 'Africa/Lagos') AS now
+      FROM payments WHERE status = 'SUCCESS' AND paid_at IS NOT NULL
+    )
+    SELECT COALESCE(SUM(k), 0) AS total, COUNT(*) AS total_c,
+      COALESCE(SUM(k) FILTER (WHERE at >= date_trunc('day', now)), 0) AS today,
+      COALESCE(SUM(k) FILTER (WHERE at >= date_trunc('week', now)), 0) AS week,
+      COALESCE(SUM(k) FILTER (WHERE at >= date_trunc('month', now)), 0) AS month,
+      COUNT(*) FILTER (WHERE at >= date_trunc('month', now)) AS month_c,
+      COALESCE(SUM(k) FILTER (WHERE at >= date_trunc('month', now) - interval '1 month' AND at < date_trunc('month', now)), 0) AS last_month,
+      COALESCE(SUM(k) FILTER (WHERE at >= now - interval '30 days'), 0) AS d30,
+      COALESCE(SUM(k) FILTER (WHERE at >= date_trunc('year', now)), 0) AS year
+    FROM p`;
+  const byMonth = await db.$queryRaw<{ month: Date; kobo: bigint }[]>`
+    SELECT m::date AS month, COALESCE(SUM(p.amount_kobo), 0) AS kobo
+    FROM generate_series(date_trunc('month', now() AT TIME ZONE 'Africa/Lagos') - ((${months}::int - 1) * interval '1 month'),
+                         date_trunc('month', now() AT TIME ZONE 'Africa/Lagos'), interval '1 month') AS m
+    LEFT JOIN payments p ON p.status = 'SUCCESS' AND date_trunc('month', (p.paid_at AT TIME ZONE 'UTC') AT TIME ZONE 'Africa/Lagos') = m
+    GROUP BY m ORDER BY m`;
+  return {
+    totalKobo: n(t?.total), totalCount: n(t?.total_c), todayKobo: n(t?.today), weekKobo: n(t?.week),
+    monthKobo: n(t?.month), monthCount: n(t?.month_c), lastMonthKobo: n(t?.last_month), last30Kobo: n(t?.d30), yearKobo: n(t?.year),
+    byMonth: byMonth.map((r) => ({ month: r.month, kobo: n(r.kobo) })),
+  };
+}

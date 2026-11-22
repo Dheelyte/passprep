@@ -48,7 +48,7 @@ async function Edit({ params }: { params: PageProps<"/admin/questions/[id]">["pa
       ) : null}
       <div className="grid gap-6 lg:grid-cols-2">
         <QuestionEditor
-          q={{ id: q.id, topicId: q.topicId, stem: q.stem, options: q.options, correctIndex: q.correctIndex, explanation: q.explanation, difficulty: q.difficulty, videoUrl: q.videoUrl ?? "", videoFree: q.videoFree }}
+          q={{ id: q.id, topicId: q.topicId, stem: q.stem, options: q.options, correctIndex: q.correctIndex, explanation: q.explanation, difficulty: q.difficulty, videoUrl: q.videoUrl ?? "", videoFree: q.videoFree, autoVideo: { id: q.autoVideoId, title: q.autoVideoTitle, channel: q.autoVideoChannel, searchedAt: q.autoVideoAt, blocked: q.autoVideoBlocked } }}
           topics={topics.map((t) => ({ id: t.id, label: t.parent ? `${t.parent.name} › ${t.name}` : t.name }))}
         />
         <section className="card">

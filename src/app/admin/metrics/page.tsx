@@ -16,7 +16,12 @@ export default function MetricsPage() {
 
 const pct = (v: number | null) => (v === null ? "–" : `${Math.round(v * 100)}%`);
 const wk = (d: Date) => d.toISOString().slice(5, 10);
-const naira = (k: number) => `₦${(k / 100).toLocaleString("en-NG")}`;
+const naira = (k: number) => `₦${(k / 100).toLocaleString("en-NG", { maximumFractionDigits: 0 })}`;
+// Compact for chart labels: ₦12.5k, ₦1.2m
+const short = (k: number) => {
+  const v = k / 100;
+  return v >= 1e6 ? `₦${(v / 1e6).toFixed(1)}m` : v >= 1e3 ? `₦${(v / 1e3).toFixed(1)}k` : `₦${v.toFixed(0)}`;
+};
 
 function Kpi({ title, question, children, rule }: { title: string; question: string; children: ReactNode; rule: string }) {
   return (
@@ -49,7 +54,8 @@ function Bars({ data }: { data: { label: string; value: number; display: string 
 
 async function Metrics() {
   await requireRole("ADMIN");
-  const [signups, sources, cohorts, volume, streaks, improvement, missed, video, conv, mix, renewal] = await Promise.all([
+  const [money, signups, sources, cohorts, volume, streaks, improvement, missed, video, conv, mix, renewal] = await Promise.all([
+    m.earnings(),
     m.weeklySignups(),
     m.signupSources(),
     m.retentionCohorts(),
@@ -63,8 +69,40 @@ async function Metrics() {
     m.renewalRate(),
   ]);
 
+  const change = money.lastMonthKobo ? (money.monthKobo - money.lastMonthKobo) / money.lastMonthKobo : null;
+  const tiles = [
+    { label: "Total earned", value: naira(money.totalKobo), note: `${money.totalCount} payment${money.totalCount === 1 ? "" : "s"}` },
+    { label: "This month", value: naira(money.monthKobo), note: change === null ? `${money.monthCount} so far` : `${change >= 0 ? "+" : ""}${Math.round(change * 100)}% vs last month` },
+    { label: "Last month", value: naira(money.lastMonthKobo) },
+    { label: "This week", value: naira(money.weekKobo), note: "Since Monday" },
+    { label: "Today", value: naira(money.todayKobo) },
+    { label: "Last 30 days", value: naira(money.last30Kobo) },
+    { label: "This year", value: naira(money.yearKobo) },
+  ];
+
   return (
     <div className="grid gap-4 md:grid-cols-2">
+      <section className="card space-y-4 md:col-span-2" aria-labelledby="earned">
+        <header>
+          <p className="muted text-xs font-semibold uppercase tracking-wide">How much have we made?</p>
+          <h2 id="earned" className="font-semibold">Amount earned</h2>
+        </header>
+        <dl className="grid grid-cols-2 gap-3 sm:grid-cols-4 lg:grid-cols-7">
+          {tiles.map((t, i) => (
+            <div key={t.label} className={i === 0 ? "col-span-2 rounded-lg bg-paper-2 p-3 sm:col-span-1" : "rounded-lg bg-paper-2 p-3"}>
+              <dt className="muted text-xs font-semibold">{t.label}</dt>
+              <dd className="mt-1 text-lg font-extrabold tabular-nums">{t.value}</dd>
+              {t.note ? <dd className="muted text-xs">{t.note}</dd> : null}
+            </div>
+          ))}
+        </dl>
+        <div>
+          <h3 className="mb-2 text-sm font-semibold">By month</h3>
+          <Bars data={money.byMonth.map((r) => ({ label: r.month.toLocaleString("en-NG", { month: "short", timeZone: "UTC" }), value: r.kobo, display: short(r.kobo) }))} />
+        </div>
+        <p className="muted text-xs">Successful Paystack payments only, before Paystack fees. Days, weeks and months follow Lagos time.</p>
+      </section>
+
       <Kpi title="New sign-ups per week" question="Are students signing up?" rule="If activation (answered a question within 24h) drops below the pilot baseline, fix onboarding before spending on acquisition.">
         <Bars data={signups.map((s) => ({ label: wk(s.week), value: s.signups, display: String(s.signups) }))} />
         <p className="text-sm">

@@ -426,3 +426,12 @@ h1, h2, h3, .font-display { font-family: var(--font-display); letter-spacing: -0
   margin-inline: calc(50% - 50cqw);
   padding-inline: calc(50cqw - 50%); /* content stays aligned with the column */
 }
+
+/* Admin mobile sidebar (a <dialog> drawer). */
+.admin-drawer[open] { animation: admin-drawer-in 200ms ease-out; }
+.admin-drawer[open]::backdrop { animation: admin-fade-in 200ms ease-out; }
+@keyframes admin-drawer-in { from { transform: translateX(-100%); } }
+@keyframes admin-fade-in { from { opacity: 0; } }
+@media (prefers-reduced-motion: reduce) {
+  .admin-drawer[open], .admin-drawer[open]::backdrop { animation: none; }
+}

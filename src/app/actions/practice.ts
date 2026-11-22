@@ -7,6 +7,8 @@ import { readSession } from "@/lib/session";
 import { startPracticeSession, submitAnswer, type AnswerResult } from "@/lib/practice";
 import { track } from "@/lib/events";
 import { rateLimit } from "@/lib/rate-limit";
+import { isPremium } from "@/lib/entitlements";
+import { resolveAutoVideo, type VideoAccess } from "@/lib/solution-video";
 
 async function uid() {
   const s = await readSession();
@@ -45,11 +47,28 @@ export async function answerQuestion(input: z.infer<typeof answerInput>): Promis
 }
 
 /** Tracks video opens; `afterWrong` powers the "are videos useful?" metric. */
-export async function videoOpened(questionId: string, afterWrong: boolean) {
+export async function videoOpened(questionId: string, afterWrong: boolean, source: "teacher" | "youtube" = "teacher") {
   const userId = await uid();
   if (typeof questionId !== "string" || !/^[a-z0-9]{20,40}$/.test(questionId)) return;
   if (!rateLimit(`video:${userId}`, 60, 60_000)) return;
-  track("video_opened", userId, { questionId, afterWrong: afterWrong === true });
+  track("video_opened", userId, { questionId, afterWrong: afterWrong === true, source: source === "youtube" ? "youtube" : "teacher" });
+}
+
+/**
+ * Finds the YouTube solution video for a question the student has just answered.
+ * Only for questions answered in their own set, and only with Premium, so the search quota can't be farmed.
+ */
+export async function findSolutionVideo(sessionId: string, questionId: string): Promise<VideoAccess | { kind: "unavailable" }> {
+  const userId = await uid();
+  if (typeof sessionId !== "string" || typeof questionId !== "string") return { kind: "none" };
+  if (!rateLimit(`video-find:${userId}`, 20, 60_000)) return { kind: "unavailable" };
+  const [attempt, user] = await Promise.all([
+    db.attempt.findUnique({ where: { sessionId_questionId: { sessionId, questionId } }, select: { userId: true } }),
+    db.user.findUnique({ where: { id: userId }, select: { subscription: true } }),
+  ]);
+  if (!attempt || attempt.userId !== userId) return { kind: "none" };
+  if (!isPremium(user?.subscription ?? null)) return { kind: "locked" };
+  return resolveAutoVideo(questionId);
 }
 
 export async function flagQuestion(questionId: string, reason: string): Promise<{ ok: boolean; message: string }> {

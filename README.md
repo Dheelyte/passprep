@@ -86,6 +86,14 @@ The seed's YouTube links (`PLACEHOLD0x`) are placeholders. Replace them with rea
 
 Don't run plain `npm run db:seed` on production: it creates demo staff accounts with the password `password123`.
 
+## Solution videos
+
+- A teacher's YouTube link on a question (import column `video_url`, or the question editor) is always used first.
+- Without one, and with `YOUTUBE_API_KEY` set, the app finds a video on YouTube the first time a Premium student opens "Watch the solution". It searches with the topic, subject and keywords from the question, using SafeSearch (strict) and embeddable videos only, and picks a 1–25 minute video that best matches those keywords. The result (or "nothing found") is saved on the question, so each question is searched once.
+- Quota: a search costs about 101 of the free 10,000 daily units, so roughly 95 new questions a day. Questions already searched cost nothing. If the quota runs out, students see "Try again" and nothing is saved.
+- Admins see the found video in the question editor and can search again or switch YouTube off for that question. Editing the question text or topic also searches again. Students can report a wrong video with "Something wrong with this question?".
+- Key: Google Cloud Console → enable **YouTube Data API v3** → Credentials → **API key**, restricted to that API.
+
 ## Google sign-in
 
 1. In Google Cloud Console → APIs & Services → Credentials, create an **OAuth client ID** (type: Web application).

@@ -3,8 +3,9 @@
 import Link from "next/link";
 import { useEffect, useRef, useState, useTransition } from "react";
 import { ArrowRight, Check, Flag, Lock, Play, RotateCcw, Sparkles, X } from "lucide-react";
-import { answerQuestion, flagQuestion, startPractice, videoOpened } from "@/app/actions/practice";
+import { answerQuestion, findSolutionVideo, flagQuestion, startPractice, videoOpened } from "@/app/actions/practice";
 import type { VideoAccess } from "@/lib/practice";
+import { Skeleton } from "./ds/skeleton";
 import { Button, ButtonLink } from "./ds/button";
 import { Chip, Stamp } from "./ds/badge";
 import { ProgressBar } from "./ds/progress";
@@ -193,7 +194,7 @@ export function PracticeRunner(props: {
           ) : null}
 
           {result ? (
-            <ResultPanel key={q.id} seed={index} question={q} result={result} onNext={() => setIndex((n) => n + 1)} isLast={index === questions.length - 1} />
+            <ResultPanel key={q.id} sessionId={props.sessionId} seed={index} question={q} result={result} onNext={() => setIndex((n) => n + 1)} isLast={index === questions.length - 1} />
           ) : remaining !== null && remaining <= 3 ? (
             <p className="mt-4 text-center text-sm text-ink-2">
               {remaining} free question{remaining === 1 ? "" : "s"} left today ·{" "}
@@ -247,7 +248,7 @@ function Option({ letter, html, state, disabled, onClick }: { letter: string; ht
   );
 }
 
-function ResultPanel({ question, result, onNext, isLast, seed }: { question: RunnerQuestion; result: Answered; onNext: () => void; isLast: boolean; seed: number }) {
+function ResultPanel({ sessionId, question, result, onNext, isLast, seed }: { sessionId: string; question: RunnerQuestion; result: Answered; onNext: () => void; isLast: boolean; seed: number }) {
   const [videoOpen, setVideoOpen] = useState(false);
   const [upgradeOpen, setUpgradeOpen] = useState(false);
   return (
@@ -293,52 +294,101 @@ function ResultPanel({ question, result, onNext, isLast, seed }: { question: Run
 
       <FlagForm questionId={question.id} />
 
-      {result.video.kind === "open" ? (
-        <VideoSheet open={videoOpen} onClose={() => setVideoOpen(false)} youtubeId={result.video.youtubeId} questionId={question.id} stemHtml={question.stemHtml} afterWrong={!result.isCorrect} />
+      {result.video.kind === "open" || result.video.kind === "find" ? (
+        <VideoSheet open={videoOpen} onClose={() => setVideoOpen(false)} initial={result.video} sessionId={sessionId} questionId={question.id} stemHtml={question.stemHtml} afterWrong={!result.isCorrect} />
       ) : null}
       <UpgradeSheet open={upgradeOpen} onClose={() => setUpgradeOpen(false)} reason="video" />
     </section>
   );
 }
 
-function VideoSheet({ open, onClose, youtubeId, questionId, stemHtml, afterWrong }: { open: boolean; onClose: () => void; youtubeId: string; questionId: string; stemHtml: string; afterWrong: boolean }) {
+type OpenVideo = Extract<VideoAccess, { kind: "open" }>;
+type SheetVideo = OpenVideo | { kind: "find" } | { kind: "searching" } | { kind: "none" } | { kind: "unavailable" };
+
+function VideoSheet({ open, onClose, initial, sessionId, questionId, stemHtml, afterWrong }: { open: boolean; onClose: () => void; initial: OpenVideo | { kind: "find" }; sessionId: string; questionId: string; stemHtml: string; afterWrong: boolean }) {
   const [playing, setPlaying] = useState(false);
+  const [video, setVideo] = useState<SheetVideo>(initial);
+
+  // No teacher video: look one up on YouTube the first time the sheet opens (the result is saved server-side).
+  const search = () =>
+    findSolutionVideo(sessionId, questionId)
+      .then((r) => setVideo(r.kind === "open" ? r : r.kind === "unavailable" ? r : { kind: "none" }))
+      .catch(() => setVideo({ kind: "unavailable" }));
+  const retry = () => {
+    setVideo({ kind: "searching" });
+    void search();
+  };
+  const needsSearch = open && video.kind === "find";
+  useEffect(() => {
+    if (!needsSearch) return;
+    setVideo({ kind: "searching" } as SheetVideo); // eslint-disable-line react-hooks/set-state-in-effect -- marks the request as started
+    void search();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [needsSearch]);
+
   return (
     <Sheet open={open} onClose={() => { setPlaying(false); onClose(); }} title="Video solution">
       <details className="mb-3 rounded-[var(--r-md)] border-2 border-line bg-paper-2 px-3 py-2">
         <summary className="cursor-pointer font-display text-sm font-bold">See the question</summary>
         <div className="prose-q mt-2 text-sm" dangerouslySetInnerHTML={{ __html: stemHtml }} />
       </details>
-      <div className="relative aspect-video overflow-hidden rounded-[var(--r-md)] border-2 border-line bg-band">
-        {playing ? (
-          <iframe
-            className="size-full"
-            src={`https://www.youtube-nocookie.com/embed/${youtubeId}?autoplay=1&rel=0&modestbranding=1&playsinline=1`}
-            title="Video solution"
-            allow="autoplay; encrypted-media; picture-in-picture"
-            allowFullScreen
-            referrerPolicy="strict-origin-when-cross-origin"
-          />
-        ) : open ? (
-          <button
-            type="button"
-            className="group absolute inset-0 grid place-items-center"
-            onClick={() => {
-              setPlaying(true);
-              void videoOpened(questionId, afterWrong);
-            }}
-            aria-label="Play video solution"
-          >
-            {/* Small poster (~10 KB) only loads once the sheet is open */}
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={`https://i.ytimg.com/vi/${youtubeId}/mqdefault.jpg`} alt="" loading="lazy" className="absolute inset-0 size-full object-cover opacity-80" />
-            <span className="relative grid size-16 place-items-center rounded-full border-2 border-line bg-sun text-on-fill shadow-sticker transition-transform group-active:translate-x-[3px] group-active:translate-y-[3px] group-active:shadow-none">
-              <Play className="size-7 translate-x-0.5" fill="currentColor" />
-            </span>
-          </button>
-        ) : null}
-      </div>
-      <p className="muted mt-2 text-xs">Short video · uses mobile data. Tap play when you&apos;re ready.</p>
+      {video.kind === "open" ? (
+        <>
+          <div className="relative aspect-video overflow-hidden rounded-[var(--r-md)] border-2 border-line bg-band">
+            {playing ? (
+              <iframe
+                className="size-full"
+                src={`https://www.youtube-nocookie.com/embed/${video.youtubeId}?autoplay=1&rel=0&modestbranding=1&playsinline=1`}
+                title={video.title ?? "Video solution"}
+                allow="autoplay; encrypted-media; picture-in-picture"
+                allowFullScreen
+                referrerPolicy="strict-origin-when-cross-origin"
+              />
+            ) : open ? (
+              <button
+                type="button"
+                className="group absolute inset-0 grid place-items-center"
+                onClick={() => {
+                  setPlaying(true);
+                  void videoOpened(questionId, afterWrong, video.source);
+                }}
+                aria-label={`Play video solution${video.title ? `: ${video.title}` : ""}`}
+              >
+                {/* Small poster (~10 KB) only loads once the sheet is open */}
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={`https://i.ytimg.com/vi/${video.youtubeId}/mqdefault.jpg`} alt="" loading="lazy" className="absolute inset-0 size-full object-cover opacity-80" />
+                <span className="relative grid size-16 place-items-center rounded-full border-2 border-line bg-sun text-on-fill shadow-sticker transition-transform group-active:translate-x-[3px] group-active:translate-y-[3px] group-active:shadow-none">
+                  <Play className="size-7 translate-x-0.5" fill="currentColor" />
+                </span>
+              </button>
+            ) : null}
+          </div>
+          {video.source === "youtube" ? (
+            <div className="mt-3 space-y-1">
+              {video.title ? <p className="font-bold leading-snug">{video.title}</p> : null}
+              <p className="text-sm text-ink-2">
+                Found on YouTube{video.channel ? ` · ${video.channel}` : ""}. Not from our teachers, so check it against the workings. Wrong video? Tap &ldquo;Something wrong with this question?&rdquo; to tell us.
+              </p>
+            </div>
+          ) : null}
+          <p className="muted mt-2 text-xs">Short video · uses mobile data. Tap play when you&apos;re ready.</p>
+        </>
+      ) : video.kind === "searching" || video.kind === "find" ? (
+        <div role="status" className="space-y-2">
+          <Skeleton className="aspect-video w-full rounded-[var(--r-md)]" />
+          <p className="text-sm font-semibold">Finding a video for this question…</p>
+        </div>
+      ) : video.kind === "unavailable" ? (
+        <div className="space-y-3 rounded-[var(--r-md)] border-2 border-dashed border-line px-4 py-5 text-center">
+          <p className="font-bold">We couldn&apos;t load a video right now.</p>
+          <Button variant="secondary" size="sm" onClick={retry} icon={<RotateCcw className="size-4" />}>Try again</Button>
+        </div>
+      ) : (
+        <div className="rounded-[var(--r-md)] border-2 border-dashed border-line px-4 py-5 text-center">
+          <p className="font-bold">No video for this one yet.</p>
+          <p className="mt-1 text-sm">The written workings walk you through every step.</p>
+        </div>
+      )}
     </Sheet>
   );
 }

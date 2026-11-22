@@ -64,14 +64,14 @@ await check("/account", { cookie: s, expect: ["Tobi Adebayo", "+2348012345678", 
 await check(`/pay/${link.token}`, { expect: ["Unlock Premium for Tobi A.", "Pay securely"] });
 await check("/pay/does-not-exist", { expect: [/don waka/] }); // streamed → 200 with not-found UI
 await check("/admin", { cookie: s, status: 200, expect: [/NEXT_REDIRECT|\/dashboard/] }); // students bounced
-await check("/admin", { cookie: a, expect: ["Content overview", "Published"] });
+await check("/admin", { cookie: a, expect: ["Content overview", "Published", "Open admin menu"] });
 await check("/admin/import", { cookie: a, expect: ["Bulk import", "questions-template.csv"] });
 await check("/admin/review", { cookie: await cookie(teacher.id), expect: ["Review queue"] });
 await check("/admin/questions?sort=missed", { cookie: a, expect: ["Question bank"] });
 const q = await db.question.findFirstOrThrow({ where: { status: "PUBLISHED" } });
 await check(`/admin/questions/${q.id}`, { cookie: a, expect: ["Save changes", "as students see it"] });
 await check("/admin/flags", { cookie: a, expect: ["Student reports"] });
-await check("/admin/metrics", { cookie: a, expect: ["Success metrics", "Retention by signup week", "Decision rule"] });
+await check("/admin/metrics", { cookie: a, expect: ["Success metrics", "Amount earned", "Total earned", "This month", "Retention by signup week", "Decision rule"] });
 await check("/templates/questions-template.csv", { expect: ["subject,topic,subtopic"] });
 await check("/manifest.webmanifest", { expect: ["standalone"] });
 
