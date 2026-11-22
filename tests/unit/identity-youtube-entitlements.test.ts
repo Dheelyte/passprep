@@ -1,7 +1,8 @@
 import { describe, expect, it } from "vitest";
 import { normalizePhone, parseIdentifier } from "@/lib/identity";
 import { youtubeId } from "@/lib/youtube";
-import { canAnswer, isPremium, FREE_DAILY_LIMIT } from "@/lib/entitlements";
+import { afterEach, vi } from "vitest";
+import { canAnswer, daysLeft, isPremium, premiumForEveryone, FREE_DAILY_LIMIT } from "@/lib/entitlements";
 
 describe("phone/email identifiers", () => {
   it.each([
@@ -44,5 +45,28 @@ describe("entitlements", () => {
     expect(canAnswer({ premium: false, answeredToday: FREE_DAILY_LIMIT - 1 })).toBe(true);
     expect(canAnswer({ premium: false, answeredToday: FREE_DAILY_LIMIT })).toBe(false);
     expect(canAnswer({ premium: true, answeredToday: 999 })).toBe(true);
+  });
+});
+
+describe("PREMIUM_FOR_EVERYONE testing switch", () => {
+  afterEach(() => vi.unstubAllEnvs());
+  it("gives everyone Premium when on", () => {
+    vi.stubEnv("PREMIUM_FOR_EVERYONE", "true");
+    vi.stubEnv("VERCEL_ENV", "");
+    expect(isPremium(null)).toBe(true);
+    expect(isPremium({ status: "EXPIRED", currentPeriodEnd: new Date("2020-01-01") })).toBe(true);
+    expect(daysLeft(null)).toBeNull(); // no renewal banner
+  });
+  it("is off unless set to a yes value", () => {
+    for (const v of ["", "0", "false", "no"]) {
+      vi.stubEnv("PREMIUM_FOR_EVERYONE", v);
+      expect(isPremium(null)).toBe(false);
+    }
+  });
+  it("is ignored on Vercel production", () => {
+    vi.stubEnv("PREMIUM_FOR_EVERYONE", "true");
+    vi.stubEnv("VERCEL_ENV", "production");
+    expect(premiumForEveryone()).toBe(false);
+    expect(isPremium(null)).toBe(false);
   });
 });

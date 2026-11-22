@@ -3,7 +3,7 @@ import { Suspense } from "react";
 import { LogOut, Settings } from "lucide-react";
 import { db } from "@/lib/db";
 import { requireUser } from "@/lib/auth";
-import { isPremium } from "@/lib/entitlements";
+import { isPremium, premiumForEveryone } from "@/lib/entitlements";
 import { logout } from "@/app/actions/auth";
 import { activeDays, badgesFor, userStats } from "@/lib/gamify";
 import { displayStreak } from "@/lib/streaks";
@@ -108,7 +108,9 @@ async function Account() {
 
       <Card as="section" aria-labelledby="plan-h" className="space-y-3">
         <h2 id="plan-h" className="text-lg font-extrabold">Plan</h2>
-        {premium && sub ? (
+        {premiumForEveryone() ? (
+          <p className="text-sm"><strong>Premium (test mode)</strong>. Every account has Premium because PREMIUM_FOR_EVERYONE is on.</p>
+        ) : premium && sub ? (
           <>
             <p className="text-sm">
               <strong>Premium · {PLAN[sub.plan]}</strong>, {sub.mode === "AUTO_RENEW" && sub.status === "ACTIVE" ? `renews on ${fmt(sub.currentPeriodEnd)}` : `ends on ${fmt(sub.currentPeriodEnd)}`}

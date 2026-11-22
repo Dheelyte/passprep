@@ -251,6 +251,9 @@ function Option({ letter, html, state, disabled, onClick }: { letter: string; ht
 function ResultPanel({ sessionId, question, result, onNext, isLast, seed }: { sessionId: string; question: RunnerQuestion; result: Answered; onNext: () => void; isLast: boolean; seed: number }) {
   const [videoOpen, setVideoOpen] = useState(false);
   const [upgradeOpen, setUpgradeOpen] = useState(false);
+  const [spent, setSpent] = useState(false); // a free video was used on this question
+  const v = result.video;
+  const freeLabel = v.kind === "free" && !spent ? ` · ${v.remaining} free left today` : "";
   return (
     <section className="mt-5 space-y-4" aria-label="Answer and explanation">
       <div
@@ -277,14 +280,14 @@ function ResultPanel({ sessionId, question, result, onNext, isLast, seed }: { se
 
       {!result.isCorrect ? <MarginNote>Read each step, then try a similar one. This kind of question comes back, and you&apos;ll be ready.</MarginNote> : null}
 
-      {result.video.kind !== "none" ? (
+      {v.kind !== "none" ? (
         <Button
           variant="secondary"
           block
-          icon={result.video.kind === "locked" ? <Lock className="size-5" /> : <Play className="size-5" />}
-          onClick={() => (result.video.kind === "locked" ? setUpgradeOpen(true) : setVideoOpen(true))}
+          icon={v.kind === "locked" ? <Lock className="size-5" /> : <Play className="size-5" />}
+          onClick={() => (v.kind === "locked" ? setUpgradeOpen(true) : setVideoOpen(true))}
         >
-          Watch the solution{result.video.kind === "locked" ? " · Premium" : ""}
+          Watch the solution{v.kind === "locked" ? " · Premium" : freeLabel}
         </Button>
       ) : null}
 
@@ -294,31 +297,37 @@ function ResultPanel({ sessionId, question, result, onNext, isLast, seed }: { se
 
       <FlagForm questionId={question.id} />
 
-      {result.video.kind === "open" || result.video.kind === "find" ? (
-        <VideoSheet open={videoOpen} onClose={() => setVideoOpen(false)} initial={result.video} sessionId={sessionId} questionId={question.id} stemHtml={question.stemHtml} afterWrong={!result.isCorrect} />
+      {v.kind === "open" || v.kind === "find" || v.kind === "free" ? (
+        <VideoSheet open={videoOpen} onClose={() => setVideoOpen(false)} initial={v} sessionId={sessionId} questionId={question.id} stemHtml={question.stemHtml} afterWrong={!result.isCorrect} onUnlocked={() => setSpent(true)} />
       ) : null}
-      <UpgradeSheet open={upgradeOpen} onClose={() => setUpgradeOpen(false)} reason="video" />
+      <UpgradeSheet open={upgradeOpen} onClose={() => setUpgradeOpen(false)} reason={v.kind === "locked" && v.usedFree ? "free-videos" : "video"} />
     </section>
   );
 }
 
 type OpenVideo = Extract<VideoAccess, { kind: "open" }>;
-type SheetVideo = OpenVideo | { kind: "find" } | { kind: "searching" } | { kind: "none" } | { kind: "unavailable" };
+type FreeVideo = Extract<VideoAccess, { kind: "free" }>;
+type SheetVideo = OpenVideo | { kind: "find" } | FreeVideo | { kind: "searching" } | { kind: "none" } | { kind: "unavailable" } | { kind: "used-up" };
 
-function VideoSheet({ open, onClose, initial, sessionId, questionId, stemHtml, afterWrong }: { open: boolean; onClose: () => void; initial: OpenVideo | { kind: "find" }; sessionId: string; questionId: string; stemHtml: string; afterWrong: boolean }) {
+function VideoSheet({ open, onClose, initial, sessionId, questionId, stemHtml, afterWrong, onUnlocked }: { open: boolean; onClose: () => void; initial: OpenVideo | { kind: "find" } | FreeVideo; sessionId: string; questionId: string; stemHtml: string; afterWrong: boolean; onUnlocked: () => void }) {
   const [playing, setPlaying] = useState(false);
   const [video, setVideo] = useState<SheetVideo>(initial);
+  const isFree = initial.kind === "free";
 
-  // No teacher video: look one up on YouTube the first time the sheet opens (the result is saved server-side).
+  // Ask the server for the video the first time the sheet opens: a YouTube search (saved server-side)
+  // and/or, on the free plan, spending one of today's free videos.
   const search = () =>
     findSolutionVideo(sessionId, questionId)
-      .then((r) => setVideo(r.kind === "open" ? r : r.kind === "unavailable" ? r : { kind: "none" }))
+      .then((r) => {
+        if (r.kind === "open" && isFree) onUnlocked();
+        setVideo(r.kind === "open" || r.kind === "unavailable" ? r : r.kind === "locked" ? { kind: "used-up" } : { kind: "none" });
+      })
       .catch(() => setVideo({ kind: "unavailable" }));
   const retry = () => {
     setVideo({ kind: "searching" });
     void search();
   };
-  const needsSearch = open && video.kind === "find";
+  const needsSearch = open && (video.kind === "find" || video.kind === "free");
   useEffect(() => {
     if (!needsSearch) return;
     setVideo({ kind: "searching" } as SheetVideo); // eslint-disable-line react-hooks/set-state-in-effect -- marks the request as started
@@ -373,10 +382,16 @@ function VideoSheet({ open, onClose, initial, sessionId, questionId, stemHtml, a
           ) : null}
           <p className="muted mt-2 text-xs">Short video · uses mobile data. Tap play when you&apos;re ready.</p>
         </>
-      ) : video.kind === "searching" || video.kind === "find" ? (
+      ) : video.kind === "used-up" ? (
+        <div className="space-y-3 rounded-[var(--r-md)] border-2 border-dashed border-line px-4 py-5 text-center">
+          <p className="font-bold">You&apos;ve watched today&apos;s free videos.</p>
+          <p className="text-sm">More tomorrow, or watch every video now with Premium.</p>
+          <ButtonLink href="/premium" variant="sun" size="sm">See Premium</ButtonLink>
+        </div>
+      ) : video.kind === "searching" || video.kind === "find" || video.kind === "free" ? (
         <div role="status" className="space-y-2">
           <Skeleton className="aspect-video w-full rounded-[var(--r-md)]" />
-          <p className="text-sm font-semibold">Finding a video for this question…</p>
+          <p className="text-sm font-semibold">{isFree ? "Loading the video…" : "Finding a video for this question…"}</p>
         </div>
       ) : video.kind === "unavailable" ? (
         <div className="space-y-3 rounded-[var(--r-md)] border-2 border-dashed border-line px-4 py-5 text-center">
@@ -393,14 +408,16 @@ function VideoSheet({ open, onClose, initial, sessionId, questionId, stemHtml, a
   );
 }
 
-function UpgradeSheet({ open, onClose, reason = "limit" }: { open: boolean; onClose: () => void; reason?: "limit" | "video" }) {
+const UPGRADE = {
+  limit: { title: "That's today's free questions", body: "You've done the work today, and your streak is safe. Come back tomorrow for more free questions, or keep going now with Premium." },
+  video: { title: "Watch a teacher solve it", body: "Video solutions come with Premium. Your written workings are always free." },
+  "free-videos": { title: "That's today's free videos", body: "You'll get more free videos tomorrow. Premium unlocks every video now. Your written workings are always free." },
+};
+
+function UpgradeSheet({ open, onClose, reason = "limit" }: { open: boolean; onClose: () => void; reason?: keyof typeof UPGRADE }) {
   return (
-    <Sheet open={open} onClose={onClose} tone="grape" title={reason === "video" ? "Watch a teacher solve it" : "That's today's free questions"}>
-      <p className="mb-4">
-        {reason === "video"
-          ? "Video solutions come with Premium. Your written workings are always free."
-          : "You've done the work today, and your streak is safe. Come back tomorrow for more free questions, or keep going now with Premium."}
-      </p>
+    <Sheet open={open} onClose={onClose} tone="grape" title={UPGRADE[reason].title}>
+      <p className="mb-4">{UPGRADE[reason].body}</p>
       <ul className="mb-5 space-y-2">
         {["Unlimited practice questions", "Every video solution", "Detailed progress for each topic", "Past questions & mock exams (coming soon)"].map((t) => (
           <li key={t} className="flex items-center gap-2 font-semibold">

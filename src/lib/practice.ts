@@ -5,7 +5,7 @@ import { applyActivity } from "./streaks";
 import { pointsForAnswer } from "./points";
 import { FREE_DAILY_LIMIT, canAnswer, isPremium } from "./entitlements";
 import { renderMarkdown } from "./markdown";
-import { videoAccessFor, type VideoAccess } from "./solution-video";
+import { freeFor, freeVideosToday, videoAccessFor, type VideoAccess } from "./solution-video";
 
 export type { VideoAccess };
 
@@ -110,7 +110,7 @@ export async function submitAnswer(input: {
     return { status: "error", message: "Invalid option." };
 
   const premium = isPremium(user.subscription, now);
-  const video: VideoAccess = videoAccessFor(question, premium);
+  const video: VideoAccess = videoAccessFor(question, premium, premium ? undefined : freeFor(await freeVideosToday(userId, today), questionId));
   const explanationHtml = renderMarkdown(question.explanation);
 
   // Idempotent: answering the same question twice in one set returns the first result.

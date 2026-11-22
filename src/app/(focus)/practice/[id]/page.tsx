@@ -6,7 +6,7 @@ import { requireUser } from "@/lib/auth";
 import { renderInline, renderMarkdown } from "@/lib/markdown";
 import { studentToday } from "@/lib/student";
 import { isPremium } from "@/lib/entitlements";
-import { videoAccessFor } from "@/lib/solution-video";
+import { freeFor, freeVideosToday, videoAccessFor } from "@/lib/solution-video";
 import { subjectScope } from "@/lib/subjects";
 import { PracticeRunner, type RunnerQuestion } from "@/components/practice-runner";
 import { SkeletonQuestion } from "@/components/ds";
@@ -37,13 +37,14 @@ async function Practice({ params }: { params: PageProps<"/practice/[id]">["param
   const attempts = new Map(session.attempts.map((a) => [a.questionId, a]));
   const premium = isPremium(user.subscription);
   const day = await studentToday(user);
+  const freeVideos = premium ? null : await freeVideosToday(user.id);
 
   const items: RunnerQuestion[] = session.questionIds
     .map((qid) => byId.get(qid))
     .filter((q) => !!q)
     .map((q) => {
       const a = attempts.get(q.id);
-      const video = videoAccessFor(q, premium);
+      const video = videoAccessFor(q, premium, freeVideos ? freeFor(freeVideos, q.id) : undefined);
       return {
         id: q.id,
         difficulty: q.difficulty,

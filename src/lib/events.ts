@@ -10,6 +10,7 @@ export type EventType =
   | "practice_started"
   | "question_answered"
   | "video_opened"
+  | "video_unlocked"
   | "video_locked"
   | "paywall_shown"
   | "paylink_created"

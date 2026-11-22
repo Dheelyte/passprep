@@ -8,7 +8,7 @@ import { startPracticeSession, submitAnswer, type AnswerResult } from "@/lib/pra
 import { track } from "@/lib/events";
 import { rateLimit } from "@/lib/rate-limit";
 import { isPremium } from "@/lib/entitlements";
-import { resolveAutoVideo, type VideoAccess } from "@/lib/solution-video";
+import { resolveAutoVideo, unlockFreeVideo, type VideoAccess } from "@/lib/solution-video";
 
 async function uid() {
   const s = await readSession();
@@ -55,8 +55,9 @@ export async function videoOpened(questionId: string, afterWrong: boolean, sourc
 }
 
 /**
- * Finds the YouTube solution video for a question the student has just answered.
- * Only for questions answered in their own set, and only with Premium, so the search quota can't be farmed.
+ * Opens the solution video for a question the student has answered in their own set:
+ * Premium → finds the YouTube video if there's no teacher video; free plan → spends one of today's free videos.
+ * Checked on the server, so neither the search quota nor the free allowance can be farmed.
  */
 export async function findSolutionVideo(sessionId: string, questionId: string): Promise<VideoAccess | { kind: "unavailable" }> {
   const userId = await uid();
@@ -67,7 +68,11 @@ export async function findSolutionVideo(sessionId: string, questionId: string): 
     db.user.findUnique({ where: { id: userId }, select: { subscription: true } }),
   ]);
   if (!attempt || attempt.userId !== userId) return { kind: "none" };
-  if (!isPremium(user?.subscription ?? null)) return { kind: "locked" };
+  if (!isPremium(user?.subscription ?? null)) {
+    const res = await unlockFreeVideo(userId, questionId);
+    if (res.kind === "open") track("video_unlocked", userId, { questionId });
+    return res;
+  }
   return resolveAutoVideo(questionId);
 }
 

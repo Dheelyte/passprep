@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Suspense } from "react";
 import { Check, Minus } from "lucide-react";
 import { requireUser } from "@/lib/auth";
-import { FREE_DAILY_LIMIT, isPremium } from "@/lib/entitlements";
+import { FREE_DAILY_LIMIT, FREE_DAILY_VIDEOS, isPremium } from "@/lib/entitlements";
 import { planViews } from "@/lib/plans";
 import { checkout } from "@/app/actions/billing";
 import { PlanPicker } from "@/components/plan-picker";
@@ -14,7 +14,7 @@ export const metadata: Metadata = { title: "Premium" };
 const rows: [string, string | boolean, string | boolean][] = [
   ["Practice questions", `${FREE_DAILY_LIMIT} a day`, "Unlimited"],
   ["Step-by-step workings", true, true],
-  ["Video solutions", "A few samples", "Every one"],
+  ["Video solutions", FREE_DAILY_VIDEOS > 0 ? `${FREE_DAILY_VIDEOS} a day` : "A few samples", "Every one"],
   ["Streaks & leaderboard", true, true],
   ["Progress tracking", "Basic", "Detailed"],
   ["Past questions & mock exams", false, "Coming soon"],

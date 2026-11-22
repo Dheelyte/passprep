@@ -59,6 +59,8 @@ src/app/api/paystack          verify callback + webhook
 | Rule | Default | Where |
 | --- | --- | --- |
 | Free questions per day | 20 | `FREE_DAILY_LIMIT` env |
+| Free videos per day | 0 (only teacher-marked samples) | `FREE_DAILY_VIDEOS` env; any video, re-watching the same one that day is free |
+| Premium for every account (testing) | off | `PREMIUM_FOR_EVERYONE=true` env; ignored on Vercel production |
 | Points | +10 correct, +2 wrong, 0 for re-solving; streak bonuses | `src/lib/points.ts` |
 | Streak | first answer of each Lagos day; missing a day resets it | `src/lib/streaks.ts` |
 | Leaderboard | weekly, Monday 00:00 Lagos; shows first name + initial | `src/lib/leaderboard.ts` |

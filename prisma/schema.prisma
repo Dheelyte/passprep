@@ -96,6 +96,7 @@ model User {
 
   subjects          UserSubject[]
   attempts          Attempt[]
+  videoUnlocks      VideoUnlock[]
   sessions          PracticeSession[]
   weeklyScores      WeeklyScore[]
   subscription      Subscription?
@@ -138,16 +139,16 @@ model UserSubject {
 
 /// Topics follow the syllabus. parentId = null → topic; otherwise a subtopic.
 model Topic {
-  id           String       @id @default(cuid())
-  subjectId    String       @map("subject_id")
-  parentId     String?      @map("parent_id")
-  slug         String
-  name         String
-  order        Int          @default(0)
-  classLevels  ClassLevel[] @map("class_levels")
-  exams        Exam[]
-  syllabusRef  String?      @map("syllabus_ref")
-  createdAt    DateTime     @default(now()) @map("created_at")
+  id          String       @id @default(cuid())
+  subjectId   String       @map("subject_id")
+  parentId    String?      @map("parent_id")
+  slug        String
+  name        String
+  order       Int          @default(0)
+  classLevels ClassLevel[] @map("class_levels")
+  exams       Exam[]
+  syllabusRef String?      @map("syllabus_ref")
+  createdAt   DateTime     @default(now()) @map("created_at")
 
   subject   Subject           @relation(fields: [subjectId], references: [id], onDelete: Cascade)
   parent    Topic?            @relation("TopicTree", fields: [parentId], references: [id], onDelete: Cascade)
@@ -161,37 +162,38 @@ model Topic {
 }
 
 model Question {
-  id            String         @id @default(cuid())
-  topicId       String         @map("topic_id")
-  stem          String // markdown + KaTeX ($...$)
-  options       String[] // 2–5 options, markdown
-  correctIndex  Int            @map("correct_index") // 0-based into options
-  explanation   String // markdown, required before publishing
-  difficulty    Difficulty     @default(MEDIUM)
-  videoUrl      String?        @map("video_url") // YouTube
-  videoFree     Boolean        @default(false) @map("video_free") // sample video for free users
+  id               String         @id @default(cuid())
+  topicId          String         @map("topic_id")
+  stem             String // markdown + KaTeX ($...$)
+  options          String[] // 2–5 options, markdown
+  correctIndex     Int            @map("correct_index") // 0-based into options
+  explanation      String // markdown, required before publishing
+  difficulty       Difficulty     @default(MEDIUM)
+  videoUrl         String?        @map("video_url") // YouTube
+  videoFree        Boolean        @default(false) @map("video_free") // sample video for free users
   // Found automatically on YouTube when no teacher video is set (cached; searched at most once).
-  autoVideoId      String?   @map("auto_video_id")
-  autoVideoTitle   String?   @map("auto_video_title")
-  autoVideoChannel String?   @map("auto_video_channel")
-  autoVideoAt      DateTime? @map("auto_video_at") // when searched; set with a null id = nothing suitable found
-  autoVideoBlocked Boolean   @default(false) @map("auto_video_blocked") // a teacher switched auto-search off
-  status        QuestionStatus @default(DRAFT)
-  reviewNote    String?        @map("review_note")
-  stemHash      String         @map("stem_hash") // for duplicate detection
-  authorId      String?        @map("author_id")
-  reviewerId    String?        @map("reviewer_id")
-  importBatchId String?        @map("import_batch_id")
-  publishedAt   DateTime?      @map("published_at")
-  createdAt     DateTime       @default(now()) @map("created_at")
-  updatedAt     DateTime       @updatedAt @map("updated_at")
+  autoVideoId      String?        @map("auto_video_id")
+  autoVideoTitle   String?        @map("auto_video_title")
+  autoVideoChannel String?        @map("auto_video_channel")
+  autoVideoAt      DateTime?      @map("auto_video_at") // when searched; set with a null id = nothing suitable found
+  autoVideoBlocked Boolean        @default(false) @map("auto_video_blocked") // a teacher switched auto-search off
+  status           QuestionStatus @default(DRAFT)
+  reviewNote       String?        @map("review_note")
+  stemHash         String         @map("stem_hash") // for duplicate detection
+  authorId         String?        @map("author_id")
+  reviewerId       String?        @map("reviewer_id")
+  importBatchId    String?        @map("import_batch_id")
+  publishedAt      DateTime?      @map("published_at")
+  createdAt        DateTime       @default(now()) @map("created_at")
+  updatedAt        DateTime       @updatedAt @map("updated_at")
 
-  topic       Topic        @relation(fields: [topicId], references: [id], onDelete: Restrict)
-  author      User?        @relation("QuestionAuthor", fields: [authorId], references: [id], onDelete: SetNull)
-  reviewer    User?        @relation("QuestionReviewer", fields: [reviewerId], references: [id], onDelete: SetNull)
-  importBatch ImportBatch? @relation(fields: [importBatchId], references: [id], onDelete: SetNull)
-  attempts    Attempt[]
-  flags       Flag[]
+  topic        Topic         @relation(fields: [topicId], references: [id], onDelete: Restrict)
+  author       User?         @relation("QuestionAuthor", fields: [authorId], references: [id], onDelete: SetNull)
+  reviewer     User?         @relation("QuestionReviewer", fields: [reviewerId], references: [id], onDelete: SetNull)
+  importBatch  ImportBatch?  @relation(fields: [importBatchId], references: [id], onDelete: SetNull)
+  attempts     Attempt[]
+  videoUnlocks VideoUnlock[]
+  flags        Flag[]
 
   @@unique([topicId, stemHash])
   @@index([topicId, status])
@@ -200,14 +202,14 @@ model Question {
 }
 
 model PracticeSession {
-  id         String    @id @default(cuid())
-  userId     String    @map("user_id")
-  topicId    String    @map("topic_id")
-  questionIds String[] @map("question_ids") // fixed order for the set
-  startedAt  DateTime  @default(now()) @map("started_at")
-  finishedAt DateTime? @map("finished_at")
-  correct    Int       @default(0)
-  answered   Int       @default(0)
+  id          String    @id @default(cuid())
+  userId      String    @map("user_id")
+  topicId     String    @map("topic_id")
+  questionIds String[]  @map("question_ids") // fixed order for the set
+  startedAt   DateTime  @default(now()) @map("started_at")
+  finishedAt  DateTime? @map("finished_at")
+  correct     Int       @default(0)
+  answered    Int       @default(0)
 
   user     User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   topic    Topic     @relation(fields: [topicId], references: [id], onDelete: Cascade)
@@ -238,6 +240,21 @@ model Attempt {
   @@index([userId, questionId, createdAt]) // progress, "already solved"
   @@index([questionId, isCorrect]) // most-missed report
   @@map("attempts")
+}
+
+/// A free-plan student using one of today's FREE_DAILY_VIDEOS on a question (re-watching it that day is free).
+model VideoUnlock {
+  id         String   @id @default(cuid())
+  userId     String   @map("user_id")
+  questionId String   @map("question_id")
+  lagosDate  DateTime @map("lagos_date") @db.Date
+  createdAt  DateTime @default(now()) @map("created_at")
+
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  question Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, lagosDate, questionId])
+  @@map("video_unlocks")
 }
 
 /// One row per student per Lagos week (weekStart = Monday). Reset is implicit.
@@ -286,19 +303,19 @@ model Subscription {
 }
 
 model Payment {
-  id          String        @id @default(cuid())
-  reference   String        @unique
-  userId      String        @map("user_id")
-  plan        PlanCode
-  mode        BillingMode
-  amountKobo  Int           @map("amount_kobo")
-  payerEmail  String        @map("payer_email")
-  channel     String?
-  status      PaymentStatus @default(PENDING)
-  payLinkId   String?       @map("pay_link_id")
-  paidAt      DateTime?     @map("paid_at")
-  raw         Json?
-  createdAt   DateTime      @default(now()) @map("created_at")
+  id         String        @id @default(cuid())
+  reference  String        @unique
+  userId     String        @map("user_id")
+  plan       PlanCode
+  mode       BillingMode
+  amountKobo Int           @map("amount_kobo")
+  payerEmail String        @map("payer_email")
+  channel    String?
+  status     PaymentStatus @default(PENDING)
+  payLinkId  String?       @map("pay_link_id")
+  paidAt     DateTime?     @map("paid_at")
+  raw        Json?
+  createdAt  DateTime      @default(now()) @map("created_at")
 
   user    User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   payLink PayLink? @relation(fields: [payLinkId], references: [id], onDelete: SetNull)
