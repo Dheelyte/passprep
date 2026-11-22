@@ -6,10 +6,11 @@ import { BRAND } from "@/lib/brand";
 import { renderInline, renderMarkdown } from "@/lib/markdown";
 import { activePlans } from "@/lib/billing";
 import { FREE_DAILY_LIMIT } from "@/lib/entitlements";
-import { ButtonLink, Chip, Circled, DoodleArrow, Flame, TrophyIcon, Underline, Avatar } from "@/components/ds";
+import { ButtonLink, Chip, Circled, DoodleArrow, Underline } from "@/components/ds";
 import { ThemeToggle } from "@/components/ds/theme-toggle";
 import { RevealOnScroll } from "@/components/ds/reveal";
 import { HeroDemo } from "@/components/hero-demo";
+import { LeaderboardClimb, PlanChooser, StreakToy, TryQuestions, type PlayQuestion } from "@/components/landing-play";
 import { SubjectIcon } from "@/components/subject-icon";
 
 // Static page: prerendered and served instantly, even on 3G. Plan prices come from a cached query.
@@ -34,6 +35,28 @@ const demo = {
   workings: "1. **Negative power** → flip it: $\\dfrac{1}{27^{2/3}}$\n2. **Cube root** of 27 is 3\n3. **Square** it: $3^2 = 9$, so the answer is $\\frac{1}{9}$",
 };
 
+// "Try it" questions. Check any edit: `correct` is the 0-based index of the right option.
+const tryIt = [
+  {
+    subject: "mathematics", topic: "Number Bases",
+    stem: "Convert $101_2$ to a base ten number.",
+    options: ["$3$", "$5$", "$6$", "$101$"], correct: 1,
+    workings: "1. Multiply each digit by its place value: $1\\times2^2 + 0\\times2^1 + 1\\times2^0$\n2. That's $4 + 0 + 1$\n3. So $101_2 = 5$",
+  },
+  {
+    subject: "mathematics", topic: "Linear Equations",
+    stem: "Solve $3x - 4 = 11$.",
+    options: ["$x = \\frac{7}{3}$", "$x = 15$", "$x = 5$", "$x = -5$"], correct: 2,
+    workings: "1. **Add 4** to both sides: $3x = 15$\n2. **Divide** both sides by 3: $x = 5$\n3. Check: $3(5) - 4 = 11$ ✓",
+  },
+  {
+    subject: "physics", topic: "Motion",
+    stem: "A car moves $120\\text{ m}$ in $8\\text{ s}$ at a steady speed. What is its speed?",
+    options: ["$960\\text{ m/s}$", "$0.067\\text{ m/s}$", "$112\\text{ m/s}$", "$15\\text{ m/s}$"], correct: 3,
+    workings: "1. **Speed = distance ÷ time**\n2. $\\dfrac{120}{8} = 15$\n3. So the speed is $15\\text{ m/s}$",
+  },
+];
+
 const subjects = [
   { slug: "mathematics", name: "Mathematics", status: "Ready now" },
   { slug: "physics", name: "Physics", status: "Starting now" },
@@ -50,10 +73,13 @@ const faqs = [
   { q: "How do parents pay?", a: "Monthly, per term or yearly, by bank transfer, USSD or card through Paystack. You can send your parent a payment link on WhatsApp. Transfer plans never renew on their own." },
 ];
 
-const naira = (kobo: number) => `₦${(kobo / 100).toLocaleString("en-NG")}`;
 
 export default async function Home() {
   const planList = await plans();
+  const playQuestions: PlayQuestion[] = tryIt.map((q) => ({
+    subject: q.subject, topic: q.topic, correct: q.correct,
+    stemHtml: renderMarkdown(q.stem), optionsHtml: q.options.map((o) => renderInline(o)), workingsHtml: renderMarkdown(q.workings),
+  }));
   return (
     <>
       <RevealOnScroll />
@@ -94,8 +120,20 @@ export default async function Home() {
       </div>
 
       <main className="flex-1">
+        {/* TRY IT: a playable mini set */}
+        <section className="mx-auto grid max-w-6xl items-center gap-10 px-4 py-16 md:grid-cols-[1fr_1.1fr]" aria-labelledby="try-h">
+          <div data-reveal>
+            <p className="inline-block rounded-full border-2 border-line bg-coral px-3 py-0.5 font-display text-sm font-extrabold uppercase tracking-widest text-on-fill">Try it now</p>
+            <h2 id="try-h" className="mt-3 text-3xl font-extrabold sm:text-4xl">Answer 3 questions. No sign-up.</h2>
+            <p className="muted mt-3 max-w-md text-lg">This is exactly how practice works: tap an answer, see if you&apos;re right, and read the working underneath. Get one wrong on purpose and see what happens.</p>
+          </div>
+          <div data-reveal>
+            <TryQuestions questions={playQuestions} />
+          </div>
+        </section>
+
         {/* HOW IT WORKS: paper rest + exercise book */}
-        <section className="border-y-2 border-line py-16" aria-labelledby="how-h">
+        <section className="border-y-2 border-line bg-paper-2 py-16" aria-labelledby="how-h">
           <div className="mx-auto max-w-6xl px-4">
             <h2 id="how-h" className="text-3xl font-extrabold sm:text-4xl" data-reveal>How a study session goes</h2>
             <div className="mt-8 grid gap-8 md:grid-cols-[1fr_1.2fr]">
@@ -151,33 +189,13 @@ export default async function Home() {
           <div className="mx-auto grid max-w-6xl gap-6 px-4 md:grid-cols-2">
             <div className="sticker p-6 text-ink" data-reveal>
               <h2 id="habit-h" className="text-3xl font-extrabold">Keep the flame alive</h2>
-              <p className="muted mt-2">Answer one question a day and your streak grows. Miss a day and it starts again from zero.</p>
-              <div className="mt-5 flex items-end gap-2" aria-label="Example: a 7-day streak">
-                {[1, 2, 3, 4, 5, 6, 7].map((d) => (
-                  <div key={d} className="flex flex-1 flex-col items-center gap-1">
-                    <Flame days={d} size={14 + d * 3} animate={d === 7} />
-                    <span className="text-xs font-bold text-ink-2">{["M", "T", "W", "T", "F", "S", "S"][d - 1]}</span>
-                  </div>
-                ))}
-              </div>
+              <p className="muted mt-2">Answer one question a day and your streak grows. Miss a day and it starts again from zero. Tap the days to try it.</p>
+              <StreakToy />
             </div>
             <div className="sticker p-6 text-ink" data-reveal>
               <h2 className="text-3xl font-extrabold">Climb the weekly board</h2>
-              <p className="muted mt-2">Every question earns points. The board resets every Monday, so a new student can be top by Friday.</p>
-              <ol className="mt-5 space-y-2" aria-label="Example leaderboard">
-                {[
-                  { n: "Chidinma O.", p: 320, place: 1 as const, c: "bg-sun" },
-                  { n: "Ibrahim M.", p: 280, place: 2 as const, c: "bg-silver" },
-                  { n: "Funke A.", p: 240, place: 3 as const, c: "bg-bronze" },
-                ].map((r) => (
-                  <li key={r.n} className={`flex items-center gap-3 rounded-[10px] border-2 border-line px-3 py-2 text-on-fill ${r.c}`}>
-                    <TrophyIcon place={r.place} size={28} />
-                    <Avatar name={r.n} size="sm" />
-                    <span className="flex-1 font-display font-extrabold">{r.n}</span>
-                    <span className="num">{r.p}</span>
-                  </li>
-                ))}
-              </ol>
+              <p className="muted mt-2">Every question earns points. The board resets every Monday, so a new student can be top by Friday. See how fast you can climb.</p>
+              <LeaderboardClimb />
             </div>
           </div>
         </section>
@@ -212,17 +230,9 @@ export default async function Home() {
             <div id="pricing" className="scroll-mt-6" data-reveal>
               <h3 className="mb-4 font-display text-xl font-extrabold">Premium plans</h3>
               {planList.length === 0 ? <p className="font-semibold">Monthly, per term or yearly. See prices after you sign up.</p> : null}
-              <ul className="space-y-3">
-                {planList.map((p) => (
-                  <li key={p.code} className={`flex items-center justify-between gap-3 border-2 border-line px-4 py-3 shadow-sticker [border-radius:var(--r-sticker)] ${p.code === "TERMLY" ? "bg-sun text-on-fill" : "bg-card text-ink"}`}>
-                    <span>
-                      <span className="block font-display text-lg font-extrabold">{p.name}</span>
-                      <span className="text-sm font-semibold">{p.periodDays} days{p.code === "TERMLY" ? " · a full school term" : ""}</span>
-                    </span>
-                    <span className="num text-2xl">{naira(p.amountKobo)}</span>
-                  </li>
-                ))}
-              </ul>
+              {planList.length > 0 ? (
+                <PlanChooser plans={planList.map((p) => ({ code: p.code, name: p.name, periodDays: p.periodDays, amountKobo: p.amountKobo }))} />
+              ) : null}
               <p className="mt-3 text-sm font-semibold">Free plan: {FREE_DAILY_LIMIT} questions a day, written workings, streaks and the leaderboard, forever.</p>
             </div>
           </div>
