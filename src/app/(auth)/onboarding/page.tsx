@@ -5,7 +5,7 @@ import { requireUser } from "@/lib/auth";
 import { OnboardingForm } from "@/components/onboarding-form";
 import { SkeletonList } from "@/components/ds";
 
-export const metadata: Metadata = { title: "Set up your study plan" };
+export const metadata: Metadata = { title: "Set up your study plan", robots: { index: false, follow: false } };
 
 const STEPS: Record<string, number> = { class: 0, exams: 1, subjects: 2 };
 

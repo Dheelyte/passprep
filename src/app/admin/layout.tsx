@@ -1,7 +1,11 @@
+import type { Metadata } from "next";
 import { Suspense } from "react";
 import { Logo } from "@/components/logo";
 import { ThemeToggle } from "@/components/ds/theme-toggle";
 import { AdminNav, AdminNavView } from "@/components/admin-nav";
+
+// Staff area: keep it out of search results.
+export const metadata: Metadata = { robots: { index: false, follow: false } };
 
 export default function AdminLayout({ children }: LayoutProps<"/admin">) {
   return (

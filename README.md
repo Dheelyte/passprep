@@ -129,3 +129,10 @@ npm run test:e2e            # Playwright browser journey (needs `npx playwright 
 - In-app ratings
 - Shared rate limiting for more than one server instance (the current limiter is in memory)
 # passprep
+
+## SEO and share cards
+
+- `APP_URL` is the canonical address used in canonical links, `sitemap.xml`, `robots.txt` and share cards. Set it to your real domain.
+- Only the production deployment is indexable; previews and local copies send `Disallow: /`. Signed-in, admin and payment pages are `noindex` too.
+- Share cards are generated at build time from `src/app/opengraph-image.tsx` (site) and `src/app/pay/opengraph-image.tsx` (parent pay links), using the fonts in `assets/fonts` (SIL Open Font License). To change them, edit those files and redeploy.
+- Structured data (organization, website, FAQ, Premium offers) is in `jsonLd()` at the bottom of `src/app/page.tsx`.

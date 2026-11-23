@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { ogBase } from "@/lib/site";
 import { Suspense } from "react";
 import { LoginForm } from "@/components/auth-forms";
 import { googleEnabled } from "@/lib/google";
@@ -12,7 +13,12 @@ const GOOGLE_ERRORS: Record<string, string> = {
   google_off: "Google sign-in isn't available right now. Use your phone number or email.",
 };
 
-export const metadata: Metadata = { title: "Log in" };
+export const metadata: Metadata = {
+  title: "Log in",
+  description: "Log in to keep your streak going and pick up your WAEC, NECO and JAMB practice where you left off.",
+  alternates: { canonical: "/login" },
+  openGraph: { ...ogBase({ withImage: true }), url: "/login", title: "Log in" },
+};
 
 export default function LoginPage({ searchParams }: PageProps<"/login">) {
   return (

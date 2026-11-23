@@ -10,7 +10,7 @@ import { Avatar, Card, EmptyState, Flame, SkeletonList } from "@/components/ds";
 import { FREE_DAILY_LIMIT } from "@/lib/entitlements";
 import { publicName } from "@/lib/leaderboard";
 
-export const metadata: Metadata = { title: "Pay for Premium", robots: { index: false } };
+export const metadata: Metadata = { title: "Pay for Premium", robots: { index: false, follow: false } };
 
 export default function PayPage({ params }: PageProps<"/pay/[token]">) {
   return (

@@ -5,7 +5,7 @@ import { db } from "@/lib/db";
 import { PublicShell } from "@/components/public-shell";
 import { ButtonLink, Card, EmptyState, SkeletonList, Stamp } from "@/components/ds";
 
-export const metadata: Metadata = { title: "Payment", robots: { index: false } };
+export const metadata: Metadata = { title: "Payment", robots: { index: false, follow: false } };
 
 export default function ResultPage({ searchParams }: PageProps<"/payment/result">) {
   return (

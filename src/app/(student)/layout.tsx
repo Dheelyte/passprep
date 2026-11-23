@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { Suspense } from "react";
 import { User } from "lucide-react";
@@ -7,6 +8,9 @@ import { SideBar, SideNav } from "@/components/side-nav";
 import { ThemeToggle } from "@/components/ds/theme-toggle";
 import { getCurrentUser } from "@/lib/auth";
 import { isPremium } from "@/lib/entitlements";
+
+// Signed-in area: keep it out of search results.
+export const metadata: Metadata = { robots: { index: false, follow: false } };
 
 // Responsive shell (a real two-column grid, so the sidebar can never cover content):
 //   < 768px   top bar + bottom tab bar

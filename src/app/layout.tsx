@@ -1,18 +1,37 @@
 import type { Metadata, Viewport } from "next";
-import { Atkinson_Hyperlegible_Next, Bricolage_Grotesque } from "next/font/google";
+import { Bricolage_Grotesque } from "next/font/google";
+import localFont from "next/font/local";
 import "katex/dist/katex.min.css";
 import "./globals.css";
 import { BRAND } from "@/lib/brand";
+import { SITE, ogBase, siteUrl } from "@/lib/site";
 
 // Two families max: a characterful display face and a body face built for legibility.
 const display = Bricolage_Grotesque({ subsets: ["latin"], display: "swap", variable: "--font-bricolage" });
-const body = Atkinson_Hyperlegible_Next({ subsets: ["latin"], display: "swap", variable: "--font-atkinson" });
+// Atkinson is self-hosted (the same variable Latin file Google serves): Next.js has no stored metrics for it,
+// so from Google it couldn't build a size-matched fallback. From a local file it measures the font itself,
+// which keeps text from jumping when the font arrives on slow connections.
+const body = localFont({
+  src: "./fonts/atkinson-hyperlegible-next-latin-wght-normal.woff2",
+  weight: "200 800",
+  display: "swap",
+  variable: "--font-atkinson",
+  adjustFontFallback: "Arial",
+});
 
 export const metadata: Metadata = {
-  title: { default: `${BRAND.name}: WAEC, NECO & JAMB practice with every answer explained`, template: `%s · ${BRAND.name}` },
-  description: "Practise WAEC, NECO and JAMB questions topic by topic. Every answer explained step by step, with video solutions. Start free on any phone.",
+  metadataBase: new URL(siteUrl()),
+  title: { default: SITE.title, template: `%s · ${BRAND.name}` },
+  description: SITE.description,
+  keywords: SITE.keywords,
   applicationName: BRAND.name,
+  category: "education",
   manifest: "/manifest.webmanifest",
+  openGraph: { ...ogBase(), title: SITE.title, description: SITE.description },
+  twitter: { card: "summary_large_image", title: SITE.title, description: SITE.description },
+  robots: { index: true, follow: true, googleBot: { index: true, follow: true, "max-image-preview": "large", "max-snippet": -1 } },
+  formatDetection: { telephone: false, email: false, address: false },
+  appleWebApp: { capable: true, title: BRAND.name, statusBarStyle: "default" },
 };
 
 export const viewport: Viewport = {

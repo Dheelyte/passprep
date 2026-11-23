@@ -1,8 +1,10 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { cacheLife } from "next/cache";
 import { ArrowRight, BookOpen, Check, CreditCard, Landmark, Lightbulb, Medal, Play, Smartphone, Target } from "lucide-react";
 import { Logo } from "@/components/logo";
 import { BRAND } from "@/lib/brand";
+import { SITE, ogBase, siteUrl } from "@/lib/site";
 import { renderInline, renderMarkdown } from "@/lib/markdown";
 import { activePlans } from "@/lib/billing";
 import { FREE_DAILY_LIMIT } from "@/lib/entitlements";
@@ -12,6 +14,11 @@ import { RevealOnScroll } from "@/components/ds/reveal";
 import { HeroDemo } from "@/components/hero-demo";
 import { LeaderboardClimb, PlanChooser, StreakToy, TryQuestions, type PlayQuestion } from "@/components/landing-play";
 import { SubjectIcon } from "@/components/subject-icon";
+
+export const metadata: Metadata = {
+  alternates: { canonical: "/" },
+  openGraph: { ...ogBase(), url: "/", title: SITE.title, description: SITE.description },
+};
 
 // Static page: prerendered and served instantly, even on 3G. Plan prices come from a cached query.
 
@@ -82,6 +89,7 @@ export default async function Home() {
   }));
   return (
     <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd(planList) }} />
       <RevealOnScroll />
       {/* HERO: Cobalt block */}
       <div className="bg-primary text-on-primary">
@@ -267,4 +275,33 @@ export default async function Home() {
       </footer>
     </>
   );
+}
+
+/** Structured data for search engines: who we are, the site, the FAQ, and the plans on offer. */
+function jsonLd(planList: { code: string; name: string; amountKobo: number; periodDays: number }[]) {
+  const url = siteUrl();
+  const org = `${url}/#organization`;
+  const data = {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "EducationalOrganization", "@id": org, name: BRAND.name, url, logo: `${url}/icon.svg`,
+        description: BRAND.tagline, areaServed: { "@type": "Country", name: "Nigeria" },
+      },
+      { "@type": "WebSite", "@id": `${url}/#website`, url, name: BRAND.name, description: SITE.description, inLanguage: "en-NG", publisher: { "@id": org } },
+      {
+        "@type": "FAQPage", "@id": `${url}/#faq`,
+        mainEntity: faqs.map((f) => ({ "@type": "Question", name: f.q, acceptedAnswer: { "@type": "Answer", text: f.a } })),
+      },
+      ...(planList.length
+        ? [{
+            "@type": "Product", "@id": `${url}/#premium`, name: `${BRAND.name} Premium`, brand: { "@id": org },
+            description: "Unlimited WAEC, NECO and JAMB practice questions and every video solution.",
+            offers: planList.map((p) => ({ "@type": "Offer", name: p.name, price: (p.amountKobo / 100).toFixed(2), priceCurrency: "NGN", url: `${url}/#pricing`, availability: "https://schema.org/InStock" })),
+          }]
+        : []),
+    ],
+  };
+  // Escape "<" so FAQ text can never close the script tag.
+  return JSON.stringify(data).replace(/</g, "\\u003c");
 }

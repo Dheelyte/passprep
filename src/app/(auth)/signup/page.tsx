@@ -1,9 +1,15 @@
 import type { Metadata } from "next";
+import { ogBase } from "@/lib/site";
 import { Suspense } from "react";
 import { SignupForm } from "@/components/auth-forms";
 import { googleEnabled } from "@/lib/google";
 
-export const metadata: Metadata = { title: "Create your free account" };
+export const metadata: Metadata = {
+  title: "Create your free account",
+  description: "Sign up free in two minutes. Practise WAEC, NECO and JAMB questions topic by topic, with every answer explained step by step. No card needed.",
+  alternates: { canonical: "/signup" },
+  openGraph: { ...ogBase({ withImage: true }), url: "/signup", title: "Create your free account" },
+};
 
 export default function SignupPage({ searchParams }: PageProps<"/signup">) {
   return (
