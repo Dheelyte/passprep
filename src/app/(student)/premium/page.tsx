@@ -37,7 +37,7 @@ export default function PremiumPage() {
         subtitle="Unlimited questions and every video solution, so you're never stuck the night before the paper."
       />
 
-      <div className="grid gap-6 lg:grid-cols-[1fr_1.15fr] lg:items-start">
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.15fr)] lg:items-start">
       <div className="sticker overflow-hidden p-0 lg:sticky lg:top-8">
         <table className="w-full text-sm">
           <caption className="sr-only">Free vs Premium</caption>

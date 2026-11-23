@@ -101,7 +101,7 @@ export default async function Home() {
             <ButtonLink href="/signup" variant="sun" size="sm" className="hidden sm:inline-flex">Start free</ButtonLink>
           </nav>
         </header>
-        <section className="mx-auto grid max-w-6xl items-center gap-14 px-4 pb-20 pt-8 md:grid-cols-[1.1fr_1fr] md:pt-14">
+        <section className="mx-auto grid grid-cols-1 max-w-6xl items-center gap-14 px-4 pb-20 pt-8 md:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)] md:pt-14">
           <div>
             <p className="mb-4 flex flex-wrap gap-1.5">
               <Chip tone="neutral" className="text-ink">JSS 3 – SS 3</Chip>
@@ -129,7 +129,7 @@ export default async function Home() {
 
       <main className="flex-1">
         {/* TRY IT: a playable mini set */}
-        <section className="mx-auto grid max-w-6xl items-center gap-10 px-4 py-16 md:grid-cols-[1fr_1.1fr]" aria-labelledby="try-h">
+        <section className="mx-auto grid grid-cols-1 max-w-6xl items-center gap-10 px-4 py-16 md:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)]" aria-labelledby="try-h">
           <div data-reveal>
             <p className="inline-block rounded-full border-2 border-line bg-coral px-3 py-0.5 font-display text-sm font-extrabold uppercase tracking-widest text-on-fill">Try it now</p>
             <h2 id="try-h" className="mt-3 text-3xl font-extrabold sm:text-4xl">Answer 3 questions. No sign-up.</h2>
@@ -144,7 +144,7 @@ export default async function Home() {
         <section className="border-y-2 border-line bg-paper-2 py-16" aria-labelledby="how-h">
           <div className="mx-auto max-w-6xl px-4">
             <h2 id="how-h" className="text-3xl font-extrabold sm:text-4xl" data-reveal>How a study session goes</h2>
-            <div className="mt-8 grid gap-8 md:grid-cols-[1fr_1.2fr]">
+            <div className="mt-8 grid grid-cols-1 gap-8 md:grid-cols-[minmax(0,1fr)_minmax(0,1.2fr)]">
               <ol className="ruled border-2 border-line py-4 pl-14 pr-4 shadow-sticker [border-radius:var(--r-sticker)]" data-reveal>
                 {[
                   { icon: BookOpen, t: "Pick a topic", d: "Number Bases, Motion, Indices: topics follow the syllabus, so you study what's on the exam.", c: "bg-primary text-on-primary" },
@@ -194,7 +194,7 @@ export default async function Home() {
 
         {/* STREAK + LEADERBOARD: Sunshine block */}
         <section className="border-y-2 border-line bg-sun py-16 text-on-fill" aria-labelledby="habit-h">
-          <div className="mx-auto grid max-w-6xl gap-6 px-4 md:grid-cols-2">
+          <div className="mx-auto grid grid-cols-1 max-w-6xl gap-6 px-4 md:grid-cols-2">
             <div className="sticker p-6 text-ink" data-reveal>
               <h2 id="habit-h" className="text-3xl font-extrabold">Keep the flame alive</h2>
               <p className="muted mt-2">Answer one question a day and your streak grows. Miss a day and it starts again from zero. Tap the days to try it.</p>
@@ -210,7 +210,7 @@ export default async function Home() {
 
         {/* PARENTS + PRICING: Grape block with Sunshine highlights */}
         <section className="bg-grape py-16 text-on-grape" aria-labelledby="parents-h">
-          <div className="mx-auto grid max-w-6xl gap-10 px-4 md:grid-cols-2">
+          <div className="mx-auto grid grid-cols-1 max-w-6xl gap-10 px-4 md:grid-cols-2">
             <div data-reveal>
               <p className="inline-block rounded-full border-2 border-line bg-sun px-3 py-0.5 font-display text-sm font-extrabold uppercase tracking-widest text-on-fill">For parents</p>
               <h2 id="parents-h" className="mt-3 text-3xl font-extrabold sm:text-4xl">Proof they&apos;re studying. A price that makes sense.</h2>

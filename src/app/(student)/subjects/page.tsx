@@ -36,7 +36,7 @@ async function Subjects() {
   const mineSet = new Set(mine.map((m) => m.subjectId));
   const sorted = [...subjects].sort((a, b) => Number(mineSet.has(b.id)) - Number(mineSet.has(a.id)));
   return (
-    <ul className="grid gap-3 lg:grid-cols-2">
+    <ul className="grid grid-cols-1 gap-3 lg:grid-cols-2">
       {sorted.map((s) => {
         const n = qCount.get(s.id) ?? 0;
         return (

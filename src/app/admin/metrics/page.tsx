@@ -81,7 +81,7 @@ async function Metrics() {
   ];
 
   return (
-    <div className="grid gap-4 md:grid-cols-2">
+    <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
       <section className="card space-y-4 md:col-span-2" aria-labelledby="earned">
         <header>
           <p className="muted text-xs font-semibold uppercase tracking-wide">How much have we made?</p>

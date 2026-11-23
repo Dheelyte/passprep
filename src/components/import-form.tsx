@@ -10,7 +10,7 @@ export function ImportForm({ canEditSyllabus }: { canEditSyllabus: boolean }) {
   const report = state?.report;
 
   return (
-    <div className="grid gap-6 md:grid-cols-[1fr_1.3fr]">
+    <div className="grid grid-cols-1 gap-6 md:grid-cols-[minmax(0,1fr)_minmax(0,1.3fr)]">
       <form
         className="card space-y-4"
         onSubmit={(e) => {

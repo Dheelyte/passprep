@@ -46,7 +46,7 @@ async function Edit({ params }: { params: PageProps<"/admin/questions/[id]">["pa
       {user.role !== "ADMIN" && q.status === "PUBLISHED" ? (
         <p className="card text-sm">Saving changes to a published question sends it back for review by another teacher.</p>
       ) : null}
-      <div className="grid gap-6 lg:grid-cols-2">
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
         <QuestionEditor
           q={{ id: q.id, topicId: q.topicId, stem: q.stem, options: q.options, correctIndex: q.correctIndex, explanation: q.explanation, difficulty: q.difficulty, videoUrl: q.videoUrl ?? "", videoFree: q.videoFree, autoVideo: { id: q.autoVideoId, title: q.autoVideoTitle, channel: q.autoVideoChannel, searchedAt: q.autoVideoAt, blocked: q.autoVideoBlocked } }}
           topics={topics.map((t) => ({ id: t.id, label: t.parent ? `${t.parent.name} › ${t.name}` : t.name }))}

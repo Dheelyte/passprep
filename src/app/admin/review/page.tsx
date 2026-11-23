@@ -40,7 +40,7 @@ async function Queue({ searchParams }: { searchParams: PageProps<"/admin/review"
       </p>
       {items.length === 0 ? <p className="card muted">Nothing to review. 🎉</p> : null}
       {items.map((q) => (
-        <article key={q.id} id={`q-${q.id}`} className="card grid gap-4 md:grid-cols-[1.6fr_1fr]">
+        <article key={q.id} id={`q-${q.id}`} className="card grid grid-cols-1 gap-4 md:grid-cols-[minmax(0,1.6fr)_minmax(0,1fr)]">
           <div>
             <p className="muted mb-2 text-xs">
               {q.topic.subject.name} › {q.topic.parent ? `${q.topic.parent.name} › ` : ""}{q.topic.name} · {q.difficulty.toLowerCase()} · by {q.author?.name ?? "unknown"}

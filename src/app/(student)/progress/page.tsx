@@ -33,7 +33,7 @@ async function Progress() {
     return <EmptyState title="No subjects picked" body="Choose your subjects and your progress shows up here." action={<ButtonLink href="/onboarding?step=subjects">Choose subjects</ButtonLink>} />;
   }
   return (
-    <div className="grid items-start gap-5 lg:grid-cols-2">
+    <div className="grid grid-cols-1 items-start gap-5 lg:grid-cols-2">
       {all.map(({ s, topics }) => {
         const tried = topics.filter((t) => t.attempts > 0);
         const weak = topics.filter((t) => t.mastery === "weak").sort((a, b) => (a.accuracy ?? 0) - (b.accuracy ?? 0));

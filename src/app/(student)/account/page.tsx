@@ -71,7 +71,7 @@ async function Account() {
         ))}
       </dl>
 
-      <div className="grid items-start gap-5 lg:grid-cols-2">
+      <div className="grid grid-cols-1 items-start gap-5 lg:grid-cols-2">
       <Card as="section" aria-labelledby="cal-h">
         <div className="mb-3 flex items-baseline justify-between">
           <h2 id="cal-h" className="text-lg font-extrabold">Streak calendar</h2>
@@ -91,7 +91,7 @@ async function Account() {
       </Card>
 
       </div>
-      <div className="grid items-start gap-5 lg:grid-cols-2">
+      <div className="grid grid-cols-1 items-start gap-5 lg:grid-cols-2">
       <Card as="section" aria-labelledby="subj-h">
         <div className="mb-3 flex items-baseline justify-between">
           <h2 id="subj-h" className="text-lg font-extrabold">Subjects</h2>

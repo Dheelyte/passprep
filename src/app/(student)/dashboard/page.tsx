@@ -102,7 +102,7 @@ async function Dashboard({ searchParams }: { searchParams: PageProps<"/dashboard
         </CardLink>
       ) : null}
 
-      <div className="grid gap-5 lg:grid-cols-[1.4fr_1fr]">
+      <div className="grid grid-cols-1 gap-5 lg:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)]">
       {open ? (
           <CardLink href={`/practice/${open.id}`} tone="primary" className="flex h-full items-center gap-4 p-5">
             <span data-subject={subjectScope(open.topic.subject.slug)} className="grid size-12 shrink-0 place-items-center rounded-[10px] border-2 border-line bg-subj text-on-subj">
