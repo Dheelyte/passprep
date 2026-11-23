@@ -16,15 +16,16 @@ const items = [
 ];
 
 /** Sidebar from 768px up. usePathname is runtime data → render inside <Suspense> with <SideBar /> as fallback. */
-export function SideNav() {
-  return <SideBar path={usePathname()} />;
+export function SideNav({ premium }: { premium: boolean }) {
+  return <SideBar path={usePathname()} premium={premium} />;
 }
 
 /**
  * Lives in the first column of the layout grid (sticky, full height), so it never overlaps content.
  * 768–1023px: compact icon rail (labels become tooltips/aria-labels). ≥1024px: full sidebar with labels.
  */
-export function SideBar({ path = "" }: { path?: string }) {
+/** `premium` undefined = not known yet (loading): the "Go Premium" card is left out so it never flashes for Premium users. */
+export function SideBar({ path = "", premium }: { path?: string; premium?: boolean }) {
   return (
     <aside
       aria-label="Sidebar"
@@ -63,16 +64,18 @@ export function SideBar({ path = "" }: { path?: string }) {
         </ul>
       </nav>
       <div className="space-y-3 p-2.5 lg:p-3">
-        <Link
-          href="/premium"
-          title="Go Premium"
-          aria-label="Go Premium: unlimited questions and every video"
-          className="pressable flex items-center justify-center border-2 border-line bg-grape p-2.5 text-on-grape shadow-sticker [border-radius:var(--r-sticker)] lg:block lg:p-3"
-        >
-          <Sparkles aria-hidden className="size-5 text-sun lg:hidden" />
-          <span className="hidden items-center gap-2 font-display font-extrabold lg:flex"><Sparkles aria-hidden className="size-5 text-sun" /> Go Premium</span>
-          <span className="mt-0.5 hidden text-sm font-semibold lg:block">Unlimited questions & every video.</span>
-        </Link>
+        {premium === false ? (
+          <Link
+            href="/premium"
+            title="Go Premium"
+            aria-label="Go Premium: unlimited questions and every video"
+            className="pressable flex items-center justify-center border-2 border-line bg-grape p-2.5 text-on-grape shadow-sticker [border-radius:var(--r-sticker)] lg:block lg:p-3"
+          >
+            <Sparkles aria-hidden className="size-5 text-sun lg:hidden" />
+            <span className="hidden items-center gap-2 font-display font-extrabold lg:flex"><Sparkles aria-hidden className="size-5 text-sun" /> Go Premium</span>
+            <span className="mt-0.5 hidden text-sm font-semibold lg:block">Unlimited questions & every video.</span>
+          </Link>
+        ) : null}
         <div className="flex items-center justify-center rounded-[var(--r-md)] border-2 border-line px-2 py-1.5 lg:justify-between lg:px-3">
           <span className="hidden text-sm font-bold lg:inline">Theme</span>
           <ThemeToggle />

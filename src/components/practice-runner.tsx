@@ -39,8 +39,8 @@ export type RunnerQuestion = {
 
 const LETTERS = ["A", "B", "C", "D", "E"];
 const DIFF = { EASY: "Easy", MEDIUM: "Medium", HARD: "Hard" } as const;
-const PRAISE = ["Correct!", "Sharp!", "You got it!", "Clean!", "Oya, next one!", "Na you be this!"];
-const COMFORT = ["Not quite.", "Close one.", "No wahala."];
+const PRAISE = ["Correct!", "Sharp!", "You got it!", "Clean!", "On to the next one!", "That's the way!"];
+const COMFORT = ["Not quite.", "Close one.", "No problem."];
 const now = () => Date.now();
 const pick = (list: string[], seed: number) => list[seed % list.length];
 
@@ -104,11 +104,11 @@ export function PracticeRunner(props: {
             setFloatPts({ n: res.pointsAwarded, key: now() });
           }
           if (res.limit !== null) setRemaining(Math.max(0, res.limit - res.answeredToday));
-          if (res.milestone) setToast(`${res.milestone}-day streak! Bonus points dey your account.`);
+          if (res.milestone) setToast(`${res.milestone}-day streak! Bonus points added to your account.`);
           haptic(res.isCorrect ? 15 : [8, 50, 8]);
         }
       } catch {
-        setError("Network wahala. Check your data and tap the option again.");
+        setError("Connection problem. Check your data and tap the option again.");
       } finally {
         setPendingChoice(null);
       }
@@ -493,7 +493,7 @@ function Summary(p: {
   answers: Record<string, Answered>;
 }) {
   const pct = p.answeredCount ? Math.round((p.correctCount / p.answeredCount) * 100) : 0;
-  const verdict = pct >= 80 ? { stamp: "Sharp!", tone: "ok" as const, line: "You dey try! This topic is getting strong." } : pct >= 50 ? { stamp: "Solid", tone: "info" as const, line: "Good effort. One more round and it'll stick." } : { stamp: "Keep going", tone: "oops" as const, line: "Every wrong answer here is one less in the exam hall." };
+  const verdict = pct >= 80 ? { stamp: "Sharp!", tone: "ok" as const, line: "Great work! This topic is getting strong." } : pct >= 50 ? { stamp: "Solid", tone: "info" as const, line: "Good effort. One more round and it'll stick." } : { stamp: "Keep going", tone: "oops" as const, line: "Every wrong answer here is one less in the exam hall." };
   const missed = p.questions.filter((q) => p.answers[q.id] && !p.answers[q.id].isCorrect);
   useEffect(() => {
     if (pct >= 80) haptic([15, 60, 15]);

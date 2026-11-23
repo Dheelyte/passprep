@@ -5,6 +5,8 @@ import { Logo } from "@/components/logo";
 import { BottomNav, NavBar } from "@/components/bottom-nav";
 import { SideBar, SideNav } from "@/components/side-nav";
 import { ThemeToggle } from "@/components/ds/theme-toggle";
+import { getCurrentUser } from "@/lib/auth";
+import { isPremium } from "@/lib/entitlements";
 
 // Responsive shell (a real two-column grid, so the sidebar can never cover content):
 //   < 768px   top bar + bottom tab bar
@@ -14,7 +16,7 @@ export default function StudentLayout({ children }: LayoutProps<"/">) {
   return (
     <div className="flex flex-1 flex-col md:grid md:grid-cols-[var(--rail-w)_minmax(0,1fr)] md:items-start lg:grid-cols-[var(--sidebar-w)_minmax(0,1fr)]">
       <Suspense fallback={<SideBar />}>
-        <SideNav />
+        <SideNavWithPlan />
       </Suspense>
       <div className="app-column flex min-w-0 flex-1 flex-col md:col-start-2 md:row-start-1 md:min-h-dvh">
         <header className="sticky top-0 z-30 border-b-2 border-line bg-paper md:hidden">
@@ -35,4 +37,10 @@ export default function StudentLayout({ children }: LayoutProps<"/">) {
       </Suspense>
     </div>
   );
+}
+
+/** Hides "Go Premium" for Premium students. getCurrentUser is cached per request, so this adds no query. */
+async function SideNavWithPlan() {
+  const user = await getCurrentUser();
+  return <SideNav premium={isPremium(user?.subscription)} />;
 }

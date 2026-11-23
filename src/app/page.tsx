@@ -67,7 +67,7 @@ const subjects = [
 
 const faqs = [
   { q: "Is it really free?", a: `Yes. Every subject, every topic, the written workings, streaks and the leaderboard are free. Free accounts get ${FREE_DAILY_LIMIT} questions a day. Premium removes the limit and unlocks every video solution.` },
-  { q: "Will it chop my data?", a: "No app to download. It's a light website built for budget Android phones and slow networks. Videos only load when you tap play. Works on any phone with a browser." },
+  { q: "Will it use a lot of data?", a: "No app to download. It's a light website built for budget Android phones and slow networks. Videos only load when you tap play. Works on any phone with a browser." },
   { q: "Who writes the questions?", a: "Teachers write original questions in WAEC, NECO and JAMB style. A second teacher checks every question and its workings before it goes live, and you can report anything that looks off." },
   { q: "Which subjects are ready?", a: "Mathematics is ready now, and Physics is starting with its first topics. Chemistry, Biology and English are next." },
   { q: "How do parents pay?", a: "Monthly, per term or yearly, by bank transfer, USSD or card through Paystack. You can send your parent a payment link on WhatsApp. Transfer plans never renew on their own." },

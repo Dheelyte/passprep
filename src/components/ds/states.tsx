@@ -57,7 +57,7 @@ export function EmptyState({ title, body, action, kind = "empty", className }: {
   );
 }
 
-export function ErrorState({ title = "Wahala, something broke", body, action, offline }: { title?: string; body?: ReactNode; action?: ReactNode; offline?: boolean }) {
+export function ErrorState({ title = "Sorry, something went wrong", body, action, offline }: { title?: string; body?: ReactNode; action?: ReactNode; offline?: boolean }) {
   return (
     <div role="alert" className="flex flex-col items-center gap-2 rounded-[var(--r-sticker)] border-2 border-line bg-coral-soft px-5 py-8 text-center text-ink shadow-sticker">
       <Illo kind={offline ? "offline" : "error"} />
